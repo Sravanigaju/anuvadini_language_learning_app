@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userProfileController = require("../controllers/userProfileController");
 
+
 // User profile routes
 router.get("/", userProfileController.getAllUserProfiles);
 router.get("/:id", userProfileController.getUserProfileById);

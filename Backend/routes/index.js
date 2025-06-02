@@ -9,6 +9,6 @@ const userProfileRoutes = require("./userProfileRoutes");
 // Use route modules
 router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
-router.use("/profiles", userProfileRoutes);
+router.use("/userprofile", userProfileRoutes);
 
 module.exports = router;

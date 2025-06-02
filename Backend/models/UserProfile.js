@@ -49,7 +49,7 @@ const userProfileSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+}, { versionKey: false });
 
-module.exports = mongoose.model("UserProfile", userProfileSchema);
+module.exports = mongoose.model("userprofile", userProfileSchema,"userprofile");
 
