@@ -2,20 +2,20 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const generateOtp = require("../utils/generateOtp"); // Add this utility
-const sendOtpEmail = require("../utils/sendOtpEmail"); // Add this utility
+const sendOtpSms = require("../utils/sendOtpSms"); // Add this utility
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, phoneNumber, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    // Initially, isEmailVerified = false (default false if you added to schema)
-    const newUser = new User({ username, email, password: hashedPassword, isEmailVerified: false });
+
+    const newUser = new User({ username, phoneNumber, password: hashedPassword, isEmailVerified: false });
     await newUser.save();
 
     // Optionally: send OTP immediately after registration
@@ -24,10 +24,10 @@ exports.register = async (req, res) => {
     newUser.otp = otp;
     newUser.otpExpiry = otpExpiry;
     await newUser.save();
+    // await sendOtpSms(phoneNumber, otp);
+    // await sendOtpEmail(phoneNumber, otp);
 
-     await sendOtpEmail(email, otp);
-
-    res.status(201).json({ message: "User registered successfully. OTP sent to email." });
+    res.status(201).json({ message: "User registered successfully. OTP sent to sms." });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -36,14 +36,14 @@ exports.register = async (req, res) => {
 // Login user
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phoneNumber, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Check if email is verified before allowing login
-    if (!user.isEmailVerified) {
-      return res.status(403).json({ message: "Email not verified. Please verify your email first." });
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "Phone number not verified. Please verify your Phone number first." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -52,63 +52,50 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Send OTP to user's email
 exports.sendOtp = async (req, res) => {
-  const { email } = req.body;
-
+  const { phoneNumber } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    await sendOtpEmail(email, otp);
-    res.status(200).json({ message: "OTP sent to email" });
+    await sendOtpSms(phoneNumber, otp);
+    res.status(200).json({ message: "OTP sent via SMS" });
   } catch (error) {
-    res.status(500).json({ message: "Error sending OTP", error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Verify OTP and mark email as verified
 exports.verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
-
+  const { phoneNumber, otp } = req.body;
   try {
-    const user = await User.findOne({ email });
-
-    if (!user || !user.otp || !user.otpExpiry) {
-      return res.status(400).json({ message: "OTP not found. Please request again." });
-    }
-
-    console.log("OTP in DB:", user.otp);
-    console.log("OTP from request:", otp);
-
-    if (user.otp !== otp.toString().trim()) {
+    const user = await User.findOne({ phoneNumber });
+    if (!user || !user.otp || !user.otpExpiry) 
+      return res.status(400).json({ message: "OTP not found. Request again." });
+    if (user.otp !== otp.toString().trim()) 
       return res.status(400).json({ message: "Invalid OTP" });
-    }
-
-    if (user.otpExpiry < new Date()) {
+    if (user.otpExpiry < new Date()) 
       return res.status(400).json({ message: "OTP expired" });
-    }
 
     user.otp = undefined;
     user.otpExpiry = undefined;
-    user.isEmailVerified = true;
+    user.isVerified = true;
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully" });
+    res.status(200).json({ message: "Phone verified successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error verifying OTP", error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

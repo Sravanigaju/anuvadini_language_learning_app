@@ -41,10 +41,6 @@ const userProfileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  streakGoal: {
-    type: Number,
-    required: true,
-  },
   points: {
     total: {
       type: Number,
