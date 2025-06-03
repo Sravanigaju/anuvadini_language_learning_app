@@ -45,11 +45,21 @@ const userProfileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  points: {
+    total: {
+      type: Number,
+      default: 0,
+    },
+    breakdown: {
+      type: Map,
+      of: Number,
+      default: {},
+    },
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 }, { versionKey: false });
 
-module.exports = mongoose.model("userprofile", userProfileSchema,"userprofile");
-
+module.exports = mongoose.model("userprofile", userProfileSchema, "userprofile");

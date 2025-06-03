@@ -41,7 +41,7 @@ mongoose
 
 // Routes
 const routes = require("./routes");
-app.use("/api", routes);
+app.use("/api", routes)
 
 // Error handling middleware
 app.use((err, req, res, next) => {

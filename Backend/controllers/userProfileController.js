@@ -1,4 +1,4 @@
-const UserProfile = require("../models/userprofile");
+const UserProfile = require("../models/UserProfile");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -13,9 +13,7 @@ exports.getAllUserProfiles = async (req, res) => {
 // Get user profile by ID
 exports.getUserProfileById = async (req, res) => {
   try {
-    const profile = await UserProfile.findById(req.params.id).populate(
-      "userId"
-    );
+    const profile = await UserProfile.findById(req.params.id).populate("userId");
     if (!profile)
       return res.status(404).json({ message: "User profile not found" });
     res.status(200).json(profile);
@@ -48,6 +46,33 @@ exports.updateUserProfile = async (req, res) => {
     res.status(200).json(updatedProfile);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+// Update user points
+exports.updateUserPoints = async (req, res) => {
+  const { id } = req.params;
+  const { total, breakdown } = req.body;
+
+  try {
+    const updateFields = {};
+    if (typeof total === "number") updateFields["points.total"] = total;
+    if (typeof breakdown === "object") updateFields["points.breakdown"] = breakdown;
+
+    const updatedProfile = await UserProfile.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    res.status(200).json(updatedProfile);
+  } catch (error) {
+    console.error("Error updating points:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
