@@ -6,6 +6,7 @@ const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 // Register a new user
 exports.register = async (req, res) => {
   try {
+    
     const { username, phoneNumber, password } = req.body;
 
     // Validate required fields
