@@ -6,7 +6,7 @@ const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    
+
     const { username, phoneNumber, password } = req.body;
 
     // Validate required fields
@@ -118,8 +118,11 @@ exports.verifyOtp = async (req, res) => {
     user.otpExpiry = undefined;
     user.isVerified = true;
     await user.save();
-
-    res.status(200).json({ message: "Phone verified successfully" });
+    const userId = user._id;
+    res.status(200).json({success: true,
+      message: "Phone verified successfully",
+      userId: userId
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
