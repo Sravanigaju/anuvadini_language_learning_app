@@ -41,6 +41,17 @@ const userProfileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  // ✅ New location fields
+  country: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+
   points: {
     total: {
       type: Number,
