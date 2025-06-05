@@ -17,8 +17,7 @@ const userSchema = new mongoose.Schema({
   },
 
   otp: {
-    type: String, 
-    required: false,
+    type: String, // Can be a numeric string
 
   },
 
