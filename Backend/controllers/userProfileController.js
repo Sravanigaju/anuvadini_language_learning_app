@@ -18,7 +18,7 @@ exports.getUserProfileById = async (req, res) => {
       return res.status(404).json({ message: "User profile not found" });
     res.status(200).json(profile);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message, success: false });
   }
 };
 
@@ -27,9 +27,9 @@ exports.createUserProfile = async (req, res) => {
   try {
     const newProfile = new UserProfile(req.body);
     const savedProfile = await newProfile.save();
-    res.status(201).json(savedProfile);
+    res.status(201).json({message: "User profile created successfully", success: true});
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message, success: false });
   }
 };
 

@@ -43,7 +43,8 @@ exports.register = async (req, res) => {
       await sendOtpToPhoneNumber(phoneNumber, otp);
       res.status(201).json({
         message: "User registered successfully. OTP sent to your phone number.",
-        phoneNumber: phoneNumber
+        success:"true",
+        userid : newUser._id
       });
     } catch (smsError) {
       // If SMS sending fails, delete the user and return error
