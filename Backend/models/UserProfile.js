@@ -41,8 +41,6 @@ const userProfileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-
-  // ✅ New location fields
   country: {
     type: String,
     required: true,
@@ -51,7 +49,6 @@ const userProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   points: {
     total: {
       type: Number,
@@ -61,6 +58,26 @@ const userProfileSchema = new mongoose.Schema({
       type: Map,
       of: Number,
       default: {},
+    },
+  },
+  dashboardStats: {
+    completedLessons: { type: Number, default: 0 },
+    totalTimeSpent: { type: Number, default: 0 }, // minutes
+    lastActiveAt: { type: Date },
+    badgesEarned: { type: [String], default: [] },
+    streak: {
+      currentStreak: { type: Number, default: 0 },
+      longestStreak: { type: Number, default: 0 },
+      lastCompletedDate: { type: Date },
+    },
+    coins: {
+      total: { type: Number, default: 0 },
+      earnedBreakdown: {
+        type: Map,
+        of: Number,
+        default: {},
+      },
+      redeemed: { type: Number, default: 0 },
     },
   },
   createdAt: {
