@@ -113,8 +113,8 @@ exports.verifyOtp = async (req, res) => {
     if (user.otpExpiry < new Date())
       return res.status(400).json({ message: "OTP expired" });
 
-    user.otp = undefined;
-    user.otpExpiry = undefined;
+    // user.otp = undefined;
+    // user.otpExpiry = undefined;
     user.isVerified = true;
     await user.save();
 
