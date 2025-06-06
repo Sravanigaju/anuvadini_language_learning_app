@@ -6,13 +6,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-
-  email: {
+  phoneNumber: {
     type: String,
     required: true,
     unique: true,
   },
-
   password: {
     type: String,
     required: true,
@@ -20,13 +18,14 @@ const userSchema = new mongoose.Schema({
 
   otp: {
     type: String, // Can be a numeric string
+
   },
 
   otpExpiry: {
     type: Date, // Expiry timestamp for OTP
   },
 
-  isEmailVerified: {
+  isVerified: {
     type: Boolean,
     default: false,
   },
