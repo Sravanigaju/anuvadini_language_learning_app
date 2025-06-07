@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.27.0",
     "axios": "^1.6.8",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -19,6 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
     "morgan": "^1.10.0",
+    "multer": "^2.0.1",
     "node-cache": "^5.1.2",
     "nodemailer": "^7.0.3",
     "uuid": "^9.0.1"

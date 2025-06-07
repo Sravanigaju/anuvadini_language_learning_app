@@ -49,6 +49,13 @@ const userProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  // ✅ New Field: profilePic
+  profilePic: {
+    type: String, // Store relative path or full URL
+    default: "",  // Or you can set a default avatar image path
+  },
+
   points: {
     total: {
       type: Number,
