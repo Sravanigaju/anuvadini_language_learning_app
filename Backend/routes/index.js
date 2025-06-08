@@ -7,16 +7,14 @@ const authRoutes = require("./authRoutes");
 const userProfileRoutes = require("./userProfileRoutes");
 const dashboardRoutes = require('./dashboardRoutes');
 const uploadRoutes = require('./uploadRoutes');
-
-
+const feedbackRoutes = require("./feedback");
 
 // Use route modules
 router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
 router.use("/userprofile", userProfileRoutes);
 router.use('/dashboard', dashboardRoutes);
-router.use('/upload', uploadRoutes)
-
-
+router.use('/upload', uploadRoutes);
+router.use("/feedback", feedbackRoutes);
 
 module.exports = router;
