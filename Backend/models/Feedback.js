@@ -1,7 +1,12 @@
-// server/models/Feedback.js
+
 const mongoose = require("mongoose");
 
 const feedbackSchema = new mongoose.Schema({
+    userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   course: String,
   experience: String,
   navigationEase: String,
