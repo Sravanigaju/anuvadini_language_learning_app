@@ -1,4 +1,3 @@
-
 // server.js
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
@@ -91,35 +90,94 @@ function setupWebSocket(server) {
             });
           }
         }
-      }
-
-      if (type === 'rematch-request') {
+      }      if (type === 'rematch-request') {
         const room = rooms[ws.roomId];
         if (!room) return;
 
-        if (!room.rematchVotes) {
-          room.rematchVotes = new Set();
+        // Generate new room ID when requesting rematch
+        const newRoomId = String(Math.floor(100000 + Math.random() * 900000));
+        
+        // Store the new room ID with the current room
+        room.pendingRematchRoom = newRoomId;
+
+        // Notify other player about rematch request
+        const otherPlayer = room.players.find(p => p.id !== ws.id);
+        if (otherPlayer && otherPlayer.readyState === WebSocket.OPEN) {
+          otherPlayer.send(JSON.stringify({
+            type: 'rematch-requested',
+            payload: { 
+              requesterId: ws.id,
+              newRoomId: newRoomId 
+            }
+          }));
+        }
+      }      
+        if (type === 'rematch-accept') {
+        const room = rooms[ws.roomId];
+        if (!room || !room.pendingRematchRoom) return;
+
+        const newRoomId = room.pendingRematchRoom;
+        
+        // Create new room if it doesn't exist
+        if (!rooms[newRoomId]) {
+          rooms[newRoomId] = {
+            players: [],
+            answers: {},
+            rematchVotes: new Set()
+          };
         }
 
-        room.rematchVotes.add(ws.id);
+        // Get the accepting player and requesting player
+        const acceptingPlayer = ws;
+        const requestingPlayer = room.players.find(p => p.id !== ws.id);
 
-        if (room.rematchVotes.size === 2) {
-          room.answers = {};
-          room.rematchVotes.clear();
+        
+        room.players = room.players.filter(p => p.id !== acceptingPlayer.id && p.id !== requestingPlayer.id);
 
-          const playersInfo = room.players.map(player => ({
-            playerId: player.id,
-            gamertag: player.gamertag,
+       
+        acceptingPlayer.roomId = newRoomId;
+        requestingPlayer.roomId = newRoomId;
+        
+        rooms[newRoomId].players.push(acceptingPlayer);
+        rooms[newRoomId].players.push(requestingPlayer);
+
+        const playersInfo = [acceptingPlayer, requestingPlayer].map(player => ({
+          playerId: player.id,
+          gamertag: player.gamertag,
+        }));        
+        [acceptingPlayer, requestingPlayer].forEach(player => {
+          if (player.readyState === WebSocket.OPEN) {
+            player.send(JSON.stringify({
+              type: 'rematch-started',
+              payload: { 
+                newRoomId,
+                players: playersInfo
+              }
+            }));
+            
+            
+            player.send(JSON.stringify({
+              type: 'both-joined',
+              payload: { 
+                players: playersInfo
+              }
+            }));
+          }
+        });
+
+        
+        delete rooms[ws.roomId];
+      }
+
+      if (type === 'rematch-decline') {
+        const room = rooms[ws.roomId];
+        if (!room) return;
+
+        const requestingPlayer = room.players.find(p => p.id !== ws.id);
+        if (requestingPlayer && requestingPlayer.readyState === WebSocket.OPEN) {
+          requestingPlayer.send(JSON.stringify({
+            type: 'rematch-declined'
           }));
-
-          room.players.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: 'both-joined',
-                payload: { players: playersInfo },
-              }));
-            }
-          });
         }
       }
     });
