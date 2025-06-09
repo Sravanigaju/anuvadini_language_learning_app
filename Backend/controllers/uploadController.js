@@ -22,6 +22,7 @@ exports.uploadProfileImage = async (req, res) => {
     const mockPath = `https://your-cloud.com/uploads/${uniqueName}`;
 
     return res.status(200).json({
+      succeess: true,
       message: "Upload successful (not stored locally)",
       fileName: uniqueName,
       fileType: req.file.mimetype,

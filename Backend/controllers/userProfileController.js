@@ -27,7 +27,7 @@ exports.createUserProfile = async (req, res) => {
   try {
     const newProfile = new UserProfile(req.body);
     const savedProfile = await newProfile.save();
-    res.status(201).json({message: "User profile created successfully", success: true});
+    res.status(201).json({message: "User profile created successfully", success: true, userId: savedProfile.userId});
   } catch (error) {
     res.status(400).json({ message: error.message, success: false });
   }

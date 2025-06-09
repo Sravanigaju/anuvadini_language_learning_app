@@ -59,27 +59,37 @@ exports.register = async (req, res) => {
   }
 };
 
-// Login user
+// Login user 
 exports.login = async (req, res) => {
   try {
+    console.log('Login request body:', req.body);
     const { phoneNumber, password } = req.body;
 
     const user = await User.findOne({ phoneNumber });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // Check if email is verified before allowing login
     if (!user.isVerified) {
-      return res.status(403).json({ message: "Phone number not verified. Please verify your Phone number first." });
+      console.log('Phone number not verified');
+      return res.status(403).json({ success: false, message: "Phone number not verified. Please verify your Phone number first." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch) {
+      console.log('Invalid credentials');
+      return res.status(400).json({success: false,message: "Invalid credentials" });
+    }
 
+    console.log('Login successful for user:', user._id);
     res.status(200).json({ success: true, message: "Login successful", userId: user._id });
   } catch (error) {
-    res.status(500).json({ success : false, message: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 exports.sendOtp = async (req, res) => {
   const { phoneNumber } = req.body;
