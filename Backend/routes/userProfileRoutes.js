@@ -11,5 +11,7 @@ router.post("/", userProfileController.createUserProfile);
 router.put("/:id", userProfileController.updateUserProfile);
 router.delete("/:id", userProfileController.deleteUserProfile);
 router.patch("/:id/points", userProfileController.updateUserPoints);
+router.patch("/:id/coins", userProfileController.updateUserCoins);
+
 
 module.exports = router;

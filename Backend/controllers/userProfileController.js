@@ -87,3 +87,37 @@ exports.deleteUserProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Update user coins
+exports.updateUserCoins = async (req, res) => {
+  const { id } = req.params;
+  const { action, amount } = req.body;
+
+  if (!["increase", "decrease"].includes(action)) {
+    return res.status(400).json({ message: "Action must be 'increase' or 'decrease'" });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ message: "Amount must be a positive number" });
+  }
+
+  try {
+    const user = await UserProfile.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (action === "increase") {
+      user.dashboardStats.coins.total += amount;
+    } else {
+      user.dashboardStats.coins.total = Math.max(0, user.dashboardStats.coins.total - amount);
+    }
+
+    await user.save();
+    res.status(200).json({
+      message: `Coins ${action}d successfully`,
+      totalCoins: user.dashboardStats.coins.total,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
