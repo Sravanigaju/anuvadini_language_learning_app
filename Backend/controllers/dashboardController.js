@@ -1,4 +1,4 @@
-// controllers/dashboardController.js
+
 const mongoose = require("mongoose");
 const UserProfile = require("../models/UserProfile");
 
@@ -7,7 +7,7 @@ exports.getUserDashboard = async (req, res) => {
     let { userId } = req.params;
     userId = userId.trim();
 
-    // Validate ObjectId
+    
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid userId" });
     }
@@ -28,8 +28,8 @@ exports.getUserDashboard = async (req, res) => {
       dailyGoal: userProfile.dailyGoal,
       motivation: userProfile.motivation,
       interestedLanguages: userProfile.interestedLanguages,
-      streakGoal: userProfile.streakGoal || 0,    // if you added streakGoal
-      coins: userProfile.coins || 0,               // if you added coins field
+      streakGoal: userProfile.streakGoal || 0,    
+      coins: userProfile.coins || 0,               
     };
 
     res.status(200).json(dashboardData);
