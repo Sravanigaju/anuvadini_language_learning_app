@@ -7,6 +7,7 @@ const authRoutes = require("./authRoutes");
 const userProfileRoutes = require("./userProfileRoutes");
 const dashboardRoutes = require('./dashboardRoutes');
 const uploadRoutes = require('./uploadRoutes');
+const translateRoutes = require('./translateRoutes');
 
 
 
@@ -16,6 +17,7 @@ router.use("/auth", authRoutes);
 router.use("/userprofile", userProfileRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/upload', uploadRoutes)
+router.use('/translate', translateRoutes);
 
 
 
