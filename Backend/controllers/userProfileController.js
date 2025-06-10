@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const User = require("../models/User");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -22,18 +23,27 @@ exports.getUserProfileById = async (req, res) => {
   }
 };
 
-// Create a new user profile
+// ✅ Create or update a user profile by userId (Minimal Response)
 exports.createUserProfile = async (req, res) => {
   try {
-    const newProfile = new UserProfile(req.body);
-    const savedProfile = await newProfile.save();
-    res.status(201).json({message: "User profile created successfully", success: true, userId: savedProfile.userId});
+    const { userId, ...rest } = req.body;
+
+    await UserProfile.findOneAndUpdate(
+      { userId },
+      { $set: rest },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json({
+      message: "User profile created or updated successfully",
+      success: true
+    });
   } catch (error) {
     res.status(400).json({ message: error.message, success: false });
   }
 };
 
-// Update user profile
+// Update user profile by MongoDB ID
 exports.updateUserProfile = async (req, res) => {
   try {
     const updatedProfile = await UserProfile.findByIdAndUpdate(
@@ -85,5 +95,68 @@ exports.deleteUserProfile = async (req, res) => {
     res.status(200).json({ message: "User profile deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Update user coins
+exports.updateUserCoins = async (req, res) => {
+  const { id } = req.params;
+  const { action, amount } = req.body;
+
+  if (!["increase", "decrease"].includes(action)) {
+    return res.status(400).json({ message: "Action must be 'increase' or 'decrease'" });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ message: "Amount must be a positive number" });
+  }
+
+  try {
+    const user = await UserProfile.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (action === "increase") {
+      user.dashboardStats.coins.total += amount;
+    } else {
+      user.dashboardStats.coins.total = Math.max(0, user.dashboardStats.coins.total - amount);
+    }
+
+    await user.save();
+    res.status(200).json({
+      message: `Coins ${action}d successfully`,
+      totalCoins: user.dashboardStats.coins.total,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// ✅ Get basic user info by userId
+exports.getBasicUserInfo = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const [user, profile] = await Promise.all([
+      User.findById(userId).select("username phoneNumber"),
+      UserProfile.findOne({ userId }).select("firstName lastName profilePic")
+    ]);
+
+    if (!user || !profile) {
+      return res.status(404).json({ message: "User or profile not found", success: false });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        username: user.username,
+        mobileNumber: user.phoneNumber,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        profilePic: profile.profilePic
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
