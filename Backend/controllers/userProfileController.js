@@ -22,18 +22,27 @@ exports.getUserProfileById = async (req, res) => {
   }
 };
 
-// Create a new user profile
+// ✅ Create or update a user profile by userId (Minimal Response)
 exports.createUserProfile = async (req, res) => {
   try {
-    const newProfile = new UserProfile(req.body);
-    const savedProfile = await newProfile.save();
-    res.status(201).json({message: "User profile created successfully", success: true});
+    const { userId, ...rest } = req.body;
+
+    await UserProfile.findOneAndUpdate(
+      { userId },
+      { $set: rest },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json({
+      message: "User profile created or updated successfully",
+      success: true
+    });
   } catch (error) {
     res.status(400).json({ message: error.message, success: false });
   }
 };
 
-// Update user profile
+// Update user profile by MongoDB ID
 exports.updateUserProfile = async (req, res) => {
   try {
     const updatedProfile = await UserProfile.findByIdAndUpdate(
