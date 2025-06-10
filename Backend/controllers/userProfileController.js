@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const User = require("../models/User");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -94,5 +95,33 @@ exports.deleteUserProfile = async (req, res) => {
     res.status(200).json({ message: "User profile deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+// ✅ Get basic user info by userId
+exports.getBasicUserInfo = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const [user, profile] = await Promise.all([
+      User.findById(userId).select("username phoneNumber"),
+      UserProfile.findOne({ userId }).select("firstName lastName profilePic")
+    ]);
+
+    if (!user || !profile) {
+      return res.status(404).json({ message: "User or profile not found", success: false });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        username: user.username,
+        mobileNumber: user.phoneNumber,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        profilePic: profile.profilePic
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

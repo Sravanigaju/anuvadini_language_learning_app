@@ -11,5 +11,6 @@ router.post("/", userProfileController.createUserProfile);
 router.put("/:id", userProfileController.updateUserProfile);
 router.delete("/:id", userProfileController.deleteUserProfile);
 router.patch("/:id/points", userProfileController.updateUserPoints);
+router.get("/basic/:userId", userProfileController.getBasicUserInfo);
 
 module.exports = router;
