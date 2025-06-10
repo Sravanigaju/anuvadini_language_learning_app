@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const User = require("../models/User");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -22,18 +23,27 @@ exports.getUserProfileById = async (req, res) => {
   }
 };
 
-// Create a new user profile
+// ✅ Create or update a user profile by userId (Minimal Response)
 exports.createUserProfile = async (req, res) => {
   try {
-    const newProfile = new UserProfile(req.body);
-    const savedProfile = await newProfile.save();
-    res.status(201).json({message: "User profile created successfully", success: true});
+    const { userId, ...rest } = req.body;
+
+    await UserProfile.findOneAndUpdate(
+      { userId },
+      { $set: rest },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json({
+      message: "User profile created or updated successfully",
+      success: true
+    });
   } catch (error) {
     res.status(400).json({ message: error.message, success: false });
   }
 };
 
-// Update user profile
+// Update user profile by MongoDB ID
 exports.updateUserProfile = async (req, res) => {
   try {
     const updatedProfile = await UserProfile.findByIdAndUpdate(
@@ -121,3 +131,32 @@ exports.updateUserCoins = async (req, res) => {
   }
 };
 
+
+// ✅ Get basic user info by userId
+exports.getBasicUserInfo = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const [user, profile] = await Promise.all([
+      User.findById(userId).select("username phoneNumber"),
+      UserProfile.findOne({ userId }).select("firstName lastName profilePic")
+    ]);
+
+    if (!user || !profile) {
+      return res.status(404).json({ message: "User or profile not found", success: false });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        username: user.username,
+        mobileNumber: user.phoneNumber,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        profilePic: profile.profilePic
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
