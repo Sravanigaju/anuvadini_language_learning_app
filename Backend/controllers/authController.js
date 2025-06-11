@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const generateOtp = require("../utils/generateOtp"); // Add this utility
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
+const UserProfile = require("../models/UserProfile");
+
 // Register a new user
 exports.register = async (req, res) => {
   try {
@@ -64,22 +66,74 @@ exports.login = async (req, res) => {
   try {
     const { phoneNumber, password } = req.body;
 
+    // 1. Find user by phone number
     const user = await User.findOne({ phoneNumber });
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Check if email is verified before allowing login
-    if (!user.isVerified) {
-      return res.status(403).json({ message: "Phone number not verified. Please verify your Phone number first." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    // 2. Check if user is verified
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Phone number not verified. Please verify your phone number first."
+      });
+    }
 
-    res.status(200).json({ success: true, message: "Login successful", userId: user._id });
+    // 3. Match password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // 4. Fetch associated user profile
+    const userProfile = await UserProfile.findOne({ userId: user._id });
+    if (!userProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    // 5. Send success response with language data
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      userId: user._id,
+      sourceLanguage: userProfile.sourceLanguage || null,
+      targetLanguages: userProfile.interestedLanguages || []
+    });
+
   } catch (error) {
-    res.status(500).json({ success : false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+exports.getLoginByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1. Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // 2. Find the user profile
+    const userProfile = await UserProfile.findOne({ userId: user._id });
+    if (!userProfile) {
+      return res.status(404).json({ success: false, message: "User profile not found" });
+    }
+
+    // 3. Return source and target language info
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      userId: user._id,
+      sourceLanguage: userProfile.sourceLanguage || null,
+      targetLanguages: userProfile.interestedLanguages || []
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 exports.sendOtp = async (req, res) => {
   const { phoneNumber } = req.body;
