@@ -1,5 +1,6 @@
 const UserProfile = require("../models/UserProfile");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -98,9 +99,10 @@ exports.deleteUserProfile = async (req, res) => {
   }
 };
 
-// Update user coins
+
+
 exports.updateUserCoins = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params; // This is a string
   const { action, amount } = req.body;
 
   if (!["increase", "decrease"].includes(action)) {
@@ -111,8 +113,14 @@ exports.updateUserCoins = async (req, res) => {
     return res.status(400).json({ message: "Amount must be a positive number" });
   }
 
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid userId" });
+  }
+
   try {
-    const user = await UserProfile.findById(id);
+    const user = await UserProfile.findOne({ userId: new mongoose.Types.ObjectId(userId) });
+
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (action === "increase") {
