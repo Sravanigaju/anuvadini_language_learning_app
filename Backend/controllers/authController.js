@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const generateOtp = require("../utils/generateOtp"); // Add this utility
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
+const UserProfile = require("../models/UserProfile");
+
 // Register a new user
 exports.register = async (req, res) => {
   try {
@@ -65,30 +67,74 @@ exports.login = async (req, res) => {
     console.log('Login request body:', req.body);
     const { phoneNumber, password } = req.body;
 
+    // 1. Find user by phone number
     const user = await User.findOne({ phoneNumber });
     if (!user) {
-      console.log('User not found');
       return res.status(404).json({ message: "User not found" });
     }
 
+    // 2. Check if user is verified
     if (!user.isVerified) {
-      console.log('Phone number not verified');
-      return res.status(403).json({ success: false, message: "Phone number not verified. Please verify your Phone number first." });
+      return res.status(403).json({
+        message: "Phone number not verified. Please verify your phone number first."
+      });
     }
 
+    // 3. Match password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log('Invalid credentials');
-      return res.status(400).json({success: false,message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log('Login successful for user:', user._id);
-    res.status(200).json({ success: true, message: "Login successful", userId: user._id });
+    // 4. Fetch associated user profile
+    const userProfile = await UserProfile.findOne({ userId: user._id });
+    if (!userProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    // 5. Send success response with language data
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      userId: user._id,
+      sourceLanguage: userProfile.sourceLanguage || null,
+      targetLanguages: userProfile.interestedLanguages || []
+    });
+
   } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+exports.getLoginByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1. Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // 2. Find the user profile
+    const userProfile = await UserProfile.findOne({ userId: user._id });
+    if (!userProfile) {
+      return res.status(404).json({ success: false, message: "User profile not found" });
+    }
+
+    // 3. Return source and target language info
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      userId: user._id,
+      sourceLanguage: userProfile.sourceLanguage || null,
+      targetLanguages: userProfile.interestedLanguages || []
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 
 exports.sendOtp = async (req, res) => {
