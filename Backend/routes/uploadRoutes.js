@@ -13,6 +13,13 @@ router.post('/upload-profile-pic', upload.single('profilePic'), async (req, res)
     if (!file) return res.status(400).json({ message: "No file uploaded" });
 
     const blobUrl = await uploadToAzure(file);
+    // 📝 Update the DB with the profile pic URL
+    // const updatedProfile = await UserProfile.findOneAndUpdate(
+    //   { userId },
+    //   { $set: { profilePicUrl: blobUrl } },
+    //   { new: true, upsert: true }
+    // );
+    
 
     res.json({
       success: true,

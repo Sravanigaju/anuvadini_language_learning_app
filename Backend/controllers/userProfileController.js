@@ -168,3 +168,20 @@ exports.getBasicUserInfo = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// ✅ Get full user profile using userId (not MongoDB _id)
+exports.getUserProfileByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const profile = await UserProfile.findOne({ userId }).populate("userId");
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found", success: false });
+    }
+
+    res.status(200).json(profile);
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};

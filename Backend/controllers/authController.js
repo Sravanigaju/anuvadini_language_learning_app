@@ -40,6 +40,7 @@ exports.register = async (req, res) => {
     });
 
     await newUser.save();
+    console.log('New user created:', newUser);
 
     try {
       await sendOtpToPhoneNumber(phoneNumber, otp);
