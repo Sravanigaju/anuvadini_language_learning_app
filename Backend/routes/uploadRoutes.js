@@ -21,6 +21,7 @@ router.post('/upload-profile-pic', upload.single('profilePic'), async (req, res)
       sas_token : sas_token,
       complete_token : blobUrl + sas_token
     });
+    
   } catch (error) {
     console.error("Azure upload error:", error);
     res.status(500).json({ success: false, message: 'Upload failed', error: error.message });
