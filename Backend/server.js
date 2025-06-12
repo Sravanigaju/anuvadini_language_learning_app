@@ -73,22 +73,48 @@ function setupWebSocket(server) {
         const existing = room.answers[questionId];
         if (existing?.winnerId) return;
 
-        if (selectedOption === correctAnswer) {
-          if (!room.answers[questionId]) {
-            room.answers[questionId] = {
-              winnerId: ws.id,
-              timestamp: Date.now(),
-            };
+        // Track player answers for this question
+        if (!room.answers[questionId]) {
+          room.answers[questionId] = {
+            attempts: []
+          };
+        }
+        
+        room.answers[questionId].attempts.push({
+          playerId: ws.id,
+          selectedOption
+        });
 
-            room.players.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({
-                  type: 'question-locked',
-                  payload: { questionId, winnerId: ws.id },
-                }));
-              }
-            });
-          }
+        // If correct answer, lock immediately
+        if (selectedOption === correctAnswer) {
+          room.answers[questionId].winnerId = ws.id;
+          room.answers[questionId].timestamp = Date.now();
+          
+          room.players.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify({
+                type: 'question-locked',
+                payload: { questionId, winnerId: ws.id },
+              }));
+            }
+          });
+          return;
+        }
+
+        // If both players have attempted and neither got it right, lock with no winner
+        const attempts = room.answers[questionId].attempts;
+        if (attempts.length === 2) {
+          room.answers[questionId].winnerId = null;
+          room.answers[questionId].timestamp = Date.now();
+          
+          room.players.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify({
+                type: 'question-locked',
+                payload: { questionId, winnerId: null },
+              }));
+            }
+          });
         }
       }      if (type === 'rematch-request') {
         const room = rooms[ws.roomId];
