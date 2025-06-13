@@ -92,14 +92,15 @@ exports.login = async (req, res) => {
     if (!userProfile) {
       return res.status(404).json({ message: "User profile not found" });
     }
-
+    console.log('User profile found:', userProfile.interestedLanguages);
+    console.log('Source language:', userProfile.sourceLanguage);
     // 5. Send success response with language data
     res.status(200).json({
       success: true,
       message: "Login successful",
       userId: user._id,
-      sourceLanguage: userProfile.sourceLanguage || null,
-      targetLanguages: userProfile.interestedLanguages || []
+      sourceLanguage: userProfile.sourceLanguage ,
+      targetLanguages: userProfile.interestedLanguages[0],
     });
 
   } catch (error) {
