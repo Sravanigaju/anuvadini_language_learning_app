@@ -125,3 +125,56 @@ exports.getBasicUserInfo = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+// ✅ Get full user profile using userId (not MongoDB _id)
+exports.getUserProfileByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const profile = await UserProfile.findOne({ userId }).populate("userId");
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found", success: false });
+    }
+
+    res.status(200).json(profile);
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+exports.updateUserGender = async (req, res) => {
+  const { id } = req.params;
+  const { gender } = req.body;
+  try {
+    const updatedProfile = await UserProfile.findByIdAndUpdate(id, { gender }, { new: true });
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+    res.json(updatedProfile);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateUserProfileFields = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  const updateFields = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const updatedProfile = await UserProfile.findOneAndUpdate(
+      { userId: userId },
+      updateFields,
+      { new: true }
+    );
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+    res.json(updatedProfile);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

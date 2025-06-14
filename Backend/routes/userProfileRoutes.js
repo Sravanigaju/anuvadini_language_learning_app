@@ -12,5 +12,8 @@ router.put("/:id", userProfileController.updateUserProfile);
 router.delete("/:id", userProfileController.deleteUserProfile);
 router.patch("/:id/points", userProfileController.updateUserPoints);
 router.get("/basic/:userId", userProfileController.getBasicUserInfo);
+router.get("/user/:userId", userProfileController.getUserProfileByUserId);
+router.patch('/:userId', userProfileController.updateUserProfileFields);
+
 
 module.exports = router;

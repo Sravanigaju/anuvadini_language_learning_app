@@ -50,13 +50,30 @@ const userProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  // ✅ New Field: profilePic
   profilePic: {
-    type: String, // Store relative path or full URL
-    default: "",  // Or you can set a default avatar image path
+    type: String,
+    default: "",
   },
-
+  joinedDate: {
+    type: Date,
+    default: Date.now,
+  },
+  languageProgress: [
+    {
+      language: { type: String },
+      progress: { type: Number, default: 0 },
+    },
+  ],
+  leaderboard: {
+    english: {
+      rank: { type: Number, default: 0 },
+      xp: { type: Number, default: 0 },
+    },
+    gaming: {
+      rank: { type: Number, default: 0 },
+      xp: { type: Number, default: 0 },
+    },
+  },
   points: {
     total: {
       type: Number,
@@ -70,7 +87,7 @@ const userProfileSchema = new mongoose.Schema({
   },
   dashboardStats: {
     completedLessons: { type: Number, default: 0 },
-    totalTimeSpent: { type: Number, default: 0 }, // minutes
+    totalTimeSpent: { type: Number, default: 0 },
     lastActiveAt: { type: Date },
     badgesEarned: { type: [String], default: [] },
     streak: {
