@@ -22,20 +22,39 @@ exports.getUserDashboard = async (req, res) => {
 
     const username = userProfile.userId.username;
 
+    // Prepare language-wise stats
+    console.log("testing data:", userProfile.interestedLanguages)
+    const interestedLangs = userProfile.interestedLanguages.map(lang => ({
+      languageId: lang.languageId,
+      languageName: typeof lang.languageName === 'object'
+        ? Object.values(lang.languageName).join('')
+        : lang.languageName,
+      level: lang.level,
+      xp: lang.xp,
+      dailyGoal: lang.dailyGoal,
+      completedLessons: lang.completedLessons,
+      progressPercent: lang.progressPercent,
+      streak: lang.streak,
+      badges: lang.badgesEarned,
+      lastActiveAt: lang.lastActiveAt
+    }));
+
+    console.log("filter", interestedLangs);
+
     return res.status(200).json({
       user_id: userProfile.userId._id,
-      username: username,
+      username,
       joined_date: userProfile.joinedDate?.toISOString().split('T')[0],
-      day_streak: userProfile.dashboardStats?.streak?.currentStreak || 0,
-      total_xp: userProfile.points?.total || 0,
-      lessons_completed: userProfile.dashboardStats?.completedLessons || 0,
-      coins: userProfile.dashboardStats?.coins?.total || 0,
-      language_progress: userProfile.languageProgress || [],
-      leaderboard: userProfile.leaderboard || {},
+      source_language: userProfile.sourceLanguage,
+      profile_pic: userProfile.profilePic,
+      total_xp: userProfile.total_xp || 0,
+      total_coin: userProfile.total_coin || 0,
+      interestedlanguages: interestedLangs,
+      createdAt: userProfile.createdAt,
     });
 
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message:error.message });
+    console.error("Dashboard error:", error);
+    return res.status(500).json({ message: error.message });
   }
 };
