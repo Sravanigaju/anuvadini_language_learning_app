@@ -193,9 +193,7 @@ function setupWebSocket(server) {
 
         
         delete rooms[ws.roomId];
-      }
-
-      if (type === 'rematch-decline') {
+      }      if (type === 'rematch-decline') {
         const room = rooms[ws.roomId];
         if (!room) return;
 
@@ -205,6 +203,27 @@ function setupWebSocket(server) {
             type: 'rematch-declined'
           }));
         }
+      }
+
+      if (type === 'player-exit') {
+        const room = rooms[ws.roomId];
+        if (!room) return;
+
+        // Notify other player about the exit
+        room.players.forEach((player) => {
+          if (player.id !== ws.id && player.readyState === WebSocket.OPEN) {
+            player.send(JSON.stringify({
+              type: 'opponent-left'
+            }));
+            player.close(); // Close the other player's connection
+          }
+        });
+
+        // Close current player's connection
+        ws.close();
+        
+        // Clean up the room
+        delete rooms[ws.roomId];
       }
     });
 
