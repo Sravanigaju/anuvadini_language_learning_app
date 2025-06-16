@@ -62,14 +62,14 @@ exports.deleteUser = async (req, res) => {
 // Update user password
 exports.updatePassword = async (req, res) => {
   try {
-    const { username, newPassword } = req.body;
+    const { userid, newPassword } = req.body;
 
-    if (!username || !newPassword) {
-      return res.status(400).json({ message: "Username and new password are required." });
+    if (!userid || !newPassword) {
+      return res.status(400).json({ message: "User ID and new password are required." });
     }
 
-    // Find the user by username
-    const user = await User.findOne({ username });
+    // Find the user by MongoDB ObjectId
+    const user = await User.findById(userid);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -89,3 +89,4 @@ exports.updatePassword = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
