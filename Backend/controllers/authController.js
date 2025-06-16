@@ -74,6 +74,7 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log('Hashed password from DB:', user.password);
     // 2. Check if user is verified
     if (!user.isVerified) {
       return res.status(403).json({
@@ -107,6 +108,8 @@ exports.login = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 exports.getLoginByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
