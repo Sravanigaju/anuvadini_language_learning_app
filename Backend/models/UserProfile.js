@@ -22,6 +22,10 @@ const userProfileSchema = new mongoose.Schema({
       dailyGoal: { type: Number, default: 5 },       
       xp: { type: Number, default: 0 },              
       completedLessons: { type: Number, default: 0 },
+      catagoriecount: { type: Number, default: 0 },
+      assesmentcompleted: { type: Number, default: 0 },
+      finalassesementcompleted: { type: Number, default: 0 },
+
       progressPercent: { type: Number, default: 0 }, 
       lastActiveAt: { type: Date },
       streak: {
@@ -35,5 +39,11 @@ const userProfileSchema = new mongoose.Schema({
 
   createdAt: { type: Date, default: Date.now },
 }, { versionKey: false });
+
+userProfileSchema.index({
+  "interested_languages.languageName": 1,
+  "interested_languages.xp": -1,
+  "interested_languages.coins": -1
+});
 
 module.exports = mongoose.model("userprofile", userProfileSchema, "userprofile");
