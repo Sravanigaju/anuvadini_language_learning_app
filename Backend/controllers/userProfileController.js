@@ -219,3 +219,136 @@ exports.getBasicUserInfo = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+// ✅ Get full user profile using userId (not MongoDB _id)
+exports.getUserProfileByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const profile = await UserProfile.findOne({ userId }).populate("userId");
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found", success: false });
+    }
+
+    res.status(200).json(profile);
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+exports.updateUserGender = async (req, res) => {
+  const { id } = req.params;
+  const { gender } = req.body;
+  try {
+    const updatedProfile = await UserProfile.findByIdAndUpdate(id, { gender }, { new: true });
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+    res.json(updatedProfile);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateUserProfileFields = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  const updateFields = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const updatedProfile = await UserProfile.findOneAndUpdate(
+      { userId: userId },
+      updateFields,
+      { new: true }
+    );
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+    res.json(updatedProfile);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+exports.addNewLanguage = async (req, res) => {
+  const { userId } = req.params;
+  const newLang = req.body;
+
+  try {
+    // Check if the language already exists in user's profile
+    const user = await UserProfile.findOne({ userId });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const alreadyExists = user.interestedLanguages.some(
+      (lang) => lang.languageName === newLang.languageName
+    );
+
+    if (alreadyExists) {
+      return res.status(400).json({ message: "Language already added." });
+    }
+
+    // Add default structure to the new language
+    const languageToPush = {
+      ...newLang,
+      xp: 0,
+      completedLessons: 0,
+      catagoriecount: 0,
+      assesmentcompleted: 0,
+      finalassesementcompleted: 0,
+      progressPercent: 0,
+      lastActiveAt: null,
+      streak: {
+        currentStreak: 0,
+        longestStreak: 0,
+        lastCompletedDate: null
+      },
+      badgesEarned: []
+    };
+
+    // Push the new language into the array
+    await UserProfile.updateOne(
+      { userId },
+      { $push: { interestedLanguages: languageToPush } }
+    );
+
+    return res.status(200).json({ message: "New language added successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateUserProgress = async (req, res) => {
+  const { userId } = req.params;
+  const { languageName, progressPercent, lessonsCompleted, assesmentcompleted, level, catagoriecount, finalAssessmentCompleted  } = req.body;
+
+  try {
+    const userProfile = await UserProfile.findOne({ userId });
+    if (!userProfile) {
+      return res.status(404).json({ error: "User profile not found" });
+    } 
+    const language = userProfile.interestedLanguages.find(
+      (lang) => lang.languageName.toLowerCase() === languageName.toLowerCase()
+    );
+    if (!language) {
+      return res.status(404).json({ error: "Language not found in user profile" });
+    }
+    if (progressPercent !== undefined) language.progressPercent = progressPercent;
+    if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
+    if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
+    if (level !== undefined) language.level = level;
+    if (catagoriecount !== undefined) language.catagoriecount = catagoriecount;
+    if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
+    language.lastActiveAt = new Date(); 
+    await userProfile.save();
+    return res.status(200).json({ message: "Language progress updated successfully" });
+  }
+  catch (error) {
+    console.error("Error updating language progress:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}

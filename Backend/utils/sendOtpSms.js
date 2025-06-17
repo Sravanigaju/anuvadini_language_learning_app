@@ -1,4 +1,7 @@
 const axios = require("axios");
+const URL = process.env.URL;
+const OTP_JSESSIONID = process.env.OTP_JSESSIONID;
+
 
 const sendOtpToPhoneNumber = async (phoneNumber, otp) => {
   console.log(`OTP for ${phoneNumber}: ${otp}`);
@@ -8,34 +11,30 @@ const sendOtpToPhoneNumber = async (phoneNumber, otp) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
-const sendmobileOtp = async (otp, mobile) => {
+ const sendmobileOtp = async (otp, mobile) => {
   try {
-    let mnumber = mobile;
-    let config = {
-      method: "get",
+    const mnumber = mobile;
+
+    const message =
+      `${otp} is the OTP to login to your One Nation One Data (ONOD) account and is valid for 10 minutes. ` +
+      `OTP is confidential. DO NOT share this OTP with anyone. ONOD Team. -AICTE`;
+
+    const fullUrl = `${URL}${encodeURIComponent(message)}&mnumber=${mnumber}`;
+
+    const config = {
+      method: 'get',
       maxBodyLength: Infinity,
-      url:
-        "http://smsgw.sms.gov.in/failsafe/HttpLink?username=aictein.sms&pin=E7%25nD5%26nS7&message=" +
-        otp +
-        " is the OTP to login to your One Nation One Data (ONOD) account and is valid for 10 minutes. OTP is confidential. DO NOT share this OTP with anyone. ONOD Team. -AICTE&mnumber=" +
-        mnumber +
-        "&signature=AICTED&dlt_entity_id=1101520230000040605&dlt_template_id=1107170504443505502",
+      url: fullUrl,
       headers: {
-        Cookie: "JSESSIONID=zQiou5p3KN4YAyaPAGefIpi_D0NQBx4mezkayWc5.ng-103",
+        Cookie: `JSESSIONID=${OTP_JSESSIONID}`,
       },
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log("OTP Sent.", response);
-        return response;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const response = await axios.request(config);
+    console.log('OTP Sent:', response.data);
+    return response.data;
   } catch (error) {
-    console.error("Error sending registration email:", error);
+    console.error('Error sending OTP:', error);
     throw error;
   }
 };

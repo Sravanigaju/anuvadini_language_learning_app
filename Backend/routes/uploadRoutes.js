@@ -4,7 +4,7 @@ const uploadToAzure = require('../utils/azureBlob');
 require('dotenv').config();
 const router = express.Router();
 
-const storage = multer.memoryStorage(); // Store in memory to send to Azure directly
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const sas_token = process.env.SAS_TOKEN;
 router.post('/upload-profile-pic', upload.single('profilePic'), async (req, res) => {
@@ -21,6 +21,7 @@ router.post('/upload-profile-pic', upload.single('profilePic'), async (req, res)
       sas_token : sas_token,
       complete_token : blobUrl + sas_token
     });
+    
   } catch (error) {
     console.error("Azure upload error:", error);
     res.status(500).json({ success: false, message: 'Upload failed', error: error.message });

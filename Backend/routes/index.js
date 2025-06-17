@@ -18,7 +18,4 @@ router.use("/dashboard", dashboardRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
-
-
-
 module.exports = router;
