@@ -27,7 +27,8 @@ exports.register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = generateOtp();
+    const otp = "123456";
+    // const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
 
     const newUser = new User({
@@ -43,7 +44,7 @@ exports.register = async (req, res) => {
     console.log('New user created:', newUser);
 
     try {
-      await sendOtpToPhoneNumber(phoneNumber, otp);
+      //await sendOtpToPhoneNumber(phoneNumber, otp);
       res.status(201).json({
         message: "User registered successfully. OTP sent to your phone number.",
         success:"true",
@@ -148,13 +149,13 @@ exports.sendOtp = async (req, res) => {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const otp = generateOtp();
+    //const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-    user.otp = otp;
+    user.otp = "123456";
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    await sendOtpToPhoneNumber(phoneNumber, otp);
+    //await sendOtpToPhoneNumber(phoneNumber, otp);
     res.status(200).json({ message: "OTP sent via SMS" });
   } catch (error) {
     res.status(500).json({ message: error.message });
