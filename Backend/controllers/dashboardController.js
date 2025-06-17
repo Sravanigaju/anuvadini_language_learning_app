@@ -74,24 +74,8 @@ exports.getUserDashboard = async (req, res) => {
       motivation: selectedLang.motivation,
     };
 
-<<<<<<< HEAD
-    const username = userProfile.userId.username;
-
-    // Prepare language-wise stats
-    console.log("testing data:", userProfile.interestedLanguages)
-    const interestedLangs = userProfile.interestedLanguages.map(lang => ({
-      languageId: lang.languageId,
-      languageName: typeof lang.languageName === 'object'
-        ? Object.values(lang.languageName).join('')
-        : lang.languageName,
-      level: lang.level,
-      xp: lang.xp,
-      dailyGoal: lang.dailyGoal,
-      completedLessons: lang.completedLessons,
-=======
     const languageProgress = userProfile.interestedLanguages.map((lang) => ({
       languageName: lang.languageName,
->>>>>>> 413e769c2d6cfdfd79761a7cf6a793a5c2386477
       progressPercent: lang.progressPercent,
     }));
 
@@ -166,12 +150,7 @@ exports.getUserDashboard = async (req, res) => {
 
     return res.json({ dashboard });
   } catch (error) {
-<<<<<<< HEAD
-    console.error("Dashboard error:", error);
-    return res.status(500).json({ message: error.message });
-=======
     console.error("Dashboard Error:", error);
     return res.status(500).json({ error: "Internal server error" });
->>>>>>> 413e769c2d6cfdfd79761a7cf6a793a5c2386477
   }
 };
