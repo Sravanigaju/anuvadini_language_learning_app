@@ -15,7 +15,6 @@ const userProfileSchema = new mongoose.Schema({
   total_coin: { type: Number, default: 0 },
   interestedLanguages: [
     {
-      languageId: { type: String, required: true },  
       languageName: { type: String, required: true }, 
       level: { type: String, required: true },       
       motivation: { type: String, required: true },  

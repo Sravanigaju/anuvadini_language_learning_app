@@ -8,6 +8,7 @@ router.post("/:userId/language", addNewLanguage);
 router.get("/basic/:userId", userProfileController.getBasicUserInfo);
 router.get("/user/:userId", userProfileController.getUserProfileByUserId);
 router.patch('/:userId', userProfileController.updateUserProfileFields);
+router.post("/updateprogress/:userId",userProfileController.updateUserProgress);
 
 // Generic CRUD routes
 router.get("/", userProfileController.getAllUserProfiles);

@@ -221,7 +221,9 @@ exports.updateUserProfileFields = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// Add a new interested language for a user
+
+
+
 exports.addNewLanguage = async (req, res) => {
   const { userId } = req.params;
   const newLang = req.body;
@@ -232,7 +234,7 @@ exports.addNewLanguage = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const alreadyExists = user.interestedLanguages.some(
-      (lang) => lang.languageId === newLang.languageId
+      (lang) => lang.languageName === newLang.languageName
     );
 
     if (alreadyExists) {
@@ -268,3 +270,34 @@ exports.addNewLanguage = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateUserProgress = async (req, res) => {
+  const { userId } = req.params;
+  const { languageName, progressPercent, lessonsCompleted, assesmentcompleted, level, catagoriecount, finalAssessmentCompleted  } = req.body;
+
+  try {
+    const userProfile = await UserProfile.findOne({ userId });
+    if (!userProfile) {
+      return res.status(404).json({ error: "User profile not found" });
+    } 
+    const language = userProfile.interestedLanguages.find(
+      (lang) => lang.languageName.toLowerCase() === languageName.toLowerCase()
+    );
+    if (!language) {
+      return res.status(404).json({ error: "Language not found in user profile" });
+    }
+    if (progressPercent !== undefined) language.progressPercent = progressPercent;
+    if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
+    if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
+    if (level !== undefined) language.level = level;
+    if (catagoriecount !== undefined) language.catagoriecount = catagoriecount;
+    if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
+    language.lastActiveAt = new Date(); 
+    await userProfile.save();
+    return res.status(200).json({ message: "Language progress updated successfully" });
+  }
+  catch (error) {
+    console.error("Error updating language progress:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
