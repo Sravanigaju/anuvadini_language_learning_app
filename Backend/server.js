@@ -207,23 +207,19 @@ function setupWebSocket(server) {
 
       if (type === 'player-exit') {
         const room = rooms[ws.roomId];
-        if (!room) return;
-
-        // Notify other player about the exit
+        if (!room) return;        // Notify other player about the exit
         room.players.forEach((player) => {
           if (player.id !== ws.id && player.readyState === WebSocket.OPEN) {
             player.send(JSON.stringify({
               type: 'opponent-left'
             }));
-            player.close(); // Close the other player's connection
           }
         });
-
-        // Close current player's connection
-        ws.close();
         
         // Clean up the room
         delete rooms[ws.roomId];
+
+        // Each client will close their own connection after navigation
       }
     });
 
