@@ -1,102 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const userProfileSchema = new mongoose.Schema({
-//   userId: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//     required: true,
-//   },
-//   firstName: {
-//     type: String,
-//     required: true,
-//   },
-//   lastName: {
-//     type: String,
-//     required: true,
-//   },
-//   age: {
-//     type: Number,
-//     required: true,
-//   },
-//   gender: {
-//     type: String,
-//     required: true,
-//   },
-//   sourceLanguage: {
-//     type: String,
-//     required: true,
-//   },
-//   interestedLanguages: [String],
-//   proficiency: [
-//     {
-//       languageId: { type: String, required: true },
-//       level: { type: String, required: true },
-//     },
-//   ],
-//   motivation: {
-//     type: String,
-//     required: true,
-//   },
-//   dailyGoal: {
-//     type: Number,
-//     required: true,
-//   },
-//   country: {
-//     type: String,
-//     required: true,
-//   },
-//   state: {
-//     type: String,
-//     required: true,
-//   },
-
-//   // ✅ New Field: profilePic
-//   profilePic: {
-//     type: String, // Store relative path or full URL
-//     default: "",  // Or you can set a default avatar image path
-//   },
-
-//   points: {
-//     total: {
-//       type: Number,
-//       default: 0,
-//     },
-//     breakdown: {
-//       type: Map,
-//       of: Number,
-//       default: {},
-//     },
-//   },
-//   dashboardStats: {
-//     completedLessons: { type: Number, default: 0 },
-//     totalTimeSpent: { type: Number, default: 0 }, // minutes
-//     lastActiveAt: { type: Date },
-//     badgesEarned: { type: [String], default: [] },
-//     streak: {
-//       currentStreak: { type: Number, default: 0 },
-//       longestStreak: { type: Number, default: 0 },
-//       lastCompletedDate: { type: Date },
-//     },
-//     coins: {
-//       total: { type: Number, default: 0 },
-//       earnedBreakdown: {
-//         type: Map,
-//         of: Number,
-//         default: {},
-//       },
-//       redeemed: { type: Number, default: 0 },
-//     },
-//   },
-//   createdAt: {
-//     type: Date,
-//     default: Date.now,
-//   },
-// }, { versionKey: false });
-
-// module.exports = mongoose.model("userprofile", userProfileSchema, "userprofile");
-
-
-
 const mongoose = require("mongoose");
 
 const userProfileSchema = new mongoose.Schema({
@@ -114,13 +15,20 @@ const userProfileSchema = new mongoose.Schema({
   total_coin: { type: Number, default: 0 },
   interestedLanguages: [
     {
+<<<<<<< HEAD
       languageId: { type: String, required: true },  
+=======
+>>>>>>> 413e769c2d6cfdfd79761a7cf6a793a5c2386477
       languageName: { type: String, required: true }, 
       level: { type: String, required: true },       
       motivation: { type: String, required: true },  
       dailyGoal: { type: Number, default: 5 },       
       xp: { type: Number, default: 0 },              
       completedLessons: { type: Number, default: 0 },
+      catagoriecount: { type: Number, default: 0 },
+      assesmentcompleted: { type: Number, default: 0 },
+      finalassesementcompleted: { type: Number, default: 0 },
+
       progressPercent: { type: Number, default: 0 }, 
       lastActiveAt: { type: Date },
       streak: {
@@ -134,5 +42,11 @@ const userProfileSchema = new mongoose.Schema({
 
   createdAt: { type: Date, default: Date.now },
 }, { versionKey: false });
+
+userProfileSchema.index({
+  "interested_languages.languageName": 1,
+  "interested_languages.xp": -1,
+  "interested_languages.coins": -1
+});
 
 module.exports = mongoose.model("userprofile", userProfileSchema, "userprofile");
