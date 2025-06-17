@@ -8,6 +8,7 @@ router.post("/:userId/language", addNewLanguage);
 router.get("/basic/:userId", userProfileController.getBasicUserInfo);
 router.get("/user/:userId", userProfileController.getUserProfileByUserId);
 router.patch('/:userId', userProfileController.updateUserProfileFields);
+router.post("/updateprogress/:userId",userProfileController.updateUserProgress);
 
 // Generic CRUD routes
 router.get("/", userProfileController.getAllUserProfiles);
@@ -16,5 +17,10 @@ router.post("/", userProfileController.createUserProfile);
 router.put("/:id", userProfileController.updateUserProfile);
 router.delete("/:id", userProfileController.deleteUserProfile);
 router.patch("/:id/points", userProfileController.updateUserPoints);
+
+
+router.patch("/:id/coins", userProfileController.updateUserCoins); //curl -X PATCH http://localhost:3000/api/userprofile/<USER_ID>/coins \  -H "Content-Type: application/json" \ -d '{"action": "increase", "amount": 20}'
+
+
 
 module.exports = router;

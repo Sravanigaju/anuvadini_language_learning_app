@@ -1,5 +1,6 @@
 const UserProfile = require("../models/UserProfile");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -97,6 +98,48 @@ exports.deleteUserProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+exports.updateUserCoins = async (req, res) => {
+  const { userId } = req.params; // This is a string
+  const { action, amount } = req.body;
+
+  if (!["increase", "decrease"].includes(action)) {
+    return res.status(400).json({ message: "Action must be 'increase' or 'decrease'" });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ message: "Amount must be a positive number" });
+  }
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid userId" });
+  }
+
+  try {
+    const user = await UserProfile.findOne({ userId: new mongoose.Types.ObjectId(userId) });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (action === "increase") {
+      user.dashboardStats.coins.total += amount;
+    } else {
+      user.dashboardStats.coins.total = Math.max(0, user.dashboardStats.coins.total - amount);
+    }
+
+    await user.save();
+    res.status(200).json({
+      message: `Coins ${action}d successfully`,
+      totalCoins: user.dashboardStats.coins.total,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 // ✅ Get basic user info by userId
 exports.getBasicUserInfo = async (req, res) => {
   try {
@@ -178,7 +221,9 @@ exports.updateUserProfileFields = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// Add a new interested language for a user
+
+
+
 exports.addNewLanguage = async (req, res) => {
   const { userId } = req.params;
   const newLang = req.body;
@@ -189,7 +234,7 @@ exports.addNewLanguage = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const alreadyExists = user.interestedLanguages.some(
-      (lang) => lang.languageId === newLang.languageId
+      (lang) => lang.languageName === newLang.languageName
     );
 
     if (alreadyExists) {
@@ -225,3 +270,34 @@ exports.addNewLanguage = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateUserProgress = async (req, res) => {
+  const { userId } = req.params;
+  const { languageName, progressPercent, lessonsCompleted, assesmentcompleted, level, catagoriecount, finalAssessmentCompleted  } = req.body;
+
+  try {
+    const userProfile = await UserProfile.findOne({ userId });
+    if (!userProfile) {
+      return res.status(404).json({ error: "User profile not found" });
+    } 
+    const language = userProfile.interestedLanguages.find(
+      (lang) => lang.languageName.toLowerCase() === languageName.toLowerCase()
+    );
+    if (!language) {
+      return res.status(404).json({ error: "Language not found in user profile" });
+    }
+    if (progressPercent !== undefined) language.progressPercent = progressPercent;
+    if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
+    if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
+    if (level !== undefined) language.level = level;
+    if (catagoriecount !== undefined) language.catagoriecount = catagoriecount;
+    if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
+    language.lastActiveAt = new Date(); 
+    await userProfile.save();
+    return res.status(200).json({ message: "Language progress updated successfully" });
+  }
+  catch (error) {
+    console.error("Error updating language progress:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
