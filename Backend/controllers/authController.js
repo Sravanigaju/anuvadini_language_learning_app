@@ -5,6 +5,11 @@ const generateOtp = require("../utils/generateOtp"); // Add this utility
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const UserProfile = require("../models/UserProfile");
 
+function generateToken(phoneNumber, userId) {
+  return jwt.sign({ phoneNumber, userId }, process.env.JWT_SECRET, { 
+  });
+}   
+
 // Register a new user
 exports.register = async (req, res) => {
   try {
@@ -96,9 +101,12 @@ exports.login = async (req, res) => {
     }
     console.log('User profile found:', userProfile.interestedLanguages);
     console.log('Source language:', userProfile.sourceLanguage);
+
+    const token = generateToken(user.phoneNumber, user._id);
     // 5. Send success response with language data
     res.status(200).json({
       success: true,
+      token: token,
       message: "Login successful",
       userId: user._id,
       sourceLanguage: userProfile.sourceLanguage ,
