@@ -102,7 +102,7 @@ exports.login = async (req, res) => {
       message: "Login successful",
       userId: user._id,
       sourceLanguage: userProfile.sourceLanguage ,
-      targetLanguages: userProfile.interestedLanguages[0],
+      targetLanguages: userProfile.interestedLanguages[0].languageName,
     });
 
   } catch (error) {
