@@ -90,6 +90,8 @@ exports.login = async (req, res) => {
     const userProfile = await UserProfile.findOne({ userId: user._id });
     if (!userProfile) return res.status(404).json({ message: "User profile not found" });
 
+    const token = generateToken(user.phoneNumber, user._id);
+
     const targetLang = userProfile.interestedLanguages[0]?.languageName;
     const langProgress = userProfile.progress?.breakdown?.[targetLang] || {};
 
@@ -106,6 +108,7 @@ exports.login = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      token:token,
       message: "Login successful",
       userId: user._id,
       sourceLanguage: userProfile.sourceLanguage,
