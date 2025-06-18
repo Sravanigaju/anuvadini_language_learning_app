@@ -154,3 +154,46 @@ exports.getUserDashboard = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.getUserProgress = async (req, res) => {
+  const { userId, language } = req.query;
+
+  if (!userId || !language) {
+    return res.status(400).json({ error: 'userId and language are required' });
+  }
+
+  try {
+    const user = await UserProfile.findOne(
+      { userId },
+      {
+        interestedLanguages: {
+          $elemMatch: { languageName: language }
+        }
+      }
+    );
+
+    if (!user || !user.interestedLanguages || user.interestedLanguages.length === 0) {
+      return res.status(404).json({ error: 'Progress not found' });
+    }
+
+    const langProgress = user.interestedLanguages[0];
+
+    return res.status(200).json({
+      progress: {
+        level: langProgress.level,
+        cat_count: langProgress.catagoriecount,
+        less_count: langProgress.completedLessons,
+        less_ass_count: langProgress.assesmentcompleted,
+        fin_ass_count: langProgress.finalassesementcompleted,
+        score: langProgress.xp,
+        streak: langProgress.streak?.currentStreak || 0,
+        progress_lang: langProgress.progressPercent
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching user progress:', error);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+

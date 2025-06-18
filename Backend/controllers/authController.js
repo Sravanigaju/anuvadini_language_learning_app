@@ -96,8 +96,8 @@ exports.login = async (req, res) => {
       success: true,
       message: "Login successful",
       userId: user._id,
-      sourceLanguage: userProfile.sourceLanguage || null,
-      targetLanguages: userProfile.interestedLanguages || []
+      sourceLanguage: userProfile.sourceLanguage ,
+      targetLanguages: userProfile.interestedLanguages[0].languageName,
     });
 
   } catch (error) {
