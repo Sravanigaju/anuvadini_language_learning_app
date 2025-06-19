@@ -40,6 +40,7 @@ exports.createUserProfile = async (req, res) => {
       success: true
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message, success: false });
   }
 };
@@ -168,6 +169,7 @@ exports.getBasicUserInfo = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 // ✅ Get full user profile using userId (not MongoDB _id)
 exports.getUserProfileByUserId = async (req, res) => {
   try {

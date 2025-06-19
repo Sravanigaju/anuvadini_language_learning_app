@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
     const token = generateToken(user.phoneNumber, user._id);
 
     const targetLang = userProfile.interestedLanguages[0]?.languageName;
-    const langProgress = userProfile.progress?.breakdown?.[targetLang] || {};
+    const langProgress = userProfile.interestedLanguages[0];
 
     const progress = {
       level: langProgress.level || 0,
@@ -152,7 +152,7 @@ exports.verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "OTP not found. Request again." });
     if (user.otp !== otp.toString().trim())
       return res.status(400).json({ message: "Invalid OTP" });
-    if (user.otpExpiry < new Date())
+    if (user.otpExpiry < new Date(Date.now()))
       return res.status(400).json({ message: "OTP expired" });
 
     // user.otp = undefined;
