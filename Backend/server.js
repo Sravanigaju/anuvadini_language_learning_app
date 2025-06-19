@@ -3,6 +3,8 @@ const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 
 const rooms = {}; // In-memory room tracking
+// Game room data structure
+const gameRooms = new Map();
 
 function setupWebSocket(server) {
   const wss = new WebSocket.Server({ server }); // Attach to existing HTTP server
@@ -22,48 +24,73 @@ function setupWebSocket(server) {
       const { type, payload } = parsed;
 
       if (type === 'join-room') {
-        const { roomId, gamertag } = payload;
+  const { roomId, gamertag, category, language, level } = payload;
 
-        if (!/^\d{6}$/.test(roomId)) {
-          ws.send(JSON.stringify({ type: 'invalid-room-id', payload: { message: 'Room ID must be a 6-digit number.' } }));
-          return;
-        }
-        ws.gamertag = gamertag;
-        ws.roomId = roomId;
-       
-        
+  if (!/^\d{6}$/.test(roomId)) {
+    ws.send(JSON.stringify({ type: 'invalid-room-id', payload: { message: 'Room ID must be a 6-digit number.' } }));
+    return;
+  }
 
+  if (!rooms[roomId]) {
+    rooms[roomId] = {
+      players: [],
+      answers: {},
+      language,
+      level,
+      category
+    };
+  }
 
-        if (!rooms[roomId]) {
-          rooms[roomId] = { players: [], answers: {} };
-        }
+  // Save player metadata
+  ws.gamertag = gamertag;
+  ws.roomId = roomId;
+  ws.language = language;
+  ws.level = level;
+  ws.category = category;
 
-        if (rooms[roomId].players.length >= 2) {
-          ws.send(JSON.stringify({ type: 'room-full' }));
-          return;
-        }
+  console.log(`Player ${ws.id} (${gamertag}) joined room ${roomId}`);
+  console.log(`Language: ${language}, Level: ${level}, Category: ${category}`);
 
-        rooms[roomId].players.push(ws);
+  if (rooms[roomId].players.length >= 2) {
+    ws.send(JSON.stringify({ type: 'room-full' }));
+    return;
+  }
 
-        if (rooms[roomId].players.length === 2) {
-          const playersInfo = rooms[roomId].players.map((player) => ({
-            playerId: player.id,
-            gamertag: player.gamertag,
-          }));
+  rooms[roomId].players.push(ws);
 
-          rooms[roomId].players.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: 'both-joined',
-                payload: { players: playersInfo },
-              }));
-            }
-          });
-        }
+  if (rooms[roomId].players.length === 2) {
+    const playersInfo = rooms[roomId].players.map((player) => ({
+      playerId: player.id,
+      gamertag: player.gamertag,
+    }));
 
-        ws.send(JSON.stringify({ type: 'joined', payload: { playerId: ws.id } }));
-        return;
+    rooms[roomId].players.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({
+          type: 'both-joined',
+          payload: {
+            players: playersInfo,
+            language: rooms[roomId].language,
+            level: rooms[roomId].level,
+            category: rooms[roomId].category
+          }
+        }));
       }
+    });
+  }
+
+  ws.send(JSON.stringify({
+    type: 'joined',
+    payload: {
+      playerId: ws.id,
+      language: rooms[roomId].language,
+      level: rooms[roomId].level,
+      category: rooms[roomId].category
+    }
+  }));
+  return;
+}
+
 
       if (type === 'submit-answer') {
         const { questionId, selectedOption, correctAnswer } = payload;
@@ -221,6 +248,103 @@ function setupWebSocket(server) {
 
         // Each client will close their own connection after navigation
       }
+
+      if (type === 'createRoom') {
+        const { gamertag, language, level, category, questions } = payload;
+        const roomId = generateUniqueRoomId();
+        
+        gameRooms.set(roomId, {
+          creator: {
+            id: ws.id,
+            gamertag
+          },
+          language,
+          level,
+          category,
+          questions,
+          players: [ws.id],
+          gameStarted: false
+        });
+
+        ws.join(roomId);
+        ws.emit('roomCreated', { roomId });
+      }
+
+      if (type === 'joinRoom') {
+        const { roomId, gamertag } = payload;
+        const room = gameRooms.get(roomId);
+        
+        if (!room) {
+          ws.emit('error', { message: 'Room not found' });
+          return;
+        }
+
+        if (room.players.length >= 2) {
+          ws.emit('error', { message: 'Room is full' });
+          return;
+        }
+
+        // Add the second player
+        room.players.push(ws.id);
+        ws.join(roomId);
+
+        // Send game configuration to joining player
+        ws.emit('gameConfig', {
+          language: room.language,
+          level: room.level,
+          category: room.category,
+          questions: room.questions
+        });
+
+        // Notify both players that the game can start
+        io.to(roomId).emit('gameReady', {
+          players: [
+            { id: room.creator.id, gamertag: room.creator.gamertag },
+            { id: ws.id, gamertag }
+          ]
+        });
+      }
+
+      if (type === 'startGame') {
+        const { roomId } = payload;
+        const room = gameRooms.get(roomId);
+        if (room) {
+          room.gameStarted = true;
+          io.to(roomId).emit('gameStarted');
+        }
+      }
+
+      if (type === 'submitAnswer') {
+        const { roomId, questionIndex, answer, score } = payload;
+        io.to(roomId).emit('playerAnswer', {
+          playerId: ws.id,
+          questionIndex,
+          answer,
+          score
+        });
+      }
+
+      ws.on('close', () => {
+        const room = rooms[ws.roomId];
+        if (room) {
+          room.players = room.players.filter((p) => p.id !== ws.id);
+          if (room.players.length === 0) {
+            delete rooms[ws.roomId];
+          }
+        }
+
+        // Clean up any rooms where this socket was a player
+        for (const [roomId, room] of gameRooms.entries()) {
+          if (room.players.includes(ws.id)) {
+            room.players = room.players.filter(id => id !== ws.id);
+            if (room.players.length === 0) {
+              gameRooms.delete(roomId);
+            } else {
+              io.to(roomId).emit('playerLeft', { playerId: ws.id });
+            }
+          }
+        }
+      });
     });
 
     ws.on('close', () => {
@@ -235,6 +359,14 @@ function setupWebSocket(server) {
   });
 
   console.log('✅ WebSocket server attached');
+}
+
+function generateUniqueRoomId() {
+  let roomId;
+  do {
+    roomId = String(Math.floor(100000 + Math.random() * 900000));
+  } while (rooms[roomId] || gameRooms.has(roomId)); // Ensure uniqueness in both structures
+  return roomId;
 }
 
 module.exports = { setupWebSocket };
