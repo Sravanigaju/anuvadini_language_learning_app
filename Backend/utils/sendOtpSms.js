@@ -20,7 +20,8 @@ const sendOtpToPhoneNumber = async (phoneNumber, otp) => {
       `OTP is confidential. DO NOT share this OTP with anyone. ONOD Team. -AICTE`;
 
     const fullUrl = `${URL}${encodeURIComponent(message)}&mnumber=${mnumber}`;
-
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", OTP_JSESSIONID);
+    
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -31,6 +32,8 @@ const sendOtpToPhoneNumber = async (phoneNumber, otp) => {
     };
 
     const response = await axios.request(config);
+    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSS",response);
+    
     console.log('OTP Sent:', response.data);
     return response.data;
   } catch (error) {
@@ -38,6 +41,8 @@ const sendOtpToPhoneNumber = async (phoneNumber, otp) => {
     throw error;
   }
 };
+
+
 
 module.exports = {
   sendOtpToPhoneNumber,
