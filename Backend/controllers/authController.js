@@ -96,10 +96,15 @@ exports.login = async (req, res) => {
       progress_lang: langProgress.progressPercent || 0
     };
 
+    // ✅ Generate username in the desired format
+    const username = `${userProfile.firstName} ${userProfile.lastName}`;
+
+    // ✅ Send username in response for frontend to store and use (like in certificate)
     res.status(200).json({
       success: true,
       message: "Login successful",
       userId: user._id,
+      username: username,
       sourceLanguage: userProfile.sourceLanguage,
       targetLanguage: targetLang,
       progress: progress
