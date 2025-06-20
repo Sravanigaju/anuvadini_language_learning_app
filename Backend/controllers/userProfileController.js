@@ -104,7 +104,6 @@ exports.deleteUserProfile = async (req, res) => {
 
 
 
-
 // ✅ Get basic user info by userId
 exports.getBasicUserInfo = async (req, res) => {
   try {
