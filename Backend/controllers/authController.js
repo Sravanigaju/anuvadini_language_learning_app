@@ -1,39 +1,49 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const generateOtp = require("../utils/generateOtp"); // Add this utility
+const generateOtp = require("../utils/generateOtp");
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
+const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 const UserProfile = require("../models/UserProfile");
 
-// Register a new user
+// ✅ Register a new user
 exports.register = async (req, res) => {
   try {
+    const { username, phoneNumber, email, password } = req.body;
 
-    const { username, phoneNumber, password } = req.body;
-
-    // Validate required fields
-    if (!username || !phoneNumber || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!username || !password || (!phoneNumber && !email)) {
+      return res.status(400).json({
+        message: "Username, password, and either phone number or email are required."
+      });
     }
 
-    // Validate phone number format (basic validation)
-    if (!/^\d{10}$/.test(phoneNumber)) {
+    if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
       return res.status(400).json({ message: "Invalid phone number format" });
     }
 
-    const existingUser = await User.findOne({ phoneNumber });
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    const existingUser = await User.findOne({
+      $or: [
+        phoneNumber ? { phoneNumber } : null,
+        email ? { email } : null
+      ].filter(Boolean)
+    });
+
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User with phone/email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = "123456";
-    // const otp = generateOtp();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+    const otp = generateOtp(); // Or "123456"
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
 
     const newUser = new User({
       username,
       phoneNumber,
+      email,
       password: hashedPassword,
       otp,
       otpExpiry,
@@ -42,37 +52,107 @@ exports.register = async (req, res) => {
 
     await newUser.save();
 
-    try {
-      //await sendOtpToPhoneNumber(phoneNumber, otp);
-      res.status(201).json({
-        message: "User registered successfully. OTP sent to your phone number.",
-        success:"true",
-        userid : newUser._id
-      });
-    } catch (smsError) {
-      // If SMS sending fails, delete the user and return error
-      await User.deleteOne({ _id: newUser._id });
-      return res.status(500).json({
-        message: "Failed to send OTP. Please try again.",
-        error: smsError.message
-      });
-    }
+    res.status(201).json({
+      message: "User registered successfully. Now send OTP from frontend based on countryCode.",
+      success: true,
+      userId: newUser._id
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Login user
+// ✅ Send OTP via phone (for Indian users)
+exports.sendOtp = async (req, res) => {
+  const { phoneNumber } = req.body; // Uncommented this line
+
+  try {
+    const user = await User.findOne({ phoneNumber });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // const otp = generateOtp(); // For future dynamic OTP generation
+    const otp = "123456"; // Static OTP for testing
+
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    await sendOtpToPhoneNumber(phoneNumber, otp);
+
+    res.status(200).json({ message: "OTP sent via SMS" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Send OTP via email (for foreign users)
+exports.sendOtpEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const otp = generateOtp();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    await sendOtpToEmail(email, otp);
+    res.status(200).json({ message: "OTP sent via Email" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Verify OTP (works for both email and phone)
+exports.verifyOtp = async (req, res) => {
+  const { phoneNumber, email, otp } = req.body;
+
+  try {
+    const user = await User.findOne(phoneNumber ? { phoneNumber } : { email });
+
+    if (!user || !user.otp || !user.otpExpiry) {
+      return res.status(400).json({ message: "OTP not found. Please request again." });
+    }
+
+    if (user.otp !== otp.toString().trim()) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    if (user.otpExpiry < new Date()) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
+
+    user.isVerified = true;
+    user.otp = null;
+    user.otpExpiry = null;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `${phoneNumber ? "Phone" : "Email"} verified successfully`,
+      userId: user._id
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Login (via phone or email)
 exports.login = async (req, res) => {
   try {
-    const { phoneNumber, password } = req.body;
+    const { phoneNumber, email, password } = req.body;
 
-    const user = await User.findOne({ phoneNumber });
+    const user = await User.findOne(phoneNumber ? { phoneNumber } : { email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (!user.isVerified) {
       return res.status(403).json({
-        message: "Phone number not verified. Please verify your phone number first."
+        message: `${phoneNumber ? "Phone" : "Email"} not verified. Please verify first.`
       });
     }
 
@@ -96,10 +176,8 @@ exports.login = async (req, res) => {
       progress_lang: langProgress.progressPercent || 0
     };
 
-    // ✅ Generate username in the desired format
     const username = `${userProfile.firstName} ${userProfile.lastName}`;
 
-    // ✅ Send username in response for frontend to store and use (like in certificate)
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -112,52 +190,5 @@ exports.login = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-
-
-
-exports.sendOtp = async (req, res) => {
-  const { phoneNumber } = req.body;
-  try {
-    const user = await User.findOne({ phoneNumber });
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    //const otp = generateOtp();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-    user.otp = "123456";
-    user.otpExpiry = otpExpiry;
-    await user.save();
-
-    //await sendOtpToPhoneNumber(phoneNumber, otp);
-    res.status(200).json({ message: "OTP sent via SMS" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.verifyOtp = async (req, res) => {
-  const { phoneNumber, otp } = req.body;
-  try {
-    const user = await User.findOne({ phoneNumber });
-    if (!user || !user.otp || !user.otpExpiry)
-      return res.status(400).json({ message: "OTP not found. Request again." });
-    if (user.otp !== otp.toString().trim())
-      return res.status(400).json({ message: "Invalid OTP" });
-    if (user.otpExpiry < new Date(Date.now()))
-      return res.status(400).json({ message: "OTP expired" });
-
-    // user.otp = undefined;
-    // user.otpExpiry = undefined;
-    user.isVerified = true;
-    await user.save();
-    const userId = user._id;
-    res.status(200).json({success: true,
-      message: "Phone verified successfully",
-      userId: userId
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 };

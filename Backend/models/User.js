@@ -8,28 +8,28 @@ const userSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
     unique: true,
+    sparse: true, // 👈 allows phoneNumber to be optional
+  },
+  email: {
+    type: String,
+    unique: true,
+    sparse: true, // 👈 allows email to be optional
   },
   password: {
     type: String,
     required: true,
   },
-
   otp: {
-    type: String, // Can be a numeric string
-
+    type: String,
   },
-
   otpExpiry: {
-    type: Date, // Expiry timestamp for OTP
+    type: Date,
   },
-
   isVerified: {
     type: Boolean,
     default: false,
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
