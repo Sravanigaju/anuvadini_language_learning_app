@@ -6,18 +6,17 @@ const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 const UserProfile = require("../models/UserProfile");
 
-// ✅ Register a new user
 exports.register = async (req, res) => {
   try {
-    const { username, phoneNumber, email, password } = req.body;
+    const { username, email, phoneNumber, password } = req.body;
 
-    if (!username || !password || (!phoneNumber && !email)) {
-      return res.status(400).json({
-        message: "Username, password, and either phone number or email are required."
-      });
+    // Validate required fields
+    if (!username || !phoneNumber || (!password && !email)) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
+    // Validate phone number format (basic validation)
+    if (!/^\d{10}$/.test(phoneNumber)) {
       return res.status(400).json({ message: "Invalid phone number format" });
     }
 
@@ -37,9 +36,9 @@ exports.register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = generateOtp(); // Or "123456"
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-
+    const otp = "123456";
+    // const otp = generateOtp();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
     const newUser = new User({
       username,
       phoneNumber,
@@ -52,28 +51,101 @@ exports.register = async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({
-      message: "User registered successfully. Now send OTP from frontend based on countryCode.",
-      success: true,
-      userId: newUser._id
-    });
+    try {
+      //await sendOtpToPhoneNumber(phoneNumber, otp);
+      res.status(201).json({
+        message: "User registered successfully. OTP sent to your phone number.",
+        success: "true",
+        userid: newUser._id,
+      });
+    } catch (smsError) {
+      // If SMS sending fails, delete the user and return error
+      await User.deleteOne({ _id: newUser._id });
+      return res.status(500).json({
+        message: "Failed to send OTP. Please try again.",
+        error: smsError.message
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// ✅ Send OTP via phone (for Indian users)
+exports.registeremail = async (req, res) => {
+  try {
+    const { username, email, phoneNumber, password } = req.body;
+
+    // Validate required fields
+    if (!username || !phoneNumber || (!password && !email)) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Validate phone number format (basic validation)
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      return res.status(400).json({ message: "Invalid phone number format" });
+    }
+
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    const existingUser = await User.findOne({
+      $or: [
+        phoneNumber ? { phoneNumber } : null,
+        email ? { email } : null
+      ].filter(Boolean)
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User with phone/email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = "123456";
+    // const otp = generateOtp();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+    const newUser = new User({
+      username,
+      phoneNumber,
+      email,
+      password: hashedPassword,
+      otp,
+      otpExpiry,
+      isVerified: false
+    });
+
+    await newUser.save();
+
+    try {
+      await sendOtpToEmail(email, otp);
+      res.status(201).json({
+        message: "User registered successfully. OTP sent to your email.",
+        success: "true",
+        userid: newUser._id,
+      });
+    } catch (smsError) {
+      // If SMS sending fails, delete the user and return error
+      await User.deleteOne({ _id: newUser._id });
+      return res.status(500).json({
+        message: "Failed to send OTP. Please try again.",
+        error: smsError.message
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.sendOtp = async (req, res) => {
-  const { phoneNumber } = req.body; // Uncommented this line
+  const { phoneNumber } = req.body;
 
   try {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // const otp = generateOtp(); // For future dynamic OTP generation
-    const otp = "123456"; // Static OTP for testing
-
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+    // const otp = generateOtp();
+    const otp = "123456";
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
@@ -86,7 +158,6 @@ exports.sendOtp = async (req, res) => {
   }
 };
 
-// ✅ Send OTP via email (for foreign users)
 exports.sendOtpEmail = async (req, res) => {
   const { email } = req.body;
 
@@ -108,7 +179,6 @@ exports.sendOtpEmail = async (req, res) => {
   }
 };
 
-// ✅ Verify OTP (works for both email and phone)
 exports.verifyOtp = async (req, res) => {
   const { phoneNumber, email, otp } = req.body;
 
@@ -142,7 +212,6 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// ✅ Login (via phone or email)
 exports.login = async (req, res) => {
   try {
     const { phoneNumber, email, password } = req.body;
