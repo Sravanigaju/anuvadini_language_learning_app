@@ -6,7 +6,7 @@ const gamerSchema = new mongoose.Schema({
   Game_Name: { type: String, required: true } ,
   gameStats: [
     {
-    timeTaken: { },
+    timeTaken: { type: Number, required: true},
     score: { type: Number, default: 0 }, 
     category_level:{ type: Number, default: 0 },
    }
@@ -38,3 +38,11 @@ gamerSchema.index({
 });
 
 module.exports = mongoose.model('Gamer', gamerSchema, 'gamers');
+
+
+
+// const startTime = Date.now();
+
+// // after level is completed
+// const endTime = Date.now();
+// const timeTaken = (endTime - startTime) / 1000; // in seconds
