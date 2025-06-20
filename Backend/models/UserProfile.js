@@ -33,6 +33,7 @@ const userProfileSchema = new mongoose.Schema({
         lastCompletedDate: { type: Date },
       },
       badgesEarned: { type: [String], default: [] },
+      certificate: { type: Boolean, default: true },
     }
   ],
 
