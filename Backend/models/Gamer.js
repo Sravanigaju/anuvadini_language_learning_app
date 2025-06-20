@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 
 const gamerSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required, unique: true },
-  categorycount: { type: Number, default: 0 }, 
+
   Game_Name: { type: String, required: true } ,
   gameStats: [
     {
+    languageName: { type: String, required: true }, 
     timeTaken: { type: Number, required: true},
-    score: { type: Number, default: 0 }, 
-    category_level:{ type: Number, default: 0 },
+    score: { type: Number, default: 0 },   // stars
+    categorycount:{ type: Number, default: 0 }, // number of levels completed
    }
     ],
   GlobalStats: [ 
