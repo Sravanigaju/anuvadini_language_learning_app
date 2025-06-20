@@ -72,12 +72,17 @@ exports.getUserDashboard = async (req, res) => {
       dailyGoal: selectedLang.dailyGoal,
       progressPercent: selectedLang.progressPercent,
       motivation: selectedLang.motivation,
+      certificate: selectedLang.certificate
     };
 
     const languageProgress = userProfile.interestedLanguages.map((lang) => ({
       languageName: lang.languageName,
       progressPercent: lang.progressPercent,
     }));
+     // 👇 Create array of all languages with certificate === true
+    const certificate = userProfile.interestedLanguages
+      .filter(lang => lang.certificate === true)
+      .map(lang => lang.languageName);
 
     // Use $facet to get top 10 + count users with higher XP
     const [leaderboardData] = await UserProfile.aggregate([
@@ -148,7 +153,7 @@ exports.getUserDashboard = async (req, res) => {
       },
     };
 
-    return res.json({ dashboard });
+   return res.json({ dashboard, certificate });
   } catch (error) {
     console.error("Dashboard Error:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -187,7 +192,9 @@ exports.getUserProgress = async (req, res) => {
         fin_ass_count: langProgress.finalassesementcompleted,
         score: langProgress.xp,
         streak: langProgress.streak?.currentStreak || 0,
-        progress_lang: langProgress.progressPercent
+        progress_lang: langProgress.progressPercent,
+        certificate: langProgress.certificate || false
+        
       }
     });
 

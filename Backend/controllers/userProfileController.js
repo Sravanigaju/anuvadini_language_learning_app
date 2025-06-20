@@ -102,43 +102,7 @@ exports.deleteUserProfile = async (req, res) => {
 
 
 
-exports.updateUserCoins = async (req, res) => {
-  const { userId } = req.params; // This is a string
-  const { action, amount } = req.body;
 
-  if (!["increase", "decrease"].includes(action)) {
-    return res.status(400).json({ message: "Action must be 'increase' or 'decrease'" });
-  }
-
-  if (typeof amount !== "number" || amount <= 0) {
-    return res.status(400).json({ message: "Amount must be a positive number" });
-  }
-
-  // Validate ObjectId
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: "Invalid userId" });
-  }
-
-  try {
-    const user = await UserProfile.findOne({ userId: new mongoose.Types.ObjectId(userId) });
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    if (action === "increase") {
-      user.dashboardStats.coins.total += amount;
-    } else {
-      user.dashboardStats.coins.total = Math.max(0, user.dashboardStats.coins.total - amount);
-    }
-
-    await user.save();
-    res.status(200).json({
-      message: `Coins ${action}d successfully`,
-      totalCoins: user.dashboardStats.coins.total,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 
 // ✅ Get basic user info by userId
