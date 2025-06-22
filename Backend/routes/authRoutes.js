@@ -8,6 +8,9 @@ router.post("/login", authController.login);
 router.post("/send-otp", authController.sendOtp);
 router.post("/send-otp-email", authController.registeremail);
 router.post("/verify-otp", authController.verifyOtp);
+router.post("/change-password", authController.changePassword);
+router.post("/change-password-otp", authController.changeverifyOtp);
+
 // router.get("/login/:userId", authController.getLoginByUserId);
 
 module.exports = router;
