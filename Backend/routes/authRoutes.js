@@ -10,6 +10,8 @@ router.post("/send-otp-email", authController.registeremail);
 router.post("/verify-otp", authController.verifyOtp);
 router.post("/change-password", authController.changePassword);
 router.post("/change-password-otp", authController.changeverifyOtp);
+router.post("/send-otp-via-email", authController.sendOtpEmail);
+
 
 // router.get("/login/:userId", authController.getLoginByUserId);
 
