@@ -102,8 +102,8 @@ exports.registeremail = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = "123456";
-    // const otp = generateOtp();
+ 
+    const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
     const newUser = new User({
       username,
@@ -144,8 +144,8 @@ exports.sendOtp = async (req, res) => {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // const otp = generateOtp();
-    const otp = "123456";
+    const otp = generateOtp();
+    // const otp = "1234";
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     user.otp = otp;
     user.otpExpiry = otpExpiry;
@@ -263,5 +263,88 @@ exports.login = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { email, phoneNumber, newPassword } = req.body;
+
+  try {
+    // Validate inputs
+    if ( !newPassword || (!email && !phoneNumber)) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findOne(email ? { email } : { phoneNumber });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "User is not verified" });
+    }
+
+
+     const otp = generateOtp();
+    // const otp = "1234";
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    user.changeotp = otp;
+    user.changeotpExpiry = otpExpiry;
+ 
+    user.changePasswordisVerified = false;
+    await user.save();
+
+    await sendOtpToPhoneNumber(phoneNumber, otp);
+    await sendOtpToEmail(user.email, otp)
+    // Hash and update the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.newPassword = hashedNewPassword;
+
+    await user.save();
+
+    res.status(200).json({ message: "otp sent for password update" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.changeverifyOtp = async (req, res) => {
+  const { phoneNumber, email, otp } = req.body;
+
+  try {
+    const user = await User.findOne(phoneNumber ? { phoneNumber } : { email });
+
+    if (!user || !user.changeotp || !user.changeotpExpiry) {
+      return res.status(400).json({ message: "OTP not found. Please request again." });
+    }
+
+    if (user.changeotp !== otp.toString().trim()) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    if (user.changeotpExpiry < new Date()) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
+
+    user.changePasswordisVerified = true;
+    user.changeotp = null;
+    user.changeotpExpiry = null;
+    user.password = user.newPassword;
+    user.newPassword = null
+    
+  
+
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `${phoneNumber ? "Phone" : "Email"} verified successfully`,
+      userId: user._id
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

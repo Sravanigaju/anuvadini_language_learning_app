@@ -88,17 +88,7 @@ exports.updateUserPoints = async (req, res) => {
   }
 };
 
-// Delete user profile
-exports.deleteUserProfile = async (req, res) => {
-  try {
-    const deletedProfile = await UserProfile.findByIdAndDelete(req.params.id);
-    if (!deletedProfile)
-      return res.status(404).json({ message: "User profile not found" });
-    res.status(200).json({ message: "User profile deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+
 
 
 

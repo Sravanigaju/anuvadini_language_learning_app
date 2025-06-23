@@ -30,6 +30,20 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  changePasswordisVerified: {
+    type: Boolean,
+    default: false,
+  },
+  newPassword: {
+    type: String,
+  },
+  changeotp: {
+    type: String,
+  },
+  changeotpExpiry: {
+    type: String,
+  },
+  
   createdAt: {
     type: Date,
     default: Date.now,
