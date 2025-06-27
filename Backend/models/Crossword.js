@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const sessionSchema = new mongoose.Schema({
   language:      { type: String, required: true },
   categoryLevel: { type: Number, default: 1 },
-  timeTaken:     { type: Number, required: true },      // seconds
+  timeTaken:     { type: Number, required: true },
   score:         { type: Number, enum: [1, 2, 3], required: true },
-  timestamp:     { type: Date,   default: Date.now }
+  timestamp:     { type: Date, default: Date.now }
 }, { _id: false });
 
 const globalStatsSchema = new mongoose.Schema({
@@ -18,9 +18,9 @@ const globalStatsSchema = new mongoose.Schema({
 }, { _id: false });
 
 const crosswordSchema = new mongoose.Schema({
-  userId:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-  username: { type: String, required: true }, // <-- Added username field
-  sessions: [sessionSchema],
+  userId:      { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+  username:    { type: String, required: true },
+  sessions:    [sessionSchema],
   globalStats: globalStatsSchema
 }, { timestamps: true });
 

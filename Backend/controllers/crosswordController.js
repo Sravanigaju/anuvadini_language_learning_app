@@ -6,23 +6,26 @@ exports.createCrosswordEntry = async (req, res) => {
   try {
     const { userId } = req.body;
 
+    // Check if entry already exists
     const existing = await Crossword.findOne({ userId });
     if (existing) {
       return res.status(400).json({ message: "User already exists in Crossword." });
     }
 
+    // Fetch username from User model
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
+    // Create Crossword entry
     const crossword = new Crossword({
       userId,
       username: user.username,
     });
 
     await crossword.save();
-    res.status(201).json(crossword);
+    res.status(201).json({ message: "Crossword entry created", crossword });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -35,8 +38,11 @@ exports.addCrosswordSession = async (req, res) => {
     const { language, categoryLevel, timeTaken, score, result } = req.body;
 
     const crossword = await Crossword.findOne({ userId });
-    if (!crossword) return res.status(404).json({ message: 'User not found' });
+    if (!crossword) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
+    // Ensure globalStats is initialized
     if (!crossword.globalStats) {
       crossword.globalStats = {
         coins: 0,
@@ -48,17 +54,18 @@ exports.addCrosswordSession = async (req, res) => {
       };
     }
 
-    crossword.sessions.push({
-      language,
-      categoryLevel,
-      timeTaken,
-      score
-    });
+    // Add session
+    crossword.sessions.push({ language, categoryLevel, timeTaken, score });
 
+    // Update stats
     crossword.globalStats.totalGamesPlayed += 1;
     crossword.globalStats.coins += score * 10;
-    if (result === 'win') crossword.globalStats.wins += 1;
-    else crossword.globalStats.losses += 1;
+
+    if (result === 'win') {
+      crossword.globalStats.wins += 1;
+    } else {
+      crossword.globalStats.losses += 1;
+    }
 
     if (categoryLevel > crossword.globalStats.highestLevelReached) {
       crossword.globalStats.highestLevelReached = categoryLevel;
@@ -81,7 +88,9 @@ exports.getCrosswordProgress = async (req, res) => {
     const { userId } = req.params;
 
     const crossword = await Crossword.findOne({ userId });
-    if (!crossword) return res.status(404).json({ message: 'User not found' });
+    if (!crossword) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
     res.status(200).json(crossword);
   } catch (error) {
@@ -93,10 +102,8 @@ exports.getCrosswordProgress = async (req, res) => {
 exports.getCrosswordLeaderboard = async (_req, res) => {
   try {
     const leaderboard = await Crossword.aggregate([
-      // Break out each session
       { $unwind: "$sessions" },
 
-      // Pre-sort sessions to get best session per user
       {
         $sort: {
           "sessions.categoryLevel": -1,
@@ -104,16 +111,14 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
         }
       },
 
-      // Get the best session per user and capture username
       {
         $group: {
           _id: "$userId",
-          username: { $first: "$username" }, // ✅ include username
+          username: { $first: "$username" },
           bestSession: { $first: "$sessions" }
         }
       },
 
-      // Apply ranking by categoryLevel only (MongoDB limitation)
       {
         $setWindowFields: {
           sortBy: { "bestSession.categoryLevel": -1 },
@@ -123,7 +128,6 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
         }
       },
 
-      // Final sort
       {
         $sort: {
           "bestSession.categoryLevel": -1,
@@ -131,7 +135,6 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
         }
       },
 
-      // Project final fields
       {
         $project: {
           userId: "$_id",
@@ -147,9 +150,9 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
       { $limit: 50 }
     ]);
 
-    res.json({ leaderboard });
-  } catch (err) {
-    console.error("Leaderboard error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(200).json({ leaderboard });
+  } catch (error) {
+    console.error("Leaderboard error:", error);
+    res.status(500).json({ error: error.message });
   }
 };
