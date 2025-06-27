@@ -130,6 +130,20 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
         }
       },
       {
+        $lookup: {
+          from: "userprofile", // 👈 your UserProfile collection name
+          localField: "_id",
+          foreignField: "userId",
+          as: "profile"
+        }
+      },
+      {
+        $unwind: {
+          path: "$profile",
+          preserveNullAndEmptyArrays: true // so users without profiles don't crash it
+        }
+      },
+      {
         $setWindowFields: {
           sortBy: { "bestSession.categoryLevel": -1 },
           output: {
@@ -151,7 +165,8 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
           categoryLevel: "$bestSession.categoryLevel",
           timeTaken: "$bestSession.timeTaken",
           score: "$bestSession.score",
-          rank: 1
+          rank: 1,
+          profilePic: "$profile.profilePic" // 👈 Include image URL
         }
       },
       { $limit: 50 }
@@ -162,4 +177,4 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
     console.error("Leaderboard error:", error);
     res.status(500).json({ error: error.message });
   }
-};
+}
