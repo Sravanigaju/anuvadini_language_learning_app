@@ -1,5 +1,6 @@
 const UserProfile = require("../models/UserProfile");
 const User = require("../models/User");
+const Crossword = require("../models/Crossword");
 const mongoose = require("mongoose");
 
 // Get all user profiles
@@ -28,6 +29,7 @@ exports.getUserProfileById = async (req, res) => {
 exports.createUserProfile = async (req, res) => {
   try {
     const { userId, ...rest } = req.body;
+    const { firstName } = rest;
 
     await UserProfile.findOneAndUpdate(
       { userId },
@@ -35,6 +37,20 @@ exports.createUserProfile = async (req, res) => {
       { new: true, upsert: true }
     );
 
+        const crossword = new Crossword({
+          userId: userId,
+          username: firstName,
+          sessions: [],
+          globalStats: {
+            coins: 0,
+            totalGamesPlayed: 0,
+            wins: 0,
+            losses: 0,
+            highestLevelReached: 1,
+            achievementsUnlocked: 0
+          }
+        });
+        await crossword.save();
     res.status(200).json({
       message: "User profile created or updated successfully",
       success: true
