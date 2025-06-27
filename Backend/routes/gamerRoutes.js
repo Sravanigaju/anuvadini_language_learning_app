@@ -2,22 +2,25 @@ const express = require('express');
 const router = express.Router();
 const gamerController = require('../controllers/gamerController');
 
-// POST /api/gamers - Create new gamer
+// Create a new gamer
 router.post('/', gamerController.createGamer);
 
-// GET /api/gamers/:userId - Get gamer by userId
+// Get gamer by userId
 router.get('/:userId', gamerController.getGamerByUserId);
 
-// PUT /api/gamers/:userId/global - Update global stats
+// Update global stats (coins, wins, etc.)
 router.put('/:userId/global', gamerController.updateGlobalStats);
 
-// POST /api/gamers/:userId/game-stats - Add a game stat
+// Add a game stat (only if gameName is new)
 router.post('/:userId/game-stats', gamerController.addGameStat);
 
-// PATCH /api/gamers/:userId/update-metrics - Update metrics after game
+// Update overall game metrics (e.g., categorycount, etc.)
 router.patch('/:userId/update-metrics', gamerController.updateGameMetrics);
 
-// DELETE /api/gamers/:userId - Delete gamer
+// ✅ NEW: Update specific game stat by gameName
+router.patch('/:userId/update-stat', gamerController.updateSpecificGameStat);
+
+// Delete a gamer
 router.delete('/:userId', gamerController.deleteGamer);
 
 module.exports = router;

@@ -29,7 +29,6 @@ exports.updateGlobalStats = async (req, res) => {
     const { globalStats } = req.body;
 
     const gamer = await Gamer.findOne({ userId });
-
     if (!gamer) return res.status(404).json({ message: 'Gamer not found' });
 
     gamer.globalStats = globalStats;
@@ -41,22 +40,38 @@ exports.updateGlobalStats = async (req, res) => {
   }
 };
 
-// Add new game stat entry
+// ✅ Add a new game stat only if that gameName doesn't already exist
 exports.addGameStat = async (req, res) => {
+  const { gameName, language, timeTaken, score, category_level } = req.body;
+  const userId = req.params.userId;
+
   try {
-    const gamer = await Gamer.findOneAndUpdate(
-      { userId: req.params.userId },
-      { $push: { gameStats: req.body } },
-      { new: true }
-    );
+    const gamer = await Gamer.findOne({ userId });
     if (!gamer) return res.status(404).json({ message: 'Gamer not found' });
-    res.json(gamer);
+
+    const alreadyExists = gamer.gameStats.some(stat => stat.gameName === gameName);
+    if (alreadyExists) {
+      return res.status(409).json({ message: `Stats for '${gameName}' already exist.` });
+    }
+
+    gamer.gameStats.push({
+      gamerId: gamer._id,
+      gameName,
+      language,
+      timeTaken,
+      score,
+      category_level
+    });
+
+    await gamer.save();
+    res.status(200).json({ message: "Game stat added successfully", gamer });
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// Update game metrics after a game (PATCH)
+// ✅ Update metrics like categorycount, type, language (not gameStats)
 exports.updateGameMetrics = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -78,19 +93,42 @@ exports.updateGameMetrics = async (req, res) => {
     if (type) gamer.type = type;
     if (language) gamer.language = language;
 
-    // Add new game stat if provided
-    if (score !== undefined || timeTaken !== undefined || category_level !== undefined) {
-      gamer.gameStats.push({
-        score: score || 0,
-        timeTaken: timeTaken || 0,
-        category_level: category_level || 0
-      });
-    }
-
     await gamer.save();
     res.status(200).json({ message: "Game metrics updated", gamer });
 
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ NEW: Update specific game stat by gameName
+exports.updateSpecificGameStat = async (req, res) => {
+  const { userId } = req.params;
+  const { gameName, updates } = req.body;
+
+  try {
+    const gamer = await Gamer.findOne({ userId });
+    if (!gamer) {
+      return res.status(404).json({ message: "Gamer not found" });
+    }
+
+    const statIndex = gamer.gameStats.findIndex(stat => stat.gameName === gameName);
+    if (statIndex === -1) {
+      return res.status(404).json({ message: `Game stat for '${gameName}' not found.` });
+    }
+
+    // Apply updates
+    Object.keys(updates).forEach((key) => {
+      if (gamer.gameStats[statIndex][key] !== undefined) {
+        gamer.gameStats[statIndex][key] = updates[key];
+      }
+    });
+
+    await gamer.save();
+    res.status(200).json({ message: "Game stat updated successfully", gamer });
+
+  } catch (error) {
+    console.error("Error updating game stat:", error);
     res.status(500).json({ error: error.message });
   }
 };
