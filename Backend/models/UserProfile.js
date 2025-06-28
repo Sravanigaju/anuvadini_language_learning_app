@@ -7,7 +7,7 @@ const userProfileSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   age: { type: Number, required: true },
   country: { type: String, required: true },
-  state: { type: String, required: true },
+  state: { type: String, required: false },
   profilePic: { type: String, default: "" },
   joinedDate: { type: Date, default: Date.now },
   sourceLanguage: { type: String, required: true },

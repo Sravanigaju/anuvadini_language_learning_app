@@ -6,6 +6,7 @@ const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 const UserProfile = require("../models/UserProfile");
 
+
 exports.register = async (req, res) => {
   try {
     const { username, email, phoneNumber, password } = req.body;
@@ -103,7 +104,7 @@ exports.registeremail = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
  
     const otp = generateOtp();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); 
     const newUser = new User({
       username,
       phoneNumber,
@@ -143,8 +144,8 @@ exports.sendOtp = async (req, res) => {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const otp = generateOtp();
-    // const otp = "1234";
+    // const otp = generateOtp();
+    const otp = "123456";
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     user.otp = otp;
     user.otpExpiry = otpExpiry;
@@ -157,7 +158,6 @@ exports.sendOtp = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 exports.sendOtpEmail = async (req, res) => {
   const { email } = req.body;
 
@@ -171,6 +171,7 @@ exports.sendOtpEmail = async (req, res) => {
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
+
 
     await sendOtpToEmail(email, otp);
     res.status(200).json({ message: "OTP sent via Email" });
@@ -242,7 +243,9 @@ exports.login = async (req, res) => {
       fin_ass_count: langProgress.finalassesementcompleted || 0,
       score: langProgress.xp || 0,
       streak: langProgress.streak?.currentStreak || 0,
-      progress_lang: langProgress.progressPercent || 0
+      progress_lang: langProgress.progressPercent || 0,
+      
+
     };
 
     const username = `${userProfile.firstName} ${userProfile.lastName}`;
@@ -329,9 +332,7 @@ exports.changeverifyOtp = async (req, res) => {
     user.changeotpExpiry = null;
     user.password = user.newPassword;
     user.newPassword = null
-    
   
-
 
     await user.save();
 

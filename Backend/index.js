@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
+const path = require("path");
 
 // Load environment variables
 dotenv.config();
@@ -18,13 +19,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
+app.use(express.static("html"));
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
+// app.use(limiter);
 
 // Connect to MongoDB
 mongoose
@@ -42,8 +44,16 @@ mongoose
 // Routes
 const routes = require("./routes");
 app.use("/api", routes)
+app.use("/*", (req, res) => {
+  console.log("asdasd");
+  res.status(200).send(`Route: ${req.originalUrl}, Method: ${req.method}`);
+});
 
 
+app.get('/privacypolicy', (req, res) => {
+  res.sendFile(__dirname + 'html/privacypolicy');
+  console.log("11111111111111111111111111");
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

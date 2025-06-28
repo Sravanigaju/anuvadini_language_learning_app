@@ -14,6 +14,9 @@ router.get("/", userProfileController.getAllUserProfiles);
 router.get("/:id", userProfileController.getUserProfileById);
 router.post("/", userProfileController.createUserProfile);
 router.put("/:id", userProfileController.updateUserProfile);
+
 router.patch("/:id/points", userProfileController.updateUserPoints);
+
+
 
 module.exports = router;

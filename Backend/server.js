@@ -7,15 +7,18 @@ const rooms = {}; // In-memory room tracking
 const gameRooms = new Map();
 
 function setupWebSocket(server) {
+  console.log("log for connedction")
   const wss = new WebSocket.Server({ server }); // Attach to existing HTTP server
-
   wss.on('connection', (ws) => {
+    console.log("log for connedction")
     ws.id = uuidv4();
     ws.roomId = null;
 
     ws.on('message', (message) => {
       let parsed;
       try {
+        console.log("Received message:", message);
+        
         parsed = JSON.parse(message);
       } catch {
         return;
