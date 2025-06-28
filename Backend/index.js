@@ -19,18 +19,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
+app.use(express.static("html"));
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
+// app.use(limiter);
 
 // Connect to MongoDB
 mongoose
   .connect(
-    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/anuvadini_language",
+    process.env.MONGODB_URI ||
+      "mongodb://127.0.0.1:27017/anuvadini_language",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -39,27 +41,33 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// General API routes (e.g., /api/gamers)
+// Routes
 const routes = require("./routes");
-app.use("/api", routes);
+app.use("/api", routes)
+app.use("/*", (req, res) => {
+  console.log("asdasd");
+  
+  res.status(200).send(`Route: ${req.originalUrl}, Method: ${req.method}`);
+});
 
 
+app.get('/privacypolicy', (req, res) => {
+  res.sendFile(__dirname + 'html/privacypolicy');
+  console.log("11111111111111111111111111");
+});
 
-// Error handler
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
-// WebSocket init (if needed)
-const { setupWebSocket } = require("./server");
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  setupWebSocket(server); // Optional
+const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
+// Start server
+const PORT = process.env.PORT || 7273;
+const server = app.listen(PORT,'0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+  setupWebSocket(server); // Initialize WebSocket server
 });
 
-// Export for testing
+// Export app for testing
 module.exports = { app, server };
