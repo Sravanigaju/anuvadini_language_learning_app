@@ -123,7 +123,7 @@ exports.getUserDashboard = async (req, res) => {
           gamerRankCount: [
             {
               $match: {
-                "interestedLanguages.coins": { $gt: selectedLang.coins },
+                "total.coins": { $gt: selectedLang.coins },
               },
             },
             { $count: "rank" },

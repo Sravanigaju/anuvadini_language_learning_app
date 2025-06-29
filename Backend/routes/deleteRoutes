@@ -1,0 +1,8 @@
+const express = require("express");
+const router = express.Router();
+const userController = require("../controllers/userController");
+
+// 👇 DELETE user and profile by user ID
+router.delete("/:id", userController.deleteUserAndProfile);
+
+module.exports = router;
