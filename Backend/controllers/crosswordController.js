@@ -23,13 +23,15 @@ exports.createCrosswordEntry = async (req, res) => {
       userId: user._id,
       username: user.username,
       sessions: [],
+      dailyQuizSessions: [],
       globalStats: {
         coins: 0,
         totalGamesPlayed: 0,
         wins: 0,
         losses: 0,
         highestLevelReached: 1,
-        achievementsUnlocked: 0
+        achievementsUnlocked: 0,
+        dailyStreak: 0
       }
     });
 
@@ -61,13 +63,15 @@ exports.addCrosswordSession = async (req, res) => {
         userId: user._id,
         username: user.username,
         sessions: [],
+        dailyQuizSessions: [],
         globalStats: {
           coins: 0,
           totalGamesPlayed: 0,
           wins: 0,
           losses: 0,
           highestLevelReached: 1,
-          achievementsUnlocked: 0
+          achievementsUnlocked: 0,
+          dailyStreak: 0
         }
       });
     }
@@ -178,3 +182,108 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+
+// ------------------ ADD DAILY QUIZ SESSION ------------------
+exports.addDailyQuizSession = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { timeTaken, correctAnswers } = req.body;
+
+    if (!timeTaken || correctAnswers === undefined) {
+      return res.status(400).json({ message: "Missing required daily quiz fields." });
+    }
+
+    let crossword = await Crossword.findOne({ userId });
+
+    // Auto-create crossword entry if missing
+    if (!crossword) {
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      crossword = new Crossword({
+        userId: user._id,
+        username: user.username,
+        sessions: [],
+        dailyQuizSessions: [],
+        globalStats: {
+          coins: 0,
+          totalGamesPlayed: 0,
+          wins: 0,
+          losses: 0,
+          highestLevelReached: 1,
+          achievementsUnlocked: 0,
+          dailyStreak: 0
+        }
+      });
+    }
+
+    // Add daily quiz session
+    crossword.dailyQuizSessions.push({ timeTaken, correctAnswers });
+
+    // Update daily streak
+    await updateDailyStreak(crossword);
+
+    await crossword.save();
+    res.status(200).json({ message: "Daily quiz session added successfully", crossword });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ------------------ UPDATE DAILY STREAK ------------------
+const updateDailyStreak = async (crossword) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Check if user played today
+    const playedToday = crossword.dailyQuizSessions.some(session => {
+      const sessionDate = new Date(session.timestamp);
+      sessionDate.setHours(0, 0, 0, 0);
+      return sessionDate.getTime() === today.getTime();
+    });
+
+    // Check if user played yesterday
+    const playedYesterday = crossword.dailyQuizSessions.some(session => {
+      const sessionDate = new Date(session.timestamp);
+      sessionDate.setHours(0, 0, 0, 0);
+      return sessionDate.getTime() === yesterday.getTime();
+    });
+
+    if (playedToday) {
+      if (playedYesterday) {
+        // Continue streak
+        crossword.globalStats.dailyStreak += 1;
+      } else {
+        // Start new streak
+        crossword.globalStats.dailyStreak = 1;
+      }
+    }
+  } catch (error) {
+    console.error("Error updating daily streak:", error);
+  }
+};
+
+// ------------------ GET DAILY QUIZ PROGRESS ------------------
+exports.getDailyQuizProgress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const crossword = await Crossword.findOne({ userId });
+    if (!crossword) {
+      return res.status(404).json({ message: 'User not found in Crossword' });
+    }
+
+    const dailyQuizData = {
+      dailyQuizSessions: crossword.dailyQuizSessions,
+      dailyStreak: crossword.globalStats.dailyStreak
+    };
+
+    res.status(200).json(dailyQuizData);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
