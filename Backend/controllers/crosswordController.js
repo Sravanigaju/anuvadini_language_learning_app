@@ -287,3 +287,66 @@ exports.getDailyQuizProgress = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// ------------------ GET DAILY QUIZ LEADERBOARD ------------------
+exports.getDailyQuizLeaderboard = async (_req, res) => {
+  try {
+    const leaderboard = await Crossword.aggregate([
+      { $unwind: "$dailyQuizSessions" },
+      {
+        $sort: {
+          "dailyQuizSessions.correctAnswers": -1,
+          "dailyQuizSessions.timeTaken": 1
+        }
+      },
+      {
+        $group: {
+          _id: "$userId",
+          username: { $first: "$username" },
+          bestSession: { $first: "$dailyQuizSessions" }
+        }
+      },
+      {
+        $lookup: {
+          from: "userprofile",
+          localField: "_id",
+          foreignField: "userId",
+          as: "profile"
+        }
+      },
+      {
+        $unwind: {
+          path: "$profile",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $setWindowFields: {
+          sortBy: { "bestSession.correctAnswers": -1 },
+          output: {
+            rank: { $rank: {} }
+          }
+        }
+      },
+      {
+        $sort: {
+          "bestSession.correctAnswers": -1,
+          "bestSession.timeTaken": 1
+        }
+      },
+      {
+        $project: {
+          userId: "$_id",
+          username: 1,
+          correctAnswers: "$bestSession.correctAnswers",
+          timeTaken: "$bestSession.timeTaken",
+          rank: 1,
+          profilePic: "$profile.profilePic"
+        }
+      },
+      { $limit: 50 }
+    ]);
+    res.status(200).json({ leaderboard });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
