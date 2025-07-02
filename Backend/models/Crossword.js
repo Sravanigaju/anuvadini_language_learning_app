@@ -9,9 +9,10 @@ const sessionSchema = new mongoose.Schema({
 }, { _id: false });
 
 const dailyQuizSessionSchema = new mongoose.Schema({
-  timeTaken:     { type: String, required: true },
+  timeTaken:      { type: String, required: true },
   correctAnswers: { type: Number, required: true },
-  timestamp:     { type: Date, default: Date.now }
+  targetLanguage: { type: String, required: true },
+  timestamp:      { type: Date, default: Date.now }
 }, { _id: false });
 
 const globalStatsSchema = new mongoose.Schema({
@@ -21,7 +22,9 @@ const globalStatsSchema = new mongoose.Schema({
   losses:              { type: Number, default: 0 },
   highestLevelReached: { type: Number, default: 1 },
   achievementsUnlocked:{ type: Number, default: 0 },
-  dailyStreak:         { type: Number, default: 0 }
+  dailyStreak:         { type: Number, default: 0 },
+  languagesPlayed:     [String],
+  lastPlayedDate:      { type: Date, default: Date.now }
 }, { _id: false });
 
 const crosswordSchema = new mongoose.Schema({

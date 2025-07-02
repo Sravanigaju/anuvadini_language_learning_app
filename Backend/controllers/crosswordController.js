@@ -1,5 +1,6 @@
 const Crossword = require('../models/Crossword');
 const User = require('../models/User');
+const UserProfile = require('../models/UserProfile');
   
 // ------------------ CREATE ENTRY ------------------
 exports.createCrosswordEntry = async (req, res) => {
@@ -79,9 +80,12 @@ exports.addCrosswordSession = async (req, res) => {
     // Add session
     crossword.sessions.push({ language, categoryLevel, timeTaken, score });
 
+    // Calculate coins to be earned
+    const coinsEarned = score * 10;
+
     // Update stats
     crossword.globalStats.totalGamesPlayed += 1;
-    crossword.globalStats.coins += score * 10;
+    crossword.globalStats.coins += coinsEarned;
     crossword.globalStats[result === 'win' ? 'wins' : 'losses'] += 1;
 
     if (categoryLevel > crossword.globalStats.highestLevelReached) {
@@ -90,6 +94,13 @@ exports.addCrosswordSession = async (req, res) => {
 
     crossword.globalStats.achievementsUnlocked = Math.floor(
       crossword.globalStats.highestLevelReached / 100
+    );
+
+    // Update UserProfile's total_coin
+    await UserProfile.findOneAndUpdate(
+      { userId },
+      { $inc: { total_coin: coinsEarned } },
+      { new: true }
     );
 
     await crossword.save();
@@ -187,9 +198,9 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
 exports.addDailyQuizSession = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { timeTaken, correctAnswers } = req.body;
+    const { timeTaken, correctAnswers, targetLanguage } = req.body;
 
-    if (!timeTaken || correctAnswers === undefined) {
+    if (!timeTaken || correctAnswers === undefined || !targetLanguage) {
       return res.status(400).json({ message: "Missing required daily quiz fields." });
     }
 
@@ -217,14 +228,52 @@ exports.addDailyQuizSession = async (req, res) => {
       });
     }
 
-    // Add daily quiz session
-    crossword.dailyQuizSessions.push({ timeTaken, correctAnswers });
+    // Add daily quiz session with target language
+    crossword.dailyQuizSessions.push({ timeTaken, correctAnswers, targetLanguage });
 
     // Update daily streak
     await updateDailyStreak(crossword);
 
+    // Calculate coins earned
+    // Base coins for participation
+    let coinsEarned = 10;
+    
+    // Additional coins for correct answers (10 coins per correct answer)
+    coinsEarned += correctAnswers * 10;
+    
+    // Streak bonus (5 coins per day of streak, capped at 50)
+    const streakBonus = Math.min(crossword.globalStats.dailyStreak * 5, 50);
+    coinsEarned += streakBonus;
+
+    // Update global stats
+    crossword.globalStats.coins += coinsEarned;
+    crossword.globalStats.totalGamesPlayed += 1;
+    
+    // Update wins/losses based on performance (win if more than 50% correct)
+    if (correctAnswers >= 2) {
+      crossword.globalStats.wins += 1;
+    } else {
+      crossword.globalStats.losses += 1;
+    }
+
+    // Update UserProfile's total_coin
+    await UserProfile.findOneAndUpdate(
+      { userId },
+      { $inc: { total_coin: coinsEarned } },
+      { new: true }
+    );
+
     await crossword.save();
-    res.status(200).json({ message: "Daily quiz session added successfully", crossword });
+    res.status(200).json({ 
+      message: "Daily quiz session added successfully", 
+      crossword,
+      sessionSummary: {
+        coinsEarned,
+        streakBonus,
+        totalCoins: crossword.globalStats.coins,
+        currentStreak: crossword.globalStats.dailyStreak
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
