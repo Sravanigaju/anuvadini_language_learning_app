@@ -235,9 +235,10 @@ exports.updateUserProgress = async (req, res) => {
     lessonsCompleted,
     assesmentcompleted,
     level,
+    xp, // today's XP earned, from frontend
     catagoriecount,
     finalAssessmentCompleted,
-    newBadges, // optional from frontend
+    newBadges,
   } = req.body;
 
   try {
@@ -272,13 +273,50 @@ exports.updateUserProgress = async (req, res) => {
       newBadges.forEach((badge) => earnedSet.add(badge));
       language.badgesEarned = [...earnedSet];
     }
-console.log("✅ Final badges array:", language.badgesEarned);
+
+    // ✅ XP Update logic
+    if (xp !== undefined && xp > 0) {
+      const today = new Date();
+
+      // Ensure xpHistory exists
+      if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
+
+      // 1. Add today's XP entry
+      language.xpHistory.push({ date: today, xpGained: xp });
+
+      // 2. Recalculate total XP
+      language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
+
+      // 3. Recalculate time-based XP
+      const weekStart = moment().startOf("isoWeek");
+      const monthStart = moment().startOf("month");
+      const yearStart = moment().startOf("year");
+
+      language.xpWeekly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(weekStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      language.xpMonthly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(monthStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      language.xpYearly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(yearStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      // 4. Update total_xp across all languages
+      userProfile.total_xp = userProfile.interestedLanguages.reduce(
+        (sum, lang) => sum + (lang.xp || 0),
+        0
+      );
+    }
 
     await userProfile.save();
 
     return res.status(200).json({
-      message: "Language progress and badges updated successfully",
-      updatedBadges: language.badgesEarned
+      message: "Language progress, XP, and badges updated successfully",
+      updatedBadges: language.badgesEarned,
+      total_xp: userProfile.total_xp,
     });
 
   } catch (error) {
@@ -286,6 +324,3 @@ console.log("✅ Final badges array:", language.badgesEarned);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
-

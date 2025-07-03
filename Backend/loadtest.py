@@ -37,4 +37,4 @@ total_requests = 1000
 with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
     futures = [executor.submit(send_request, i) for i in range(1, total_requests + 1)]
     for future in concurrent.futures.as_completed(futures):
-        print(future.result())lo    
+        print(future.result())  

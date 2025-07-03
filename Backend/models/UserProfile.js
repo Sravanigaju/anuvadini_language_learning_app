@@ -25,6 +25,18 @@ const userProfileSchema = new mongoose.Schema({
       assesmentcompleted: { type: Number, default: 0 },
       finalassesementcompleted: { type: Number, default: 0 },
 
+      xp: { type: Number, default: 0 },             
+      xpWeekly: { type: Number, default: 0 },
+      xpMonthly: { type: Number, default: 0 },
+      xpYearly: { type: Number, default: 0 },
+      
+       xpHistory: [
+      {
+        date: { type: Date, required: true },
+        xpGained: { type: Number, required: true }
+      }
+    ],
+
       progressPercent: { type: Number, default: 0 }, 
       lastActiveAt: { type: Date },
       streak: {

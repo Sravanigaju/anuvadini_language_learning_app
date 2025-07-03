@@ -21,14 +21,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.static("html"));
 
-// Rate limiting
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // limit each IP to 100 requests per windowMs
-// });
-// app.use(limiter);
 
-// Connect to MongoDB
 mongoose
   .connect(
     process.env.MONGODB_URI ||
