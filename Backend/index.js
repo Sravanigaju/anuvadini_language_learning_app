@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
+const path = require("path");
 
 // Load environment variables
 dotenv.config();
@@ -29,8 +30,7 @@ app.use(limiter);
 // Connect to MongoDB
 mongoose
   .connect(
-    process.env.MONGODB_URI ||
-      "mongodb://127.0.0.1:27017/anuvadini_language",
+    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/anuvadini_language",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -39,25 +39,27 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Routes
+// General API routes (e.g., /api/gamers)
 const routes = require("./routes");
-app.use("/api", routes)
+app.use("/api", routes);
 
 
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
 
-const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
-// Start server
+// WebSocket init (if needed)
+const { setupWebSocket } = require("./server");
+
+// Start the server
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT,'0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
-  setupWebSocket(server); // Initialize WebSocket server
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+  setupWebSocket(server); // Optional
 });
 
-// Export app for testing
+// Export for testing
 module.exports = { app, server };
