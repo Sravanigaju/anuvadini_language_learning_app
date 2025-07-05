@@ -5,20 +5,58 @@ import makeInIndiaLogo from '../../../../assets/MakeInIndia.png';
 const Footer = () => {
   return (
     <div style={styles.footerWrapper}>
-      <div style={styles.footer}>
-        <div style={styles.left}>
-          <span style={styles.poweredBy}>Powered By</span>
-          <img src={anuvadiniLogo} alt="Anuvadini Foundation" style={styles.logo} />
-          <img src={makeInIndiaLogo} alt="Make In India" style={styles.logo} />
+      <div style={styles.footerContent}>
+        
+        <div style={styles.column}>
+          <h5 style={styles.heading}>About</h5>
+          <ul style={styles.list}>
+            <li><a href="#" style={styles.link}>Overview</a></li>
+            <li><a href="#" style={styles.link}>Ideal For</a></li>
+            <li><a href="#" style={styles.link}>Anuvadini Team</a></li>
+          </ul>
         </div>
-        <a
-          href="https://anuvadini.aicte-india.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={styles.link}
-        >
-          anuvadini.aicte-india.org
-        </a>
+
+        <div style={styles.column}>
+          <h5 style={styles.heading}>Features</h5>
+          <ul style={styles.list}>
+            <li><a href="#" style={styles.link}>Multilingual Courses</a></li>
+            <li><a href="#" style={styles.link}>Gamified Learning</a></li>
+            <li><a href="#" style={styles.link}>Progress Tracking</a></li>
+          </ul>
+        </div>
+
+        <div style={styles.column}>
+          <h5 style={styles.heading}>Services</h5>
+          <ul style={styles.list}>
+            <li><a href="#" style={styles.link}>Teacher Dashboard</a></li>
+            <li><a href="#" style={styles.link}>Institutional Setup</a></li>
+            <li><a href="#" style={styles.link}>Support & FAQ</a></li>
+          </ul>
+        </div>
+
+        <div style={styles.column}>
+          <h5 style={styles.heading}>Other Links</h5>
+          <ul style={styles.list}>
+            <li><a href="#" style={styles.link}>Privacy Policy</a></li>
+            <li><a href="#" style={styles.link}>Landing Page</a></li>
+            <li><a href="#" style={styles.link}>Download</a></li>
+          </ul>
+        </div>
+
+        
+        <div style={styles.branding}>
+          <span style={styles.poweredBy}>Powered By</span>
+          <img src={anuvadiniLogo} alt="Anuvadini" style={styles.logo} />
+          <img src={makeInIndiaLogo} alt="Make in India" style={styles.logo} />
+          <a
+            href="https://anuvadini.aicte-india.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={styles.siteLink}
+          >
+            anuvadini.aicte-india.org
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -26,40 +64,64 @@ const Footer = () => {
 
 const styles = {
   footerWrapper: {
-    backgroundColor: '#ffe8d6', // A subtle contrast to #fff6ee
-    boxShadow: '0px -1px 4px rgba(0, 0, 0, 0.05)',
-    padding: '12px 20px',
+    backgroundColor: '#fff1e6',
+    borderTop: '1px solid #ffe3c2',
+    padding: '24px 16px',
     marginTop: 'auto',
-    width: '100%',
+    fontFamily: 'inherit',
   },
-  footer: {
+  footerContent: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
     maxWidth: '1200px',
     margin: '0 auto',
+    gap: '30px',
   },
-  left: {
+  column: {
+    flex: '1 1 150px',
+    minWidth: '140px',
+  },
+  heading: {
+    fontSize: '16px',
+    color: '#333',
+    marginBottom: 10,
+    fontWeight: 600,
+  },
+  list: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+  },
+  link: {
+    fontSize: '14px',
+    color: '#3B82F6',
+    textDecoration: 'none',
+    display: 'block',
+    marginBottom: 6,
+  },
+  branding: {
+    flex: '1 1 200px',
     display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 10,
+    marginTop: 12,
   },
   poweredBy: {
     fontSize: '14px',
-    color: '#444',
-    fontWeight: 600,
+    color: '#555',
+    fontWeight: 500,
   },
   logo: {
-    height: '26px',
+    height: '28px',
     objectFit: 'contain',
   },
-  link: {
-    color: '#1e40af', // Tailwind's blue-800
+  siteLink: {
     fontSize: '14px',
+    color: '#1e40af',
     textDecoration: 'none',
+    marginTop: 4,
     fontWeight: 500,
   },
 };
