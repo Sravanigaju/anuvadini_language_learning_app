@@ -6,6 +6,4 @@ const { getUserDashboard, getUserProgress } = require('../controllers/dashboardC
 router.get('/progress', getUserProgress); // specific first
 router.get('/:userId', getUserDashboard); // dynamic after
 
-
-
 module.exports = router;
