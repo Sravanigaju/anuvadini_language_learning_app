@@ -1,7 +1,5 @@
 const UserProfile = require("../models/UserProfile");
 
-
-
 exports.getXpLeaderboard = async (req, res) => {
   try {
     const { language } = req.params;
@@ -34,7 +32,14 @@ exports.getXpLeaderboard = async (req, res) => {
           userId: 1,
           name: { $concat: ["$firstName", " ", "$lastName"] },
           profilePic: 1,
-          xp: xpField
+          xp: xpField,
+          completedLessons: "$interestedLanguages.completedLessons",
+          totalAssessments: {
+            $add: [
+              { $ifNull: ["$interestedLanguages.assesmentcompleted", 0] },
+              { $ifNull: ["$interestedLanguages.finalassesementcompleted", 0] }
+            ]
+          }
         }
       },
       { $sort: { xp: -1 } },

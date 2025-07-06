@@ -19,8 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
-app.use(express.static("html"));
 
+
+app.use(express.static("html"));
+app.use("/auth", express.static(path.join(__dirname, "admin_main", "build")));
+app.get("/auth/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin_main", "build", "index.html"));
+});
 
 mongoose
   .connect(

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Row, Col, Form, Button, Card, Image, Container } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import logo from '../../../assets/images/auth/LrN-logo.png';
-import Footer from '../components/Footer/Footer';
+import logo from '../../assets/images/auth/LrN-logo.png';
+import Footer from '../../components/Footer/Footer';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
