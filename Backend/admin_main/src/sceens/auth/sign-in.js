@@ -1,36 +1,29 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button, Card, Image, Container } from 'react-bootstrap';
+import { Form, Button, Card, Image } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo from '../../assets/images/auth/LrN-logo.png';
+import languageImage from '../../assets/images/auth/Language.png';
 import Footer from '../../components/Footer/Footer';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div style={styles.wrapper}>
-      <Container fluid className="flex-grow-1 p-0" style={styles.content}>
-        <Row className="g-0" style={{ flex: 1 }}>
-          {/* LEFT SIDE - FORM */}
-          <Col
-            xs={12}
-            md={6}
-            className="d-flex align-items-center justify-content-center"
-            style={styles.leftSide}
-          >
-            <div style={{ width: '100%', maxWidth: 420, padding: 20 }}>
-              <div className="text-center mb-4">
-                <Image src={logo} alt="Logo" style={{ maxWidth: 260, height: 100 }} />
-              </div>
+    <div style={styles.pageWrapper}>
+      <div style={styles.container}>
+        {/* Left Side */}
+        <div style={styles.leftSide}>
+          <div style={styles.formContainer}>
+            <Image src={logo} alt="Logo" style={styles.logo} />
 
-              <Card className="p-4 shadow rounded-4 border-0" style={styles.card}>
-                <h4 className="text-center mb-3 fw-bold text-dark">Enter Details</h4>
+            <Card style={styles.card}>
+              <h4 className="text-center fw-bold text-dark mb-4">Enter Details</h4>
 
+              <Form>
                 <Form.Group className="mb-3">
                   <Form.Control
                     type="tel"
                     placeholder="Phone Number"
-                    disabled
                     style={styles.input}
                   />
                 </Form.Group>
@@ -39,7 +32,6 @@ const SignIn = () => {
                   <Form.Control
                     type="email"
                     placeholder="Email"
-                    disabled
                     style={styles.input}
                   />
                 </Form.Group>
@@ -48,7 +40,6 @@ const SignIn = () => {
                   <Form.Control
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
-                    disabled
                     style={styles.input}
                   />
                   <span
@@ -60,68 +51,87 @@ const SignIn = () => {
                 </Form.Group>
 
                 <div className="d-flex justify-content-end mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-link text-primary fw-semibold p-0"
-                    style={{ textDecoration: 'none', fontSize: 14 }}
-                  >
+                  <Button variant="link" className="p-0" style={styles.forgotLink}>
                     Forgot Password?
-                  </button>
+                  </Button>
                 </div>
 
-                <Button className="w-100 rounded-pill" style={styles.loginButton} disabled>
+                <Button className="w-100 rounded-pill" style={styles.loginButton}>
                   Login
                 </Button>
-              </Card>
-            </div>
-          </Col>
+              </Form>
+            </Card>
+          </div>
+        </div>
 
-          {/* RIGHT SIDE - IMAGE */}
-          <Col
-            md={6}
-            className="d-none d-md-block"
-            style={styles.rightImage}
-          />
-        </Row>
-      </Container>
+        {/* Right Side */}
+        <div style={styles.rightSide}></div>
+      </div>
 
-      {/* Sticky Footer */}
+      {/* Footer outside the container */}
       <Footer />
     </div>
   );
 };
 
 const styles = {
-  wrapper: {
+  pageWrapper: {
     backgroundColor: '#fff6ee',
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
   },
-  content: {
+  container: {
     flex: 1,
     display: 'flex',
-    flexDirection: 'column',
+    height: 'calc(100vh - 120px)', // full height minus footer
+    width: '100%',
   },
   leftSide: {
+    width: '50%',
     backgroundColor: '#ffffff',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: '40px 20px',
-    height: '100%',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: 420,
+  },
+  logo: {
+    maxWidth: 260,
+    height: 100,
+    display: 'block',
+    margin: '0 auto 20px',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    boxShadow: '0 0 20px rgba(0, 0, 0, 0.06)',
+    border: 'none',
+    borderRadius: 20,
+    padding: 30,
   },
   input: {
     backgroundColor: '#fff6ee',
     borderColor: '#ff8c42',
-    borderRadius: '8px',
-    height: '45px',
-    fontSize: '16px',
+    borderRadius: '10px',
+    height: '48px',
+    fontSize: '15px',
+    padding: '10px 15px',
   },
   eyeIcon: {
     position: 'absolute',
-    right: '15px',
-    top: '12px',
+    right: 15,
+    top: 12,
     cursor: 'pointer',
-    zIndex: 1,
     color: '#888',
+  },
+  forgotLink: {
+    fontSize: 14,
+    color: '#3B82F6',
+    textDecoration: 'none',
+    fontWeight: 600,
   },
   loginButton: {
     backgroundColor: '#3B82F6',
@@ -129,16 +139,11 @@ const styles = {
     padding: '12px 0',
     fontWeight: 600,
   },
-  rightImage: {
-    backgroundImage: `url('/images/Language.png')`,
+  rightSide: {
+    width: '50%',
+    backgroundImage: `url(${languageImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    minHeight: '100%',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    boxShadow: '0 0 16px rgba(0, 0, 0, 0.05)',
-    borderRadius: 16,
   },
 };
 
