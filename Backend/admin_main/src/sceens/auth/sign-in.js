@@ -4,9 +4,13 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo from '../../assets/images/auth/LrN-logo.png';
 import languageImage from '../../assets/images/auth/Language.png';
 import Footer from '../../components/Footer/Footer';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div style={styles.pageWrapper}>
@@ -56,7 +60,11 @@ const SignIn = () => {
                   </Button>
                 </div>
 
-                <Button className="w-100 rounded-pill" style={styles.loginButton}>
+                <Button
+                  className="w-100 rounded-pill"
+                  style={styles.loginButton}
+                  onClick={() => navigate('/dashboard')} 
+                >
                   Login
                 </Button>
               </Form>
@@ -148,3 +156,189 @@ const styles = {
 };
 
 export default SignIn;
+
+
+// import React, { useState } from 'react';
+// import { Form, Button, Card } from 'react-bootstrap';
+// import { FaEye, FaEyeSlash } from 'react-icons/fa';
+// import logo from '../../assets/images/auth/LrN-logo.png';
+// import rightBg from '../../assets/images/auth/Language.png'; // your blue radial image
+// import { useNavigate } from 'react-router-dom';
+
+// const SignIn = () => {
+//   const [showPassword, setShowPassword] = useState(false);
+//   const navigate = useNavigate();
+
+//   return (
+//     <div style={styles.wrapper}>
+//       {/* Left Side: Form */}
+//       <div style={styles.left}>
+//         <img src={logo} alt="Logo" style={styles.logo} />
+//         <h2 style={styles.heading}>Sign In</h2>
+//         <p style={styles.subtext}>Login to stay connected.</p>
+
+//         <Card style={styles.card}>
+//           <Form>
+//             <Form.Group className="mb-3">
+//               <Form.Label style={styles.label}>Email</Form.Label>
+//               <Form.Control type="email" placeholder="Enter your email" style={styles.input} />
+//             </Form.Group>
+
+//             <Form.Group className="mb-3 position-relative">
+//               <Form.Label style={styles.label}>Password</Form.Label>
+//               <Form.Control
+//                 type={showPassword ? 'text' : 'password'}
+//                 placeholder="Enter your password"
+//                 style={styles.input}
+//               />
+//               <span style={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
+//                 {showPassword ? <FaEyeSlash /> : <FaEye />}
+//               </span>
+//             </Form.Group>
+
+//             <div style={styles.bottomRow}>
+//               <div>
+//                 <input type="checkbox" />
+//                 <span style={styles.rememberMe}> Remember Me</span>
+//               </div>
+//               <Button variant="link" style={styles.forgotLink}>Forgot Password?</Button>
+//             </div>
+
+//             <Button style={styles.signInButton} onClick={() => navigate('/dashboard')}>
+//               Sign In
+//             </Button>
+//           </Form>
+
+//           <p style={styles.altText}>or sign in with other accounts?</p>
+
+//           <div style={styles.socialRow}>
+//             <img src="https://img.icons8.com/ios-filled/24/000000/facebook-new.png" alt="Facebook" />
+//             <img src="https://img.icons8.com/ios-filled/24/000000/google-logo.png" alt="Google" />
+//             <img src="https://img.icons8.com/ios-filled/24/000000/instagram-new.png" alt="Instagram" />
+//             <img src="https://img.icons8.com/ios-filled/24/000000/linkedin.png" alt="LinkedIn" />
+//           </div>
+
+//           <p style={styles.signUpText}>
+//             Don’t have an account? <span style={styles.signUpLink}>Click here to sign up.</span>
+//           </p>
+//         </Card>
+//       </div>
+
+//       {/* Right Side: Background image */}
+//       <div style={styles.right}>
+//         <img src={rightBg} alt="Side Visual" style={styles.rightImage} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// const styles = {
+//   wrapper: {
+//     display: 'flex',
+//     minHeight: '100vh',
+//     backgroundColor: '#fff',
+//   },
+//   left: {
+//     width: '50%',
+//     padding: '60px 40px',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     justifyContent: 'center',
+//   },
+//   logo: {
+//     width: 150,
+//     marginBottom: 20,
+//   },
+//   heading: {
+//     fontWeight: '700',
+//     fontSize: 32,
+//     marginBottom: 5,
+//   },
+//   subtext: {
+//     color: '#6b7280',
+//     marginBottom: 30,
+//   },
+//   card: {
+//     border: 'none',
+//     padding: 0,
+//     background: 'transparent',
+//   },
+//   label: {
+//     fontWeight: 600,
+//     marginBottom: 5,
+//   },
+//   input: {
+//     height: '45px',
+//     borderRadius: '10px',
+//     border: '1px solid #d1d5db',
+//     padding: '0 15px',
+//   },
+//   eyeIcon: {
+//     position: 'absolute',
+//     top: '45px',
+//     right: 10,
+//     cursor: 'pointer',
+//     color: '#6b7280',
+//   },
+//   bottomRow: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 20,
+//     fontSize: 14,
+//   },
+//   rememberMe: {
+//     marginLeft: 5,
+//   },
+//   forgotLink: {
+//     fontSize: 14,
+//     color: '#3b82f6',
+//     textDecoration: 'none',
+//     fontWeight: 500,
+//   },
+//   signInButton: {
+//     width: '100%',
+//     backgroundColor: '#3b82f6',
+//     color: 'white',
+//     border: 'none',
+//     borderRadius: 10,
+//     padding: '12px',
+//     fontWeight: 600,
+//     marginBottom: 20,
+//   },
+//   altText: {
+//     textAlign: 'center',
+//     fontSize: 14,
+//     color: '#6b7280',
+//     marginBottom: 10,
+//   },
+//   socialRow: {
+//     display: 'flex',
+//     justifyContent: 'center',
+//     gap: 20,
+//     marginBottom: 20,
+//   },
+//   signUpText: {
+//     fontSize: 14,
+//     textAlign: 'center',
+//   },
+//   signUpLink: {
+//     color: '#3b82f6',
+//     fontWeight: 'bold',
+//     cursor: 'pointer',
+//   },
+//   right: {
+//     width: '50%',
+//     backgroundColor: '#0e46a3',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   rightImage: {
+//     width: '100%',
+//     height: '100vh',
+//     objectFit: 'cover',
+//   },
+// };
+
+// export default SignIn;
