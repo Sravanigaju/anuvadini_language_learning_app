@@ -288,6 +288,7 @@ img, img.responsive {
 	background: rgba(255,255,255,1);
 	color: #fff;
 	padding: 6px 0 6px;
+	box-shadow: 0 0 20px #eee;
 }
 nav{margin-top: 18px;}
 .sticky-navigation {
@@ -1095,7 +1096,7 @@ nav{margin-top: 18px;}
 .color-yellow{margin-bottom: 15px; display: inline-block;}
 .color-yellow i{font-size: 25px}
 .green-btn{ background: #35a854;}
-.yellow-btn { background: #F1C40F; color: #fff;}
+.yellow-btn { background: #e78c32; color: #fff;}
 .appleUsrH{ display: inline-block; background: #e78c32; padding: 10px 16px; border:1px solid #ccc; border-radius:6px; color:#fff }
 .appleUsrH:hover{color: #fff}
 .andrdUsrH{ display: inline-block; background: #35a854; padding: 10px 16px; border:1px solid #ccc; border-radius:6px; color:#fff }
@@ -1144,9 +1145,19 @@ nav{margin-top: 18px;}
 .footer-bg .text-center a{color: #286bda}
 .footer-bg .text-center a.anuLnk{color: #fff44a}
 .gk-contact-pointer img{width: 130px}
+.dwnLoadMobile{display: none;}
+.desktopDwonload{display: block;}
+.mobileDownload{display: none;}
+.downloadDesktop{display: block;}
+.downloadMobile{display: none;}
+.logo .img-responsive{height: 65px}
+.langIcn img{width: 57px; position: relative; top: 5px; text-align: right; left: 75px}
 
 @media only screen and (max-width: 767px){
-.logo{width: 40%}
+.logo{width: 40%; float: left;}
+.langIcn{width: 20%; float: left;}
+.langIcn img{left: 25px}
+.navbar-toggle{margin-top: 10px}
 .banner-info .text-bold, .banner-info{color: #fff}
 .section-msg1{font-size: 26px}
 .section-title{font-size: 26px!important}
@@ -1172,7 +1183,7 @@ nav{margin-top: 18px;}
 #download .gk-pointer-features{display: none;}
 .color-grey.sbTtlTxt{color: #fff;}
 .color-grey.sbTtlTxt{color: #323232}
-.download-button .green-btn{margin-bottom: 12px}
+.download-button .green-btn{margin-bottom: 0px}
 .download-button .gk-btn-margin{margin-right: 0}
 .grey-yellow-color:after{display: none;}
 #contact-us{background: #35a854}
@@ -1195,6 +1206,42 @@ nav{margin-top: 18px;}
 .features-grid.fea_9{background: #fcf0ff!important;}
 .features-grid.fea_10{background: #f0f2ff!important;}
 .features-grid.fea_11{background: #ffeded!important;}
+/*.dwnloadDesktop{display: none;}*/
+.dwnLoadMobile{display: block;}
+.lrnIndianLangMobile .lrnIndLanSubttl{display: none;}
+.dwnLoadMobile{background: #f7fdff}
+.dwnLoadMobile h1.text-uppercase{font-size: 18px; text-align: center; font-weight: 600; line-height: 24px; margin-top: 0}
+.dwnLoadMobile h1.text-uppercase span{color: #286bda}
+.dwnLoadMobile h6.text-subtitle{text-align: center; line-height: 24px; font-size: 14px; padding: 0; margin: 0}
+.dwnLoadMobile .text-center.color-grey{padding: 0; margin: 0;}
+.dwnLoadMobile .download-button{padding-top: 0}
+.lrnIndianLangMobile .banner-button{display: none;}
+.dwnLoadCounts{width: 100%; float: left;}
+.dwnLoadCounts .counter{color: #666}
+.dwnLoadCounts .text-uppercase{color: #666}
+.lrnIndianLangMobile .col-sm-5.banner-image-info{display: none;}
+.fullImgDesktop{display: none;}
+.dwnLoadCounts{margin-top: 15px}
+.dwnLoadCounts .text-right{text-align: center;}
+.dwnLoadCounts .banner-info{margin-right: 0}
+.dwnldCount{border:1px dotted #ccc; padding: 10px; padding-left:0; padding-right: 0 }
+.dcnt{background: #eefff2}
+.dAnd{background: #f1f6ff}
+.bnrTrnglArrow{position: relative;left: 250px;top: 54px;}
+.desktopDwonload{display: none;}
+.mobileDownload{display: block;}
+.downloadDesktop{display: none;}
+.downloadMobile{display: block;}
+.logo .img-responsive{height: 54px}
+.dwnLoadMobile .gk-up-right-arrow{display: none;}
+.androidBtnDw{width: 45%}
+.appleBtnDw{width: 45%}
+.cmngSsn{position: absolute; font-size: 10px; bottom: 20px;
+        right: 17px; padding: 5px; font-style: italic;}
+ .btn.gk-download-btn.yellow-btn.gk-btn-margin.appleBtnDw{text-align: left;}
+ .btmAndrodDwnload{width: 45%;}
+ .btmApplDwn{width: 45%}
+ .aplCmngSoon{font-size: 9px; position: relative; top: -2px}
 }
 @media only screen and (min-width: 768px) and (max-width: 1024px){
 	.logo{width: 20%; float: left;}
