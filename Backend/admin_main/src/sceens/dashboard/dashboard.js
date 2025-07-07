@@ -1,8 +1,11 @@
 import React from "react";
 import { FaBook, FaClipboardList, FaGlobe, FaUserCheck, FaCheckCircle } from "react-icons/fa";
+import AdminHeader from "../../components/header/Dashboar-Header";
 
 const Dashboard = () => {
-  return (
+  return  (
+    <div>
+      <AdminHeader />
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       {/* Sidebar */}
       <aside style={{ width: '250px', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem' }}>
@@ -46,6 +49,7 @@ const Dashboard = () => {
           </div>
         </section>
       </main>
+    </div>
     </div>
   );
 };

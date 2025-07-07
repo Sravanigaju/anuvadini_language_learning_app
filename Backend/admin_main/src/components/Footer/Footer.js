@@ -65,8 +65,8 @@ const Footer = () => {
 const styles = {
   footerWrapper: {
     backgroundColor: '#fff1e6',
-    borderTop: '1px solid #ffe3c2',
-    padding: '24px 16px',
+    borderTop: '0.0625rem solid #ffe3c2',       // 1px
+    padding: '1.5rem 1rem',                     // 24px 16px
     marginTop: 'auto',
     fontFamily: 'inherit',
   },
@@ -74,18 +74,18 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    maxWidth: '1200px',
+    maxWidth: '75rem',                         // 1200px
     margin: '0 auto',
-    gap: '30px',
+    gap: '1.875rem',                           // 30px
   },
   column: {
-    flex: '1 1 150px',
-    minWidth: '140px',
+    flex: '1 1 9.375rem',                      // 150px
+    minWidth: '8.75rem',                       // 140px
   },
   heading: {
-    fontSize: '16px',
+    fontSize: '1rem',                          // 16px
     color: '#333',
-    marginBottom: 10,
+    marginBottom: '0.625rem',                  // 10px
     fontWeight: 600,
   },
   list: {
@@ -94,36 +94,37 @@ const styles = {
     margin: 0,
   },
   link: {
-    fontSize: '14px',
+    fontSize: '0.875rem',                      // 14px
     color: '#3B82F6',
     textDecoration: 'none',
     display: 'block',
-    marginBottom: 6,
+    marginBottom: '0.375rem',                  // 6px
   },
   branding: {
-    flex: '1 1 200px',
+    flex: '1 1 12.5rem',                       // 200px
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: 10,
-    marginTop: 12,
+    gap: '0.625rem',                           // 10px
+    marginTop: '0.75rem',                      // 12px
   },
   poweredBy: {
-    fontSize: '14px',
+    fontSize: '0.875rem',                      // 14px
     color: '#555',
     fontWeight: 500,
   },
   logo: {
-    height: '28px',
+    height: '1.75rem',                         // 28px
     objectFit: 'contain',
   },
   siteLink: {
-    fontSize: '14px',
+    fontSize: '0.875rem',                      // 14px
     color: '#1e40af',
     textDecoration: 'none',
-    marginTop: 4,
+    marginTop: '0.25rem',                      // 4px
     fontWeight: 500,
   },
 };
+
 
 export default Footer;
