@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { Form, Button, Card, Image } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo from '../../assets/images/auth/LrN-logo.png';
-import Footer from '../../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
+    console.log({ role });
     navigate('/dashboard');
   };
 
@@ -25,15 +26,35 @@ const SignIn = () => {
           <Card style={styles.card}>
             <h4 style={styles.heading}>ADMIN LOGIN</h4>
             <Form onSubmit={handleLogin}>
+
+              {/* Role Dropdown */}
+              <Form.Group className="mb-3" style={styles.formGroup}>
+                <Form.Label style={styles.label}>Role</Form.Label>
+                <Form.Select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  style={styles.inputHorizontal}
+                  required
+                >
+                  <option value="">Select Role</option>
+                  <option value="Institution">Institution</option>
+                  <option value="Validator">Validator</option>
+                  <option value="Creator">Creator</option>
+                </Form.Select>
+              </Form.Group>
+
+              {/* Username */}
               <Form.Group className="mb-3" style={styles.formGroup}>
                 <Form.Label style={styles.label}>User Name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="User Name"
                   style={styles.inputHorizontal}
+                  required
                 />
               </Form.Group>
 
+              {/* Password */}
               <Form.Group className="mb-3" style={styles.formGroup}>
                 <Form.Label style={styles.label}>Password</Form.Label>
                 <div style={styles.inputWrapper}>
@@ -41,6 +62,7 @@ const SignIn = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
                     style={styles.inputWithIcon}
+                    required
                   />
                   <span
                     style={styles.eyeIconAbsolute}
@@ -51,14 +73,13 @@ const SignIn = () => {
                 </div>
               </Form.Group>
 
-
+              {/* Submit */}
               <Button type="submit" style={styles.submitButton}>
                 Submit
               </Button>
             </Form>
           </Card>
         </div>
-        <Footer />
       </div>
     </div>
   );
@@ -100,47 +121,13 @@ const styles = {
     marginBottom: '1.5rem',
     color: '#333333',
   },
-  label: {
-    marginBottom: '0.5rem',
-    fontWeight: '500',
-    color: '#333',
-  },
-  captchaRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '1rem',
-  },
-  captchaBox: {
-    backgroundColor: '#f0f0f0',
-    padding: '0.5rem 1rem',
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    borderRadius: '0.25rem',
-  },
-  refreshIcon: {
-    cursor: 'pointer',
-    fontSize: '1.2rem',
-    marginLeft: '0.5rem',
-  },
-  submitButton: {
-    backgroundColor: 'rgb(53, 168, 84)', // green button
-    color: '#fff',
-    fontWeight: 600,
-    padding: '0.75rem 0',
-    fontSize: '1rem',
-    border: 'none',
-    borderRadius: '0.5rem',
-    width: '100%',
-    marginTop: '0.5rem',
-  },
   formGroup: {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
   },
   label: {
-    width: '100px', // set a fixed width for alignment
+    width: '100px',
     marginBottom: 0,
     fontWeight: '500',
     color: '#333',
@@ -154,11 +141,7 @@ const styles = {
     height: '2.75rem',
     fontSize: '1rem',
     padding: '0 1rem',
-    paddingRight: '2.5rem', // 👈 add this
-  },
-  passwordWrapper: {
-    position: 'relative',
-    flex: 1,
+    paddingRight: '2.5rem',
   },
   inputWrapper: {
     position: 'relative',
@@ -171,10 +154,9 @@ const styles = {
     borderRadius: '0.5rem',
     height: '2.75rem',
     fontSize: '1rem',
-    padding: '0 0 0 1rem', // extra right padding for icon
-    marginTop: '0.5rem'
+    padding: '0 0 0 1rem',
+    marginTop: '0.5rem',
   },
-
   eyeIconAbsolute: {
     position: 'absolute',
     top: '60%',
@@ -183,7 +165,17 @@ const styles = {
     color: '#A0A0A0',
     cursor: 'pointer',
   },
-
+  submitButton: {
+    backgroundColor: 'rgb(53, 168, 84)',
+    color: '#fff',
+    fontWeight: 600,
+    padding: '0.75rem 0',
+    fontSize: '1rem',
+    border: 'none',
+    borderRadius: '0.5rem',
+    width: '100%',
+    marginTop: '0.5rem',
+  },
 };
 
 export default SignIn;

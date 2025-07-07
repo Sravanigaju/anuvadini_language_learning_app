@@ -87,7 +87,7 @@ const cardData = [
   { icon: <FaBook />, label: "Total Lessons", value: "1.2K", bg: "#286bda" },
   { icon: <FaClipboardList />, label: "Question Papers", value: "450", bg: "#35a854" },
   { icon: <FaCheckCircle />, label: "Pending Reviews", value: "120", bg: "#e78c32" },
-  { icon: <FaGlobe />, label: "Languages", value: "18", bg: "#A835A8" },
+  { icon: <FaGlobe />, label: "Languages", value: "23", bg: "#A835A8" },
   { icon: <FaUserCheck />, label: "Active Experts", value: "75", bg: "#1E90FF" },
 ];
 

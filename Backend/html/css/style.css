@@ -81,7 +81,7 @@ img, img.responsive {
 	position: static;
 }
 .container {
-    max-width: 1200px;
+    max-width: 1340px;
 	width: 100%;
 }
 .no-padding {
@@ -333,6 +333,9 @@ nav{margin-top: 18px;}
 }
 .top-navbar .dropdown a{
 	background:none !important;
+	display: flex;
+    justify-content: space-between;
+	align-items: center;
 }
 /* ------------- Top Social Icon Styles ------------- */
 .top-social-icon {
@@ -968,6 +971,7 @@ nav{margin-top: 18px;}
 	font-size: 17px;
 	padding-left: 0;
 }
+
 .gk-contact-form .form-control::-moz-placeholder {
 	color:#7f8c8d;
 	text-transform: uppercase;
@@ -1153,6 +1157,62 @@ nav{margin-top: 18px;}
 .logo .img-responsive{height: 65px}
 .langIcn img{width: 57px; position: relative; top: 5px; text-align: right; left: 75px}
 
+
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background-color: #fff;
+  min-width: 160px;
+}
+.dropdown-menu{
+	min-width: 200px;
+	width:100%;
+}
+.caret-right {
+    border-bottom: 7px solid transparent;
+    border-top: 7px solid transparent;
+    border-left: 7px solid;
+    display: inline-block;
+    height: 0;
+    opacity: 0.7;
+    vertical-align: top;
+    width: 0;
+	position: relative;
+	top:5px
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.dropdown-submenu {display: none;}
+.dropdownsubmenu:hover .dropdown-submenu {
+  display: block;
+}
+.dropdown-menu li{
+	margin-right: 0;
+}
+
+.dropdown-submenu > a:after {
+  content: " ";
+  float: right;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #000;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu li a{
+	font-size: 13px!important;
+}
+
 @media only screen and (max-width: 767px){
 .logo{width: 40%; float: left;}
 .langIcn{width: 20%; float: left;}
@@ -1291,4 +1351,6 @@ nav{margin-top: 18px;}
 .container.features-right-grid .col-sm-3 .features-grid.gk-divider{border-right: none;}
 .features-right-grid .features-line{display: none;}
 .banner-section{padding-bottom: 0!important}
+
+
 }

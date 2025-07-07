@@ -1,8 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignIn from './sceens/auth/sign-in';
-import Dashboard from './sceens/dashboard/dashboard';
 import SignUp from './sceens/auth/sign-up';
+import Dashboard from './sceens/dashboard/dashboard';
+
+import RegisterInstitution from './sceens/auth/RegisterInstitution';
+import RegisterValidator from './sceens/auth/RegisterValidator';
+import RegisterCreator from './sceens/auth/RegisterCreator';
 
 function App() {
   return (
@@ -10,8 +14,11 @@ function App() {
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/login" element={<SignIn />} />
-        <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/register" element={<SignUp />} />
+        <Route path="/register/institution" element={<RegisterInstitution />} />
+        <Route path="/register/validator" element={<RegisterValidator />} />
+        <Route path="/register/creator" element={<RegisterCreator />} />
       </Routes>
     </BrowserRouter>
   );
