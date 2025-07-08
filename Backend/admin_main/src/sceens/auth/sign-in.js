@@ -68,9 +68,10 @@ const SignIn = () => {
                   <Form.Control
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
-                    style={styles.inputWithIcon}
+                    style={styles.inputHorizontal}
                     required
                   />
+
                   <span
                     style={styles.eyeIconAbsolute}
                     onClick={() => setShowPassword(!showPassword)}
@@ -134,7 +135,7 @@ const styles = {
     maxWidth: '26rem',
     padding: '2rem',
     borderRadius: '0.75rem',
-    boxShadow: '0 0.5rem 1rem rgba(0,0,0,0.5)',
+    boxShadow: '0 0.5rem 1rem rgba(0,0,0,0.7)',
     border: 'none',
     backgroundColor: '#ffffff',
   },
@@ -146,49 +147,57 @@ const styles = {
     color: '#333333',
   },
   formGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-  },
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '1rem',
+  maxWidth: '500px',
+  width: '100%',
+},
+
   label: {
-    width: '100px',
-    marginBottom: 0,
-    fontWeight: '500',
-    color: '#333',
-  },
+  width: '120px', // slightly wider for consistent alignment
+  marginBottom: 0,
+  fontWeight: '500',
+  color: '#333',
+},
+
   inputHorizontal: {
-    flex: 1,
-    marginTop: '0.5rem',
-    backgroundColor: '#ffffff',
-    border: '1px solid rgb(220, 166, 57)',
-    borderRadius: '0.5rem',
-    height: '2.75rem',
-    fontSize: '1rem',
-    padding: '0 1rem',
-    paddingRight: '2.5rem',
-  },
-  inputWrapper: {
-    position: 'relative',
-    flex: 1,
-  },
+  width: '100%',
+  backgroundColor: '#ffffff',
+  border: '1px solid rgb(220, 166, 57)',
+  borderRadius: '0.5rem',
+  height: '2.75rem',
+  fontSize: '1rem',
+  padding: '0 2.5rem 0 1rem', // ← note right padding increased to avoid eye overlap
+},
+
+
+inputWrapper: {
+  position: 'relative',
+  width: '100%',
+},
+
   inputWithIcon: {
-    width: '94%',
-    backgroundColor: '#ffffff',
-    border: '1px solid rgb(220, 166, 57)',
-    borderRadius: '0.5rem',
-    height: '2.75rem',
-    fontSize: '1rem',
-    padding: '0 0 0 1rem',
-    marginTop: '0.5rem',
-  },
+  width: '100%',
+  backgroundColor: '#ffffff',
+  border: '1px solid rgb(220, 166, 57)',
+  borderRadius: '0.5rem',
+  height: '2.75rem',
+  fontSize: '1rem',
+  padding: '0 1rem',
+  paddingRight: '2.5rem',
+},
+
   eyeIconAbsolute: {
-    position: 'absolute',
-    top: '60%',
-    right: '1rem',
-    transform: 'translateY(-50%)',
-    color: '#A0A0A0',
-    cursor: 'pointer',
-  },
+  position: 'absolute',
+  top: '50%',
+  right: '0.75rem',
+  transform: 'translateY(-50%)',
+  color: '#A0A0A0',
+  cursor: 'pointer',
+},
+
   submitButton: {
     backgroundColor: 'rgb(53, 168, 84)',
     color: '#fff',
