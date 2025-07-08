@@ -19,8 +19,9 @@ import {
   FaUserPlus,
   FaCertificate,
   FaFire,
-  FaGlobe
+  FaGlobe,
 } from "react-icons/fa";
+import './Dashboard.css'; // Optional for additional custom styles
 
 ChartJS.register(
   CategoryScale,
@@ -35,7 +36,6 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  // Sample data placeholders
   const ageData = {
     labels: ["10-19", "20-29", "30-39", "40-49", "50+"],
     datasets: [{
@@ -96,77 +96,81 @@ const Dashboard = () => {
   return (
     <div>
       <AdminHeader />
-      <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+      <div className="d-flex" style={{ minHeight: "100vh", fontFamily: "sans-serif" }}>
         {/* Sidebar */}
-        <aside style={{ width: '11rem', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem' , position: 'fixed', height: '100vh', overflowY: 'auto', left: 0, top: '3.875rem'}}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>LrN Admin</h2>
+        <aside className="bg-primary text-white p-3 position-fixed h-100" style={{ width: "12rem", top: "3.875rem", left: 0 }}>
+          <h2 className="fs-4 mb-4">LrN Admin</h2>
           <nav>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li style={navItemStyle}>Dashboard</li>
-              <li style={navItemStyle}>Manage Users</li>
-              <li style={navItemStyle}>Reports & Analytics</li>
-              <li style={navItemStyle}>Settings</li>
+            <ul className="list-unstyled">
+              <li className="mb-3 cursor-pointer">Dashboard</li>
+              <li className="mb-3 cursor-pointer">Manage Users</li>
+              <li className="mb-3 cursor-pointer">Reports & Analytics</li>
+              <li className="mb-3 cursor-pointer">Settings</li>
             </ul>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main style={{ flex: 1, backgroundColor: '#f8fafe', padding: '2rem' ,marginLeft: '14rem', marginTop: '3.875rem'}}>
-          <header style={{ marginBottom: '2rem' }}>
-            <h1 style={{ color: '#286bda' }}>Welcome Admin 👋</h1>
-            <p style={{ color: '#444' }}>Insights about users, activities, and growth.</p>
+        <main className="flex-grow-1 bg-light p-4" style={{ marginLeft: "12rem", marginTop: "3.875rem" }}>
+          <header className="mb-4">
+            <h1 className="text-primary">Welcome Admin 👋</h1>
+            <p className="text-muted">Insights about users, activities, and growth.</p>
           </header>
 
           {/* Summary Cards */}
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+          <div className="row g-3 mb-4">
             {cardData.map(({ icon, label, value, bg }, idx) => (
-              <div key={idx} style={{ ...cardStyle, backgroundColor: bg }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{icon}</div>
-                <div style={{ fontWeight: 600 }}>{label}</div>
-                <div style={{ fontSize: '1.25rem' }}>{value}</div>
+              <div key={idx} className="col-md-4 col-lg-3">
+                <div className={`card text-white shadow`} style={{ backgroundColor: bg }}>
+                  <div className="card-body d-flex flex-column align-items-start">
+                    <div className="fs-4 mb-2">{icon}</div>
+                    <div className="fw-semibold">{label}</div>
+                    <div className="fs-5">{value}</div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
 
           {/* Quick Actions */}
-          <section style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#286bda' }}>Quick Actions</h2>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button style={buttonStyle}>👥 Manage Users</button>
-              <button style={buttonStyle}>➕ Upload Lesson</button>
-              <button style={buttonStyle}>📊 View Reports</button>
+          <section className="mb-4">
+            <h2 className="text-primary">Quick Actions</h2>
+            <div className="d-flex gap-2 mt-2 flex-wrap">
+              <button className="btn btn-primary">👥 Manage Users</button>
+              <button className="btn btn-primary">➕ Upload Lesson</button>
+              <button className="btn btn-primary">📊 View Reports</button>
             </div>
           </section>
 
           {/* Charts Section */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            <div>
-              <h3>Age Distribution</h3>
+          <div className="row g-4">
+            <div className="col-md-6">
+              <h5>Age Distribution</h5>
               <Bar data={ageData} />
             </div>
 
-            <div>
-              <h3>Source Languages</h3>
+            <div className="col-md-6">
+              <h5>Source Languages</h5>
               <Pie data={languageData} />
             </div>
 
-            <div>
-              <h3>Interested Languages</h3>
+            <div className="col-md-6">
+              <h5>Interested Languages</h5>
               <Bar data={interestedLanguageData} />
             </div>
 
-            <div>
-              <h3>XP Progression</h3>
+            <div className="col-md-6">
+              <h5>XP Progression</h5>
               <Line data={xpProgressionData} />
             </div>
 
-            <div>
-              <h3>Streak Distribution</h3>
+            <div className="col-md-6">
+              <h5>Streak Distribution</h5>
               <Bar data={streakData} />
             </div>
 
-            <div>
-              <h3>Certificates Earned Over Time</h3>
+            <div className="col-md-6">
+              <h5>Certificates Earned Over Time</h5>
               <Line data={certificateData} />
             </div>
           </div>
@@ -174,35 +178,6 @@ const Dashboard = () => {
       </div>
     </div>
   );
-};
-
-const navItemStyle = {
-  margin: '1rem 0',
-  cursor: 'pointer',
-  fontSize: '1rem',
-  fontWeight: '500'
-};
-
-const cardStyle = {
-  flex: '1 1 200px',
-  color: 'white',
-  borderRadius: '10px',
-  padding: '1.5rem',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'start',
-  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-};
-
-const buttonStyle = {
-  backgroundColor: '#286bda',
-  color: 'white',
-  padding: '0.75rem 1.5rem',
-  border: 'none',
-  borderRadius: '30px',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  fontSize: '14px'
 };
 
 const cardData = [
