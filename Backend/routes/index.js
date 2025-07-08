@@ -9,7 +9,10 @@ const dashboardRoutes = require("./dashboardRoutes");
 const uploadRoutes = require("./uploadRoutes");
 const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
-const crosswordRoutes = require('./crosswordRoutes'); // Import crossword routes
+const deleteRoutes = require("./deleteRoutes"); 
+const crosswordRoutes = require('./crosswordRoutes');
+
+
 // Use route modules
 router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
@@ -18,5 +21,12 @@ router.use("/dashboard", dashboardRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
+router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
+
+
+
+
+
+
 module.exports = router;

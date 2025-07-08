@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const UserProfile = require("../models/UserProfile");
+const mongoose = require("mongoose");
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
@@ -48,17 +50,33 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Delete user
-exports.deleteUser = async (req, res) => {
+// ✅ Delete User and Profile (if exists)
+exports.deleteUserAndProfile = async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser)
+    const userId = req.params.id;
+
+    // Force conversion to ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
-    res.status(200).json({ message: "User deleted successfully" });
+    }
+
+    const deletedProfile = await UserProfile.findOneAndDelete({ userId });
+    if (deletedProfile) {
+      return res.status(200).json({ message: "User and profile deleted successfully" });
+    } else {
+      return res.status(200).json({ message: "User deleted (profile not found)" });
+    }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // Update user password
 exports.updatePassword = async (req, res) => {
   try {

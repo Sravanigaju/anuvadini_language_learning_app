@@ -20,14 +20,13 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
 
-// Connect to MongoDB
+app.use(express.static("html"));
+app.use("/auth", express.static(path.join(__dirname, "admin_main", "build")));
+app.get("/auth/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin_main", "build", "index.html"));
+});
+
 mongoose
   .connect(
     process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/anuvadini_language",
@@ -41,24 +40,29 @@ mongoose
 
 // General API routes (e.g., /api/gamers)
 const routes = require("./routes");
-app.use("/api", routes);
+app.use("/api", routes)
+app.use("/*", (req, res) => {
+  console.log("asdasd");
+  res.status(200).send(`Route: ${req.originalUrl}, Method: ${req.method}`);
+});
 
 
+app.get('/privacypolicy', (req, res) => {
+  res.sendFile(__dirname + 'html/privacypolicy');
+  console.log("11111111111111111111111111");
+});
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
-// WebSocket init (if needed)
-const { setupWebSocket } = require("./server");
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  setupWebSocket(server); // Optional
+const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
+// Start server
+const PORT = process.env.PORT || 7273;
+const server = app.listen(PORT,'0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+  setupWebSocket(server); // Initialize WebSocket server
 });
 
 // Export for testing

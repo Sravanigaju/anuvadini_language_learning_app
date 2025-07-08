@@ -7,7 +7,7 @@ const userProfileSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   age: { type: Number, required: true },
   country: { type: String, required: true },
-  state: { type: String, required: true },
+  state: { type: String, required: false },
   profilePic: { type: String, default: "" },
   joinedDate: { type: Date, default: Date.now },
   sourceLanguage: { type: String, required: true },
@@ -24,6 +24,18 @@ const userProfileSchema = new mongoose.Schema({
       catagoriecount: { type: Number, default: 0 },
       assesmentcompleted: { type: Number, default: 0 },
       finalassesementcompleted: { type: Number, default: 0 },
+
+      xp: { type: Number, default: 0 },             
+      xpWeekly: { type: Number, default: 0 },
+      xpMonthly: { type: Number, default: 0 },
+      xpYearly: { type: Number, default: 0 },
+      
+       xpHistory: [
+      {
+        date: { type: Date, required: true },
+        xpGained: { type: Number, required: true }
+      }
+    ],
 
       progressPercent: { type: Number, default: 0 }, 
       lastActiveAt: { type: Date },
