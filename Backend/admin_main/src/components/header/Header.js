@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import mainLogo from '../../assets/images/auth/LrN-logo.png';
 import langIcon from '../../assets/images/auth/langIcn.png';
-// import './App.css'; // adjust path if it's in a different folder
+import '../../App.css'; // adjust path if it's in a different folder
 
 const Header = () => {
   return (
@@ -86,7 +86,7 @@ const styles = {
   leftSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: '20px',
+    gap: '16px', // was 20px
   },
   logoSection: {
     display: 'flex',
@@ -101,9 +101,11 @@ const styles = {
 
   },
   mainLogo: {
-  height: '58px',
+  height: '56px',  // previously '58px'
   objectFit: 'contain',
+  marginLeft: '20px', // Adjusted for better spacing
 },
+
 langIcon: {
   height: '52px',
   objectFit: 'contain',

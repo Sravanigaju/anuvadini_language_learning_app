@@ -29,12 +29,24 @@
 }
 
 .nav-link {
+  text-decoration: none;
+  color: #286bda;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   transition: color 0.3s ease;
 }
 
 .nav-link:hover {
   color: #286bda;
 }
+
+.nav-link.active-link {
+  color: #286bda;
+}
+
 
 
 @keyframes App-logo-spin {

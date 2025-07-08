@@ -4,6 +4,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo from '../../assets/images/auth/LrN-logo.png';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
+import Footer from '../../components/Footer/Footer';
+import Footer2 from '../../components/Footer/Footer2';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -62,13 +64,14 @@ const SignIn = () => {
               </Form.Group>
 
               {/* Password */}
+              {/* Password */}
               <Form.Group className="mb-3" style={styles.formGroup}>
                 <Form.Label style={styles.label}>Password</Form.Label>
                 <div style={styles.inputWrapper}>
                   <Form.Control
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
-                    style={styles.inputHorizontal}
+                    style={styles.inputWithIcon} // ✅ accounts for icon space
                     required
                   />
 
@@ -106,6 +109,8 @@ const SignIn = () => {
           </Card>
         </div>
       </div>
+      <Footer />
+      <Footer2 />
     </div>
   );
 };
@@ -163,27 +168,27 @@ const styles = {
 },
 
   inputHorizontal: {
-  width: '100%',
-  backgroundColor: '#ffffff',
-  border: '1px solid rgb(220, 166, 57)',
-  borderRadius: '0.5rem',
-  height: '2.75rem',
-  fontSize: '1rem',
-  padding: '0 2.5rem 0 1rem', // ← note right padding increased to avoid eye overlap
-},
+    width: '280px', // fixed width
+    backgroundColor: '#ffffff',
+    border: '1px solid rgb(220, 166, 57)',
+    borderRadius: '0.5rem',
+    height: '2.5rem',
+    fontSize: '1rem',
+    padding: '0 2.5rem 0 1rem', // space for eye icon
+  },
 
+  inputWrapper: {
+    position: 'relative',
+    width: '280px', // match exactly with inputHorizontal
+  },
 
-inputWrapper: {
-  position: 'relative',
-  width: '100%',
-},
 
   inputWithIcon: {
-  width: '100%',
+  width: '250px',
   backgroundColor: '#ffffff',
   border: '1px solid rgb(220, 166, 57)',
   borderRadius: '0.5rem',
-  height: '2.75rem',
+  height: '2.5rem',
   fontSize: '1rem',
   padding: '0 1rem',
   paddingRight: '2.5rem',
