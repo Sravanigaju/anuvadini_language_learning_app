@@ -149,6 +149,9 @@ exports.getUserProgress = async (req, res) => {
         less_ass_count: langProgress.assesmentcompleted,
         fin_ass_count: langProgress.finalassesementcompleted,
         score: langProgress.xp,
+        xpWeekly: langProgress.xpWeekly || 0,
+        xpMonthly: langProgress.xpMonthly || 0,
+        xpYearly: langProgress.xpYearly || 0,
         streak: langProgress.streak?.currentStreak || 0,
         progress_lang: langProgress.progressPercent,
         certificate: langProgress.certificate || false
