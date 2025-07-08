@@ -21,6 +21,7 @@ import {
   FaFire,
   FaGlobe,
 } from "react-icons/fa";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS for styling
 import '../css/dashboard.css'; // Optional for additional custom styles
 
 ChartJS.register(
