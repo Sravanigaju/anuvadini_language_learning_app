@@ -8,10 +8,18 @@ import Header from '../../components/header/Header';
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState('');
+  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
+
+    if (captchaInput.trim() !== '7') {
+      setCaptchaError('Incorrect CAPTCHA answer. Please try again.');
+      return;
+    }
+
     console.log({ role });
     navigate('/dashboard');
   };
@@ -21,7 +29,6 @@ const SignIn = () => {
       <Header />
       <div style={styles.wrapper}>
         <div style={styles.container}>
-          <Image src={logo} alt="Logo" style={styles.logo} />
 
           <Card style={styles.card}>
             <h4 style={styles.heading}>ADMIN LOGIN</h4>
@@ -73,6 +80,23 @@ const SignIn = () => {
                 </div>
               </Form.Group>
 
+              {/* Temporary CAPTCHA */}
+              <Form.Group className="mb-3" style={styles.formGroup}>
+                <Form.Label style={styles.label}>CAPTCHA</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="What is 4 + 3?"
+                  value={captchaInput}
+                  onChange={(e) => {
+                    setCaptchaInput(e.target.value);
+                    setCaptchaError('');
+                  }}
+                  style={styles.inputHorizontal}
+                  required
+                />
+              </Form.Group>
+              {captchaError && <div style={{ color: 'red', marginBottom: '1rem' }}>{captchaError}</div>}
+
               {/* Submit */}
               <Button type="submit" style={styles.submitButton}>
                 Submit
@@ -110,7 +134,7 @@ const styles = {
     maxWidth: '26rem',
     padding: '2rem',
     borderRadius: '0.75rem',
-    boxShadow: '0 0.5rem 1rem rgba(0,0,0,0.1)',
+    boxShadow: '0 0.5rem 1rem rgba(0,0,0,0.5)',
     border: 'none',
     backgroundColor: '#ffffff',
   },
