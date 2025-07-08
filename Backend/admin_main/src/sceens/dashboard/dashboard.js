@@ -21,7 +21,7 @@ import {
   FaFire,
   FaGlobe,
 } from "react-icons/fa";
-import './Dashboard.css'; // Optional for additional custom styles
+import '../css/dashboard.css'; // Optional for additional custom styles
 
 ChartJS.register(
   CategoryScale,
