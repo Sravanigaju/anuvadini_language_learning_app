@@ -21,6 +21,7 @@ import {
   FaFire,
   FaGlobe
 } from "react-icons/fa";
+import DashboardCharts from './DashboardCharts';
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +34,15 @@ ChartJS.register(
   Legend,
   Title
 );
+
+// Add internal CSS for the chart grid
+const dashboardChartsGridStyle = `
+.dashboard-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+`;
 
 const Dashboard = () => {
   // Sample data placeholders
@@ -94,85 +104,66 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <AdminHeader />
-      <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-        {/* Sidebar */}
-        <aside style={{ width: '11rem', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem' , position: 'fixed', height: '100vh', overflowY: 'auto', left: 0, top: '3.875rem'}}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>LrN Admin</h2>
-          <nav>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li style={navItemStyle}>Dashboard</li>
-              <li style={navItemStyle}>Manage Users</li>
-              <li style={navItemStyle}>Reports & Analytics</li>
-              <li style={navItemStyle}>Settings</li>
-            </ul>
-          </nav>
-        </aside>
+    <>
+      <style>{dashboardChartsGridStyle}</style>
+      <div>
+        <AdminHeader />
+        <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+          {/* Sidebar */}
+          <aside style={{ width: '11rem', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem', position: 'fixed', height: '100vh', overflowY: 'auto', left: 0, top: '3.875rem' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>LrN Admin</h2>
+            <nav>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                <li style={navItemStyle}>Dashboard</li>
+                <li style={navItemStyle}>Manage Users</li>
+                <li style={navItemStyle}>Reports & Analytics</li>
+                <li style={navItemStyle}>Settings</li>
+              </ul>
+            </nav>
+          </aside>
 
-        {/* Main Content */}
-        <main style={{ flex: 1, backgroundColor: '#f8fafe', padding: '2rem' ,marginLeft: '14rem', marginTop: '3.875rem'}}>
-          <header style={{ marginBottom: '2rem' }}>
-            <h1 style={{ color: '#286bda' }}>Welcome Admin 👋</h1>
-            <p style={{ color: '#444' }}>Insights about users, activities, and growth.</p>
-          </header>
+          {/* Main Content */}
+          <main style={{ flex: 1, backgroundColor: '#f8fafe', padding: '2rem', marginLeft: '14rem', marginTop: '3.875rem' }}>
+            <header style={{ marginBottom: '2rem' }}>
+              <h1 style={{ color: '#286bda' }}>Welcome Admin 👋</h1>
+              <p style={{ color: '#444' }}>Insights about users, activities, and growth.</p>
+            </header>
 
-          {/* Summary Cards */}
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-            {cardData.map(({ icon, label, value, bg }, idx) => (
-              <div key={idx} style={{ ...cardStyle, backgroundColor: bg }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{icon}</div>
-                <div style={{ fontWeight: 600 }}>{label}</div>
-                <div style={{ fontSize: '1.25rem' }}>{value}</div>
+            {/* Summary Cards */}
+            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+              {cardData.map(({ icon, label, value, bg }, idx) => (
+                <div key={idx} style={{ ...cardStyle, backgroundColor: bg }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{icon}</div>
+                  <div style={{ fontWeight: 600 }}>{label}</div>
+                  <div style={{ fontSize: '1.25rem' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Quick Actions */}
+            <section style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+              <h2 style={{ color: '#286bda' }}>Quick Actions</h2>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                <button style={buttonStyle}>👥 Manage Users</button>
+                <button style={buttonStyle}>➕ Upload Lesson</button>
+                <button style={buttonStyle}>📊 View Reports</button>
               </div>
-            ))}
-          </div>
+            </section>
 
-          {/* Quick Actions */}
-          <section style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#286bda' }}>Quick Actions</h2>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button style={buttonStyle}>👥 Manage Users</button>
-              <button style={buttonStyle}>➕ Upload Lesson</button>
-              <button style={buttonStyle}>📊 View Reports</button>
-            </div>
-          </section>
-
-          {/* Charts Section */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            <div>
-              <h3>Age Distribution</h3>
-              <Bar data={ageData} />
-            </div>
-
-            <div>
-              <h3>Source Languages</h3>
-              <Pie data={languageData} />
-            </div>
-
-            <div>
-              <h3>Interested Languages</h3>
-              <Bar data={interestedLanguageData} />
-            </div>
-
-            <div>
-              <h3>XP Progression</h3>
-              <Line data={xpProgressionData} />
-            </div>
-
-            <div>
-              <h3>Streak Distribution</h3>
-              <Bar data={streakData} />
-            </div>
-
-            <div>
-              <h3>Certificates Earned Over Time</h3>
-              <Line data={certificateData} />
-            </div>
-          </div>
-        </main>
+            {/* Charts Section */}
+            <DashboardCharts
+              ageData={ageData}
+              languageData={languageData}
+              interestedLanguageData={interestedLanguageData}
+              xpProgressionData={xpProgressionData}
+              streakData={streakData}
+              certificateData={certificateData}
+              className="dashboard-charts-grid"
+            />
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
