@@ -7,6 +7,7 @@ import Dashboard from './sceens/dashboard/dashboard';
 import RegisterInstitution from './sceens/auth/RegisterInstitution';
 import RegisterValidator from './sceens/auth/RegisterValidator';
 import RegisterCreator from './sceens/auth/RegisterCreator';
+import VerifyPhone from './sceens/auth/VerifyPhone'; // ✅ Import VerifyPhone
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/register" element={<RegisterInstitution />} />
         <Route path="/register/validator" element={<RegisterValidator />} />
         <Route path="/register/creator" element={<RegisterCreator />} />
+        <Route path="/verify-phone" element={<VerifyPhone />} /> {/* ✅ Add this route */}
       </Routes>
     </BrowserRouter>
   );
