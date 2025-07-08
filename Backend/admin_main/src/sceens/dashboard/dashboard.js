@@ -1,55 +1,177 @@
 import React from "react";
-import { FaBook, FaClipboardList, FaGlobe, FaUserCheck, FaCheckCircle } from "react-icons/fa";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  LineElement,
+  PointElement,
+  Tooltip,
+  Legend,
+  Title,
+} from "chart.js";
+import { Bar, Pie, Line } from "react-chartjs-2";
 import AdminHeader from "../../components/header/Dashboar-Header";
+import {
+  FaUsers,
+  FaUserCheck,
+  FaUserPlus,
+  FaCertificate,
+  FaFire,
+  FaGlobe
+} from "react-icons/fa";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  LineElement,
+  PointElement,
+  Tooltip,
+  Legend,
+  Title
+);
 
 const Dashboard = () => {
-  return  (
+  // Sample data placeholders
+  const ageData = {
+    labels: ["10-19", "20-29", "30-39", "40-49", "50+"],
+    datasets: [{
+      label: "Users",
+      data: [120, 400, 300, 150, 60],
+      backgroundColor: "#286bda",
+    }],
+  };
+
+  const languageData = {
+    labels: ["Hindi", "English", "Spanish", "French"],
+    datasets: [{
+      data: [300, 500, 200, 100],
+      backgroundColor: ["#286bda", "#35a854", "#e78c32", "#A835A8"],
+    }],
+  };
+
+  const interestedLanguageData = {
+    labels: ["French", "German", "Japanese", "Spanish"],
+    datasets: [{
+      label: "Learners",
+      data: [250, 180, 150, 120],
+      backgroundColor: "#35a854",
+    }],
+  };
+
+  const xpProgressionData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [{
+      label: "Total XP",
+      data: [50000, 70000, 90000, 110000, 130000, 160000],
+      fill: true,
+      backgroundColor: "rgba(40, 107, 218, 0.2)",
+      borderColor: "#286bda",
+    }],
+  };
+
+  const streakData = {
+    labels: ["0-3", "4-7", "8-14", "15+"],
+    datasets: [{
+      label: "Users",
+      data: [150, 120, 90, 45],
+      backgroundColor: "#e78c32",
+    }],
+  };
+
+  const certificateData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [{
+      label: "Certificates",
+      data: [50, 70, 90, 120, 140, 160],
+      fill: true,
+      backgroundColor: "rgba(168, 53, 168, 0.2)",
+      borderColor: "#A835A8",
+    }],
+  };
+
+  return (
     <div>
       <AdminHeader />
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      {/* Sidebar */}
-      <aside style={{ width: '250px', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>LrN Admin</h2>
-        <nav>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            <li style={navItemStyle}>Dashboard</li>
-            <li style={navItemStyle}>Upload Content</li>
-            <li style={navItemStyle}>Create Question Paper</li>
-            <li style={navItemStyle}>Pending Submissions</li>
-            <li style={navItemStyle}>Manage Languages</li>
-          </ul>
-        </nav>
-      </aside>
+      <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+        {/* Sidebar */}
+        <aside style={{ width: '11rem', backgroundColor: '#286bda', color: 'white', padding: '1.5rem 1rem' , position: 'fixed', height: '100vh', overflowY: 'auto', left: 0, top: '3.875rem'}}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>LrN Admin</h2>
+          <nav>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+              <li style={navItemStyle}>Dashboard</li>
+              <li style={navItemStyle}>Manage Users</li>
+              <li style={navItemStyle}>Reports & Analytics</li>
+              <li style={navItemStyle}>Settings</li>
+            </ul>
+          </nav>
+        </aside>
 
-      {/* Main Content */}
-      <main style={{ flex: 1, backgroundColor: '#f8fafe', padding: '2rem' }}>
-        <header style={{ marginBottom: '2rem' }}>
-          <h1 style={{ color: '#286bda' }}>Hello Expert! 👋</h1>
-          <p style={{ color: '#444' }}>Manage language content, question papers, and submissions all in one place.</p>
-        </header>
+        {/* Main Content */}
+        <main style={{ flex: 1, backgroundColor: '#f8fafe', padding: '2rem' ,marginLeft: '14rem', marginTop: '3.875rem'}}>
+          <header style={{ marginBottom: '2rem' }}>
+            <h1 style={{ color: '#286bda' }}>Welcome Admin 👋</h1>
+            <p style={{ color: '#444' }}>Insights about users, activities, and growth.</p>
+          </header>
 
-        {/* Stats Cards */}
-        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-          {cardData.map(({ icon, label, value, bg }, idx) => (
-            <div key={idx} style={{ ...cardStyle, backgroundColor: bg }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{icon}</div>
-              <div style={{ fontWeight: 600 }}>{label}</div>
-              <div style={{ fontSize: '1.25rem' }}>{value}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <section style={{ marginTop: '3rem' }}>
-          <h2 style={{ color: '#286bda' }}>Quick Actions</h2>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button style={buttonStyle}>➕ Upload Lesson</button>
-            <button style={buttonStyle}>📝 Add Question</button>
-            <button style={buttonStyle}>👁 Review Submissions</button>
+          {/* Summary Cards */}
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+            {cardData.map(({ icon, label, value, bg }, idx) => (
+              <div key={idx} style={{ ...cardStyle, backgroundColor: bg }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{icon}</div>
+                <div style={{ fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: '1.25rem' }}>{value}</div>
+              </div>
+            ))}
           </div>
-        </section>
-      </main>
-    </div>
+
+          {/* Quick Actions */}
+          <section style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+            <h2 style={{ color: '#286bda' }}>Quick Actions</h2>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <button style={buttonStyle}>👥 Manage Users</button>
+              <button style={buttonStyle}>➕ Upload Lesson</button>
+              <button style={buttonStyle}>📊 View Reports</button>
+            </div>
+          </section>
+
+          {/* Charts Section */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div>
+              <h3>Age Distribution</h3>
+              <Bar data={ageData} />
+            </div>
+
+            <div>
+              <h3>Source Languages</h3>
+              <Pie data={languageData} />
+            </div>
+
+            <div>
+              <h3>Interested Languages</h3>
+              <Bar data={interestedLanguageData} />
+            </div>
+
+            <div>
+              <h3>XP Progression</h3>
+              <Line data={xpProgressionData} />
+            </div>
+
+            <div>
+              <h3>Streak Distribution</h3>
+              <Bar data={streakData} />
+            </div>
+
+            <div>
+              <h3>Certificates Earned Over Time</h3>
+              <Line data={certificateData} />
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
@@ -84,11 +206,12 @@ const buttonStyle = {
 };
 
 const cardData = [
-  { icon: <FaBook />, label: "Total Lessons", value: "1.2K", bg: "#286bda" },
-  { icon: <FaClipboardList />, label: "Question Papers", value: "450", bg: "#35a854" },
-  { icon: <FaCheckCircle />, label: "Pending Reviews", value: "120", bg: "#e78c32" },
-  { icon: <FaGlobe />, label: "Languages", value: "18", bg: "#A835A8" },
-  { icon: <FaUserCheck />, label: "Active Experts", value: "75", bg: "#1E90FF" },
+  { icon: <FaUsers />, label: "Total Users", value: "12,340", bg: "#286bda" },
+  { icon: <FaUserCheck />, label: "Active Users", value: "3,200", bg: "#35a854" },
+  { icon: <FaUserPlus />, label: "New Users", value: "480", bg: "#e78c32" },
+  { icon: <FaCertificate />, label: "Certificates", value: "1,120", bg: "#A835A8" },
+  { icon: <FaFire />, label: "Avg Daily Active", value: "150", bg: "#ff5c5c" },
+  { icon: <FaGlobe />, label: "Countries", value: "42", bg: "#1E90FF" },
 ];
 
 export default Dashboard;

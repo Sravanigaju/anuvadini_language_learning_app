@@ -3,6 +3,7 @@ import { Navbar, Form, FormControl, Button, Image, Container } from 'react-boots
 import { FaBell, FaEnvelope, FaGlobe, FaPaperPlane } from 'react-icons/fa';
 import logo from '../../assets/images/auth/LrN-logo.png'; // adjust as needed
 import avatar from '../../assets/images/auth/blank.png'; // your avatar image
+import langIcon from '../../assets/images/auth/langIcn.png';
 
 const AdminHeader = () => {
   return (
@@ -11,9 +12,10 @@ const AdminHeader = () => {
         {/* Logo & Title */}
         <div style={styles.logoContainer}>
           <Image src={logo} alt="LrN Logo" style={styles.logo} />
-          <span style={styles.brandText}>LrN Admin</span>
         </div>
-
+        <div style={styles.logoContainer}>
+          <img src={langIcon} alt="Language Icon" style={styles.logo} />
+        </div>
         {/* Search Box */}
         <Form style={styles.searchForm}>
           <FormControl type="text" placeholder="Search..." style={styles.searchInput} />
@@ -21,12 +23,7 @@ const AdminHeader = () => {
 
         {/* Right section */}
         <div style={styles.rightSection}>
-          <Button style={styles.proButton}>
-            <FaPaperPlane style={{ marginRight: '0.5rem' }} />
-            Go Pro
-          </Button>
 
-          <FaGlobe style={styles.icon} />
           <FaBell style={styles.icon} />
           <FaEnvelope style={styles.icon} />
 
@@ -34,7 +31,7 @@ const AdminHeader = () => {
             <Image src={avatar} alt="User" roundedCircle style={styles.avatar} />
             <div>
               <div style={styles.userName}>Austin Robertson</div>
-              <div style={styles.userRole}>Admin</div>
+              <div style={styles.userRole}>Professor</div>
             </div>
           </div>
         </div>
@@ -47,6 +44,9 @@ const styles = {
   navbar: {
     backgroundColor: '#ffffff',
     padding: '0.75rem 1.5rem',
+    position: 'fixed',
+    top: 0,
+    width: '100%',
   },
   container: {
     display: 'flex',
