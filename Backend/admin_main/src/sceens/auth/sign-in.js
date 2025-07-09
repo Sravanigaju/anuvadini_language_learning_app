@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 import Footer from '../../components/Footer/Footer';
 import Footer2 from '../../components/Footer/Footer2';
+import captchaImg  from '../../assets/images/auth/captcha.png';
+
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +19,7 @@ const SignIn = () => {
   const handleLogin = (event) => {
     event.preventDefault();
 
-    if (captchaInput.trim() !== '7') {
+    if (captchaInput.trim() !== 'Td4eva') {
       setCaptchaError('Incorrect CAPTCHA answer. Please try again.');
       return;
     }
@@ -85,19 +87,22 @@ const SignIn = () => {
               </Form.Group>
 
               {/* Temporary CAPTCHA */}
-              <Form.Group className="mb-3" style={styles.formGroup}>
-                <Form.Label style={styles.label}>CAPTCHA</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="What is 4 + 3?"
-                  value={captchaInput}
-                  onChange={(e) => {
-                    setCaptchaInput(e.target.value);
-                    setCaptchaError('');
-                  }}
-                  style={styles.inputHorizontal}
-                  required
-                />
+              <Form.Group className="mb-3" style={styles.formGroupColumn}>
+                <Form.Label style={styles.labelBlock}>CAPTCHA</Form.Label>
+                <div style={styles.captchaRow}>
+                  <img src={captchaImg} alt="CAPTCHA" style={styles.captchaImage} />
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Captcha"
+                    value={captchaInput}
+                    onChange={(e) => {
+                      setCaptchaInput(e.target.value);
+                      setCaptchaError('');
+                    }}
+                    style={styles.captchaInput}
+                    required
+                  />
+                </div>
               </Form.Group>
               {captchaError && <div style={{ color: 'red', marginBottom: '1rem' }}>{captchaError}</div>}
 
@@ -109,7 +114,7 @@ const SignIn = () => {
           </Card>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
       <Footer2 />
     </div>
   );
@@ -214,6 +219,48 @@ const styles = {
     width: '100%',
     marginTop: '0.5rem',
   },
+  formGroupColumn: {
+  display: 'flex',
+  flexDirection: 'column', // stack label, then image+input
+  alignItems: 'flex-start',
+  marginBottom: '1rem',
+  maxWidth: '500px',
+  width: '100%',
+},
+
+labelBlock: {
+  fontWeight: '500',
+  color: '#333',
+  marginBottom: '0.25rem',
+},
+
+captchaRow: {
+  display: 'flex',
+  flexDirection: 'row', // image + input horizontally
+  alignItems: 'center',
+  gap: '1rem',
+},
+
+captchaImage: {
+  width: '150px',
+  height: '50px',
+  objectFit: 'contain',
+  border: '1px solid #ddd',
+  borderRadius: '0.25rem',
+},
+
+captchaInput: {
+  width: '185px',
+  height: '2.5rem',
+  fontSize: '1rem',
+  backgroundColor: '#fff',
+  border: '1px solid rgb(220, 166, 57)',
+  borderRadius: '0.5rem',
+  padding: '0 1rem',
+},
+
+
+
 };
 
 export default SignIn;
