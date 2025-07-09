@@ -3,6 +3,7 @@ import { Form, Button, Card } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
+import Footer2 from '../../components/Footer/Footer2';
 
 function RegisterInstitution() {
   const navigate = useNavigate();
@@ -136,7 +137,7 @@ function RegisterInstitution() {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <div style={{ height: '3rem' }} /> {/* Added spacing after header */}
       <div style={styles.wrapper}>
         <div style={styles.container}>
@@ -296,6 +297,7 @@ function RegisterInstitution() {
           </Card>
         </div>
       </div>
+      <Footer2 />
     </div>
   );
 }
