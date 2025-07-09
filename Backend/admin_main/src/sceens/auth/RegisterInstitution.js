@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 import { FaMicrophone } from 'react-icons/fa';
 import { useRef } from 'react';
+import Footer2 from '../../components/Footer/Footer2';
 
 
 function RegisterInstitution() {
@@ -197,13 +198,13 @@ const startListening = (field) => {
     <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
       <Form.Group>
         <Form.Label style={styles.label}>{label}</Form.Label>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={styles.inputWrapper}>
           <Form.Control
             type="text"
             name={name}
             value={form[name]}
             onChange={handleChange}
-            style={styles.inputHorizontal}
+            style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
             required
           />
           <span onClick={() => startListening(name)} style={styles.micIcon}>
@@ -231,13 +232,13 @@ const startListening = (field) => {
         <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           <Form.Group>
             <Form.Label style={styles.label}>{label}</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={styles.inputWrapper}>
               <Form.Control
                 type="text"
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
-                style={styles.inputHorizontal}
+                style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
                 required
               />
               <span onClick={() => startListening(name)} style={styles.micIcon}><FaMicrophone /></span>
@@ -249,14 +250,14 @@ const startListening = (field) => {
 
     <Form.Group style={styles.formGroup}>
       <Form.Label style={styles.label}>Address</Form.Label>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={styles.inputWrapper}>
         <Form.Control
           as="textarea"
           rows={3}
           name="address"
           value={form.address}
           onChange={handleChange}
-          style={{ ...styles.inputHorizontal, height: '5rem', resize: 'vertical' }}
+          style={{ ...styles.inputHorizontal, height: '5rem', resize: 'vertical', paddingRight: '2.5rem' }}
           placeholder="Enter full address here"
           required
         />
@@ -275,16 +276,16 @@ const startListening = (field) => {
         ['Education Qualification', 'educationQualification'],
         ['Years of Experience', 'yearsOfExperience']
       ].map(([label, name]) => (
-        <div key={name} className='col-12 col-md-6'>
+        <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           <Form.Group>
             <Form.Label style={styles.label}>{label}</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={styles.inputWrapper}>
               <Form.Control
                 type="text"
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
-                style={styles.inputHorizontal}
+                style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
                 required
               />
               <span onClick={() => startListening(name)} style={styles.micIcon}>
@@ -301,16 +302,16 @@ const startListening = (field) => {
         ['Expertise', 'expertise'],
         ['Portfolio', 'portfolio']
       ].map(([label, name]) => (
-        <div key={name} className='col-12 col-md-6'>
+        <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           <Form.Group>
             <Form.Label style={styles.label}>{label}</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={styles.inputWrapper}>
               <Form.Control
                 type="text"
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
-                style={styles.inputHorizontal}
+                style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
                 required
               />
               <span onClick={() => startListening(name)} style={styles.micIcon}>
@@ -323,16 +324,16 @@ const startListening = (field) => {
     </div>
 
     <div className="row">
-      <div className='col-12 col-md-6'>
+      <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
         <Form.Group>
           <Form.Label style={styles.label}>LinkedIn URL</Form.Label>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={styles.inputWrapper}>
             <Form.Control
               type="text"
               name="linkedInUrl"
               value={form.linkedInUrl}
               onChange={handleChange}
-              style={styles.inputHorizontal}
+              style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
               required
             />
             <span onClick={() => startListening("linkedInUrl")} style={styles.micIcon}>
@@ -352,16 +353,16 @@ const startListening = (field) => {
         ['Years of Experience', 'yearsOfExperience'],
         ['Education Qualification', 'educationQualification']
       ].map(([label, name]) => (
-        <div key={name} className='col-12 col-md-6'>
+        <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           <Form.Group>
             <Form.Label style={styles.label}>{label}</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={styles.inputWrapper}>
               <Form.Control
                 type="text"
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
-                style={styles.inputHorizontal}
+                style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
                 required
               />
               <span onClick={() => startListening(name)} style={styles.micIcon}>
@@ -378,16 +379,16 @@ const startListening = (field) => {
         ['Region', 'region'],
         ['Location', 'location']
       ].map(([label, name]) => (
-        <div key={name} className='col-12 col-md-6'>
+        <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           <Form.Group>
             <Form.Label style={styles.label}>{label}</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={styles.inputWrapper}>
               <Form.Control
                 type="text"
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
-                style={styles.inputHorizontal}
+                style={{ ...styles.inputHorizontal, paddingRight: '2.5rem' }}
                 required
               />
               <span onClick={() => startListening(name)} style={styles.micIcon}>
@@ -434,7 +435,7 @@ const startListening = (field) => {
                   
                  <Form.Group style={{ ...styles.formGroup, width: '100%' }}>
   <Form.Label style={styles.label}>Bio</Form.Label>
-  <div style={{ position: 'relative', width: '100%' }}>
+  <div style={styles.inputWrapper}>
     <Form.Control
       as="textarea"
       rows={3}
@@ -492,7 +493,7 @@ const startListening = (field) => {
               {role === 'creator' && (
  <Form.Group style={{ ...styles.formGroup, width: '100%' }}>
   <Form.Label style={styles.label}>Bio</Form.Label>
-  <div style={{ position: 'relative', width: '100%' }}>
+  <div style={styles.inputWrapper}>
     <Form.Control
       as="textarea"
       rows={3}
@@ -565,8 +566,16 @@ const styles = {
   heading: { textAlign: 'center', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', color: '#333' },
   formGroup: { display: 'flex', flexDirection: "column", alignItems: 'center', gap: '1rem', marginBottom: '1rem' },
   label: { width: '100%', marginTop: 10, fontWeight: 500, color: '#333' },
-  inputHorizontal: { flex: 1, border: '1px solid rgb(220, 166, 57)', borderRadius: '0.5rem', height: '2.75rem', fontSize: '1rem', padding: '0 1rem' },
-  inputWrapper: { flex: 1, position: 'relative', display: 'flex', alignItems: 'center' },
+  inputHorizontal: {
+  width: '100%', // Add this line
+  border: '1px solid rgb(220, 166, 57)',
+  borderRadius: '0.5rem',
+  height: '2.75rem',
+  fontSize: '1rem',
+  padding: '0 1rem',
+},
+
+  inputWrapper: { position: 'relative', display: 'flex', alignItems: 'center', width: '100%' },
   eyeIcon: { position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#888' },
   submitButton: { backgroundColor: 'rgb(53, 168, 84)', color: '#fff', fontWeight: 600, padding: '0.6rem 2rem', fontSize: '1rem', border: 'none', borderRadius: '0.5rem',marginTop:10 },
   addBtn: { padding: '0.25rem 0.75rem', fontSize: '0.9rem', fontWeight: 500, borderRadius: '0.5rem', marginTop: '0.25rem' },
@@ -574,11 +583,14 @@ const styles = {
   splitRow: { display: 'flex', gap: '2rem', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' },
   column: { flexDirection: "row", justifyContent: "space-between", width: "48%" },
   micIcon: {
-  cursor: 'pointer',
-  color: '#007bff',
-  fontSize: '1.2rem',
-  marginLeft: '0.5rem'
-}
+    position: 'absolute',
+    right: '0.75rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    cursor: 'pointer',
+    color: '#007bff',
+    fontSize: '1.2rem'
+  }
 
 };
 
