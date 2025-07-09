@@ -3,6 +3,9 @@ import { Form, Button, Card } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
+import { FaMicrophone } from 'react-icons/fa';
+import { useRef } from 'react';
+
 
 function RegisterInstitution() {
   const navigate = useNavigate();
@@ -34,6 +37,40 @@ function RegisterInstitution() {
     projectLinks: [''],
     bio: '',
   });
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognitionRef = useRef(null);
+
+const startListening = (field) => {
+  if (!SpeechRecognition) {
+    alert("Your browser does not support voice input.");
+    return;
+  }
+
+  if (recognitionRef.current) {
+    recognitionRef.current.stop();
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-IN';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    setForm((prev) => ({
+      ...prev,
+      [field]: prev[field] ? prev[field] + ' ' + transcript : transcript,
+    }));
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+  };
+
+  recognition.start();
+  recognitionRef.current = recognition;
+};
+
 
   const [role, setRole] = useState('institution');
   const [showPassword, setShowPassword] = useState(false);
@@ -152,44 +189,219 @@ function RegisterInstitution() {
 
             <Form onSubmit={handleSubmit}>
               <div className='row'>
-              {renderFields([['Name', 'name'], ['Email', 'email']])}
+           <div className="row">
+  {[
+    ['Name', 'name'],
+    ['Email', 'email']
+  ].map(([label, name]) => (
+    <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
+      <Form.Group>
+        <Form.Label style={styles.label}>{label}</Form.Label>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Form.Control
+            type="text"
+            name={name}
+            value={form[name]}
+            onChange={handleChange}
+            style={styles.inputHorizontal}
+            required
+          />
+          <span onClick={() => startListening(name)} style={styles.micIcon}>
+            <FaMicrophone />
+          </span>
+        </div>
+      </Form.Group>
+    </div>
+  ))}
+</div>
+
 
               {role === 'institution' && (
-                <>
-                  {renderFields([
-                    ['Affiliations', 'affiliations'], ['Contact Info', 'contactInfo'],
-                    ['Website URL', 'websiteUrl'], ['Registration Number', 'registrationNumber'],
-                    ['Authorized Person', 'authorizedPerson'], ['Institution Name', 'institutionName'],
-                    ['Type', 'type']
-                  ])}
+  <>
+    <div className='row'>
+      {[
+        ['Affiliations', 'affiliations'],
+        ['Contact Info', 'contactInfo'],
+        ['Website URL', 'websiteUrl'],
+        ['Registration Number', 'registrationNumber'],
+        ['Authorized Person', 'authorizedPerson'],
+        ['Institution Name', 'institutionName'],
+        ['Type', 'type']
+      ].map(([label, name]) => (
+        <div key={name} className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
+          <Form.Group>
+            <Form.Label style={styles.label}>{label}</Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Control
+                type="text"
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                style={styles.inputHorizontal}
+                required
+              />
+              <span onClick={() => startListening(name)} style={styles.micIcon}><FaMicrophone /></span>
+            </div>
+          </Form.Group>
+        </div>
+      ))}
+    </div>
 
-                  <Form.Group style={styles.formGroup}>
-                    <Form.Label style={styles.label}>Address</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      name="address"
-                      value={form.address}
-                      onChange={handleChange}
-                      style={{ ...styles.inputHorizontal, height: '5rem', resize: 'vertical' }}
-                      placeholder="Enter full address here"
-                      required
-                    />
-                  </Form.Group>
-                </>
-              )}
+    <Form.Group style={styles.formGroup}>
+      <Form.Label style={styles.label}>Address</Form.Label>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          name="address"
+          value={form.address}
+          onChange={handleChange}
+          style={{ ...styles.inputHorizontal, height: '5rem', resize: 'vertical' }}
+          placeholder="Enter full address here"
+          required
+        />
+        <span onClick={() => startListening('address')} style={styles.micIcon}><FaMicrophone /></span>
+      </div>
+    </Form.Group>
+  </>
+)}
+
               </div>
 
-              {role === 'creator' && renderFields([
-                ['Education Qualification', 'educationQualification'], ['Expertise', 'expertise'],
-                ['Portfolio', 'portfolio'], ['Years of Experience', 'yearsOfExperience'],
-                ['LinkedIn URL', 'linkedInUrl']
-              ])}
+              {role === 'creator' && (
+  <>
+    <div className="row">
+      {[
+        ['Education Qualification', 'educationQualification'],
+        ['Years of Experience', 'yearsOfExperience']
+      ].map(([label, name]) => (
+        <div key={name} className='col-12 col-md-6'>
+          <Form.Group>
+            <Form.Label style={styles.label}>{label}</Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Control
+                type="text"
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                style={styles.inputHorizontal}
+                required
+              />
+              <span onClick={() => startListening(name)} style={styles.micIcon}>
+                <FaMicrophone />
+              </span>
+            </div>
+          </Form.Group>
+        </div>
+      ))}
+    </div>
 
-              {role === 'validator' && renderFields([
-                ['Years of Experience', 'yearsOfExperience'],
-                ['Education Qualification', 'educationQualification'], ['Region', 'region'], ['Location', 'location']
-              ])}
+    <div className="row">
+      {[
+        ['Expertise', 'expertise'],
+        ['Portfolio', 'portfolio']
+      ].map(([label, name]) => (
+        <div key={name} className='col-12 col-md-6'>
+          <Form.Group>
+            <Form.Label style={styles.label}>{label}</Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Control
+                type="text"
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                style={styles.inputHorizontal}
+                required
+              />
+              <span onClick={() => startListening(name)} style={styles.micIcon}>
+                <FaMicrophone />
+              </span>
+            </div>
+          </Form.Group>
+        </div>
+      ))}
+    </div>
+
+    <div className="row">
+      <div className='col-12 col-md-6'>
+        <Form.Group>
+          <Form.Label style={styles.label}>LinkedIn URL</Form.Label>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Form.Control
+              type="text"
+              name="linkedInUrl"
+              value={form.linkedInUrl}
+              onChange={handleChange}
+              style={styles.inputHorizontal}
+              required
+            />
+            <span onClick={() => startListening("linkedInUrl")} style={styles.micIcon}>
+              <FaMicrophone />
+            </span>
+          </div>
+        </Form.Group>
+      </div>
+    </div>
+  </>
+)}
+
+             {role === 'validator' && (
+  <>
+    <div className="row">
+      {[
+        ['Years of Experience', 'yearsOfExperience'],
+        ['Education Qualification', 'educationQualification']
+      ].map(([label, name]) => (
+        <div key={name} className='col-12 col-md-6'>
+          <Form.Group>
+            <Form.Label style={styles.label}>{label}</Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Control
+                type="text"
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                style={styles.inputHorizontal}
+                required
+              />
+              <span onClick={() => startListening(name)} style={styles.micIcon}>
+                <FaMicrophone />
+              </span>
+            </div>
+          </Form.Group>
+        </div>
+      ))}
+    </div>
+
+    <div className="row">
+      {[
+        ['Region', 'region'],
+        ['Location', 'location']
+      ].map(([label, name]) => (
+        <div key={name} className='col-12 col-md-6'>
+          <Form.Group>
+            <Form.Label style={styles.label}>{label}</Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Control
+                type="text"
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                style={styles.inputHorizontal}
+                required
+              />
+              <span onClick={() => startListening(name)} style={styles.micIcon}>
+                <FaMicrophone />
+              </span>
+            </div>
+          </Form.Group>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+
 
               {(role === 'creator' || role === 'validator') && (
                 <Form.Group style={styles.formGroup}>
@@ -218,10 +430,33 @@ function RegisterInstitution() {
 
               {role === 'validator' && (
                 <>
-                  <Form.Group style={styles.formGroup}>
-                    <Form.Label style={styles.label}>Bio</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="validatorBio" value={form.validatorBio} onChange={handleChange} style={{ ...styles.inputHorizontal, height: '6rem', resize: 'none' }} placeholder="Tell us something about yourself..." required />
-                  </Form.Group>
+
+                  
+                 <Form.Group style={{ ...styles.formGroup, width: '100%' }}>
+  <Form.Label style={styles.label}>Bio</Form.Label>
+  <div style={{ position: 'relative', width: '100%' }}>
+    <Form.Control
+      as="textarea"
+      rows={3}
+      name="validatorBio"
+      value={form.validatorBio}
+      onChange={handleChange}
+      style={{
+        ...styles.inputHorizontal,
+        minHeight: 100,
+        resize: 'none',
+        paddingRight: '2.5rem',
+        width: '100%'  // Expands horizontally
+      }}
+      placeholder="Tell us something about yourself..."
+      required
+    />
+    <span onClick={() => startListening("validatorBio")} style={styles.micIcon}>
+      <FaMicrophone />
+    </span>
+  </div>
+</Form.Group>
+
 
                   <Form.Group style={styles.formGroup}>
                     <Form.Label style={styles.label}>ID Proof</Form.Label>
@@ -255,11 +490,33 @@ function RegisterInstitution() {
               )}
 
               {role === 'creator' && (
-                <Form.Group style={styles.formGroup}>
-                  <Form.Label style={styles.label}>Bio</Form.Label>
-                  <Form.Control as="textarea" rows={3} name="bio" value={form.bio} onChange={handleChange} style={{ ...styles.inputHorizontal, minHeight: 100, resize: 'none' }} placeholder="Tell us something about yourself..." required />
-                </Form.Group>
-              )}
+ <Form.Group style={{ ...styles.formGroup, width: '100%' }}>
+  <Form.Label style={styles.label}>Bio</Form.Label>
+  <div style={{ position: 'relative', width: '100%' }}>
+    <Form.Control
+      as="textarea"
+      rows={3}
+      name="bio"
+      value={form.bio}
+      onChange={handleChange}
+      style={{
+        ...styles.inputHorizontal,
+        minHeight: 100,
+        resize: 'none',
+        paddingRight: '2.5rem',
+        width: '100%' // <-- key change
+      }}
+      placeholder="Tell us something about yourself..."
+      required
+    />
+    <span onClick={() => startListening("bio")} style={styles.micIcon}>
+      <FaMicrophone />
+    </span>
+  </div>
+</Form.Group>
+
+)}
+
               <div className='row'>
                 <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>       
                   <Form.Group>
@@ -315,6 +572,13 @@ const styles = {
   removeBtn: { padding: '0 0.6rem', fontSize: '1rem', fontWeight: 'bold', borderRadius: '0.5rem', height: '2.75rem' },
   splitRow: { display: 'flex', gap: '2rem', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' },
   column: { flexDirection: "row", justifyContent: "space-between", width: "48%" },
+  micIcon: {
+  cursor: 'pointer',
+  color: '#007bff',
+  fontSize: '1.2rem',
+  marginLeft: '0.5rem'
+}
+
 };
 
 export default RegisterInstitution;
