@@ -174,7 +174,7 @@ const startListening = (field) => {
 
   return (
     <div>
-      {/* <Header /> */}
+       <Header /> 
       <div style={{ height: '3rem' }} /> {/* Added spacing after header */}
       <div style={styles.wrapper}>
         <div style={styles.container}>
