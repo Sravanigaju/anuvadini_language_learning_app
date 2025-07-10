@@ -153,6 +153,44 @@ const startListening = (field) => {
           ))}
         </div>
         <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
+  <Form.Group>
+    <Form.Label style={styles.label}>Phone Number</Form.Label>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Form.Control
+        type="tel"
+        name="phone"
+        value={form.phone || ''}
+        onChange={handleChange}
+        style={styles.inputHorizontal}
+        required
+      />
+      <span onClick={() => startListening("phone")} style={styles.micIcon}>
+        <FaMicrophone />
+      </span>
+    </div>
+  </Form.Group>
+</div>
+
+<div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
+  <Form.Group>
+    <Form.Label style={styles.label}>OTP</Form.Label>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Form.Control
+        type="text"
+        name="otp"
+        value={form.otp || ''}
+        onChange={handleChange}
+        style={styles.inputHorizontal}
+        required
+      />
+      <span onClick={() => startListening("otp")} style={styles.micIcon}>
+        <FaMicrophone />
+      </span>
+    </div>
+  </Form.Group>
+</div>
+
+        <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
           {secondHalf.map(([label, name]) => (
             <Form.Group key={name}>
               <Form.Label style={styles.label}>{label}</Form.Label>
