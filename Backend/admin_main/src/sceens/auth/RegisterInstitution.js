@@ -260,7 +260,7 @@ const startListening = (field) => {
     <div className='row'>
       {[
         ['Affiliations', 'affiliations'],
-        ['Contact Info', 'contactInfo'],
+        /*['Contact Info', 'contactInfo'],*/
         ['Website URL', 'websiteUrl'],
         ['Registration Number', 'registrationNumber'],
         ['Authorized Person', 'authorizedPerson'],
@@ -577,6 +577,57 @@ const startListening = (field) => {
                   </Form.Group>
                 </div>
               </div>
+              {/* Phone Number and OTP below password fields */}
+<div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xxl-6'>
+  <Form.Group>
+    <Form.Label style={styles.label}>Phone Number</Form.Label>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Form.Control
+        type="tel"
+        name="phone"
+        value={form.phone || ''}
+        onChange={handleChange}
+        style={{
+          ...styles.inputHorizontal,
+          width: '70%', // Decreased width
+          paddingRight: '2.5rem',
+        }}
+        required
+      />
+      <span onClick={() => startListening("phone")} style={styles.micIcon}>
+        <FaMicrophone />
+      </span>
+      <Button variant="outline-primary" style={{ marginLeft: '0.5rem' }}>
+        Send OTP
+      </Button>
+    </div>
+
+    {/* OTP Field (under phone) */}
+    <Form.Label style={{ ...styles.label, marginTop: '0.75rem' }}>Enter OTP</Form.Label>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Form.Control
+        type="text"
+        name="otp"
+        value={form.otp || ''}
+        onChange={handleChange}
+        style={{
+          ...styles.inputHorizontal,
+          width: '50%', // Decreased width for OTP
+          paddingRight: '2.5rem',
+        }}
+        required
+      />
+      <span onClick={() => startListening("otp")} style={styles.micIcon}>
+        <FaMicrophone />
+      </span>
+    </div>
+  </Form.Group>
+</div>
+
+
+
+
+
 
               {role === 'institution' && (
                 <Form.Group style={styles.formGroup}>
