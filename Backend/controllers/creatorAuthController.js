@@ -75,7 +75,8 @@ exports.sendOtpToCreatorPhone = async (req, res) => {
       return res.status(404).json({ message: "Creator not found" });
     }
 
-    const otp = generateOtp(); // or "123456" for testing
+    const otp = generateOtp();
+    
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
 
     creator.otp = otp;
@@ -91,7 +92,7 @@ exports.sendOtpToCreatorPhone = async (req, res) => {
 };
 
 
-// 🔹 Send OTP to email
+//  Send OTP to email
 exports.sendOtpToCreatorEmail = async (req, res) => {
   const { email } = req.body;
 
@@ -103,7 +104,7 @@ exports.sendOtpToCreatorEmail = async (req, res) => {
 
     const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-    console.log (generateOtp)
+     console.log (otp)
 
     creator.otp = otp;
     creator.otpExpiry = otpExpiry;
@@ -152,35 +153,34 @@ exports.loginCreator = async (req, res) => {
   const { phoneNumber, email, password } = req.body;
 
   try {
-    // 1️⃣ require all three fields
+    //  require all three fields
     if (!phoneNumber || !email || !password) {
       return res.status(400).json({
         message: "Phone number, email, and password are required."
       });
     }
 
-    // 2️⃣ find creator who matches BOTH phoneNumber and email
+    //  find creator who matches BOTH phoneNumber and email
     const creator = await Creator.findOne({ phoneNumber, email });
     if (!creator) {
       return res.status(404).json({
         message: "Creator not found with provided phone/email."
       });
     }
-
-    // 3️⃣ ensure OTP‑verified
+    //  ensure OTP‑verified
     if (!creator.isVerified) {
       return res.status(403).json({
         message: "Phone or Email not verified. Please verify first."
       });
     }
 
-    // 4️⃣ check password
+    //  check password
     const match = await bcrypt.compare(password, creator.password);
     if (!match) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    // 5️⃣ success
+    //  success
     res.status(200).json({
       message: "Login successful",
       creatorId: creator._id,

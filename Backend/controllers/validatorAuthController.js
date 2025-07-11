@@ -30,7 +30,7 @@ exports.registerValidator = async (req, res) => {
       yearsOfExperience, educationQualification,
       region, location, languages, bio, projectLinks,
       idProofUrl, certificateUrl,
-      isVerified: false // 🔒 Require OTP to verify
+      isVerified: false 
     });
 
     await newValidator.save();

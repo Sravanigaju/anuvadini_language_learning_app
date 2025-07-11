@@ -144,8 +144,8 @@ exports.sendOtp = async (req, res) => {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // const otp = generateOtp();
-    const otp = "123456";
+     const otp = generateOtp();
+    // const otp = "123456";
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     user.otp = otp;
     user.otpExpiry = otpExpiry;
