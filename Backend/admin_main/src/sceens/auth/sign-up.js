@@ -5,6 +5,7 @@ import logo from '../../assets/images/auth/LrN-logo.png';
 import Footer from '../../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
+import Footer2 from '../../components/Footer/Footer2';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,14 +54,6 @@ const Register = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" style={styles.formGroup}>
-                <Form.Label style={styles.label}>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Username"
-                  style={styles.inputHorizontal}
-                />
-              </Form.Group>
 
               <Form.Group className="mb-3" style={styles.formGroup}>
                 <Form.Label style={styles.label}>Password</Form.Label>
@@ -84,7 +77,7 @@ const Register = () => {
                 <div style={styles.inputWrapper}>
                   <Form.Control
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
+                    placeholder="Confirm Password"
                     style={styles.inputWithIcon}
                   />
                   <span
@@ -102,7 +95,7 @@ const Register = () => {
             </Form>
           </Card>
         </div>
-        <Footer />
+        <Footer2 />
       </div>
     </div>
   );
@@ -168,17 +161,20 @@ const styles = {
   inputWrapper: {
     position: 'relative',
     flex: 1,
-  },
-  inputWithIcon: {
-    width: '94%',
-    backgroundColor: '#ffffff',
-    border: '1px solid rgb(220, 166, 57)',
     borderRadius: '0.5rem',
     height: '2.75rem',
-    fontSize: '1rem',
-    padding: '0 0 0 1rem',
-    marginTop: '0.5rem',
   },
+  inputWithIcon: {
+  width: '100%',
+  backgroundColor: '#ffffff',
+  border: '1px solid rgb(220, 166, 57)',
+  borderRadius: '0.5rem',
+  height: '2.75rem',
+  fontSize: '1rem',
+  padding: '0 1rem',
+  marginTop: '0.5rem',
+},
+
   eyeIconAbsolute: {
     position: 'absolute',
     top: '60%',
