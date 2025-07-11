@@ -25,6 +25,7 @@ exports.registerCreator = async (req, res) => {
       ]
     });
 
+
     if (existing) return res.status(400).json({ message: "Creator already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,7 +52,7 @@ exports.registerCreator = async (req, res) => {
 
     await newCreator.save();
 
-    await sendOtpToEmail(email, otp); // or sendOtpToPhoneNumber(phoneNumber, otp)
+    await sendOtpToEmail(email, otp); 
 
     res.status(201).json({
       message: "Creator registered. OTP sent.",
@@ -64,7 +65,7 @@ exports.registerCreator = async (req, res) => {
 
 
 
-// 🔹 Send OTP to phone number
+//  Send OTP to phone number
 exports.sendOtpToCreatorPhone = async (req, res) => {
   const { phoneNumber } = req.body;
 
@@ -151,23 +152,43 @@ exports.loginCreator = async (req, res) => {
   const { phoneNumber, email, password } = req.body;
 
   try {
-    const creator = await Creator.findOne(phoneNumber ? { phoneNumber } : { email });
-    if (!creator) return res.status(404).json({ message: "Creator not found" });
-
-    if (!creator.isVerified) {
-      return res.status(403).json({ message: "Phone/email not verified" });
+    // 1️⃣ require all three fields
+    if (!phoneNumber || !email || !password) {
+      return res.status(400).json({
+        message: "Phone number, email, and password are required."
+      });
     }
 
-    const match = await bcrypt.compare(password, creator.password);
-    if (!match) return res.status(400).json({ message: "Invalid credentials" });
+    // 2️⃣ find creator who matches BOTH phoneNumber and email
+    const creator = await Creator.findOne({ phoneNumber, email });
+    if (!creator) {
+      return res.status(404).json({
+        message: "Creator not found with provided phone/email."
+      });
+    }
 
+    // 3️⃣ ensure OTP‑verified
+    if (!creator.isVerified) {
+      return res.status(403).json({
+        message: "Phone or Email not verified. Please verify first."
+      });
+    }
+
+    // 4️⃣ check password
+    const match = await bcrypt.compare(password, creator.password);
+    if (!match) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // 5️⃣ success
     res.status(200).json({
       message: "Login successful",
       creatorId: creator._id,
       username: creator.username,
       email: creator.email
     });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error("loginCreator:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

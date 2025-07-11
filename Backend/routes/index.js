@@ -12,6 +12,7 @@ const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
 const creatorRoutes = require("./creatorAuthRoutes");
+const validatorRoutes = require("./validatorRoutes");
 
 
 // Use route modules
@@ -25,6 +26,7 @@ router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
 router.use('/creator', creatorRoutes);
+router.use("/validator", validatorRoutes);
 
 
 
