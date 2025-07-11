@@ -498,8 +498,8 @@ const startListening = (field) => {
 
 
                   <Form.Group style={styles.formGroup}>
-                    <Form.Label style={styles.label}>ID Proof</Form.Label>
-                    <Form.Control type="file" name="idProof" onChange={handleChange} style={styles.inputHorizontal} required />
+                    <Form.Label style={styles.label}>Aadhar Number</Form.Label>
+                    <Form.Control type="text" name="Aadhar" onChange={handleChange} style={styles.inputHorizontal} required />
                   </Form.Group>
 
                   <Form.Group style={styles.formGroup}>
