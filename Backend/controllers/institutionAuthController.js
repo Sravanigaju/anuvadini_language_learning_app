@@ -4,7 +4,7 @@ const generateOtp = require("../utils/generateOtp");
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 
-// 1️⃣ Register
+// 1️ Register
 exports.registerInstitution = async (req, res) => {
   try {
     const {
@@ -51,7 +51,7 @@ exports.registerInstitution = async (req, res) => {
   }
 };
 
-// 2️⃣ Send OTP (Phone)
+// 2️ Send OTP (Phone)
 exports.sendInstitutionOtpPhone = async (req, res) => {
   const { contactInfo } = req.body;
   try {
@@ -72,7 +72,7 @@ exports.sendInstitutionOtpPhone = async (req, res) => {
   }
 };
 
-// 3️⃣ Send OTP (Email)
+// 3️ Send OTP (Email)
 exports.sendInstitutionOtpEmail = async (req, res) => {
   const { email } = req.body;
   try {
@@ -93,7 +93,7 @@ exports.sendInstitutionOtpEmail = async (req, res) => {
   }
 };
 
-// 4️⃣ Verify OTP
+// 4️ Verify OTP
 exports.verifyInstitutionOtp = async (req, res) => {
   const { contactInfo, email, otp } = req.body;
   try {
@@ -125,7 +125,7 @@ exports.verifyInstitutionOtp = async (req, res) => {
   }
 };
 
-// 5️⃣ Login
+// 5️ Login
 exports.loginInstitution = async (req, res) => {
   const { contactInfo, email, password } = req.body;
   try {
