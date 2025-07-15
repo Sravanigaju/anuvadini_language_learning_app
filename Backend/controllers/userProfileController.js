@@ -94,7 +94,8 @@ exports.updateUserPoints = async (req, res) => {
 
 
 
-// ✅ Get basic user info by userId
+
+//  Get basic user info by userId
 exports.getBasicUserInfo = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -123,7 +124,7 @@ exports.getBasicUserInfo = async (req, res) => {
   }
 };
 
-// ✅ Get full user profile using userId (not MongoDB _id)
+//  Get full user profile using userId (not MongoDB _id)
 exports.getUserProfileByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -254,7 +255,7 @@ exports.updateUserProgress = async (req, res) => {
       return res.status(404).json({ error: "Language not found in user profile" });
     }
 
-    // 🔄 Update progress fields
+    // Update progress fields
     if (progressPercent !== undefined) language.progressPercent = progressPercent;
     if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
     if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
@@ -263,7 +264,7 @@ exports.updateUserProgress = async (req, res) => {
     if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
     language.lastActiveAt = new Date();
 
-    // ✅ Safely handle badge updates
+    // Safely handle badge updates
     if (!Array.isArray(language.badgesEarned)) {
       language.badgesEarned = [];
     }
@@ -273,7 +274,7 @@ exports.updateUserProgress = async (req, res) => {
       language.badgesEarned = [...earnedSet];
     }
 
-    // ✅ XP Update logic
+    //  XP Update logic
     if (xp !== undefined && xp > 0) {
       const today = new Date();
 
