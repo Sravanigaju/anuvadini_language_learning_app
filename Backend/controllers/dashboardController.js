@@ -1,45 +1,3 @@
-// const User = require('../models/User');
-// const UserProfile = require('../models/UserProfile');
-// const mongoose = require('mongoose');
-
-// exports.getUserDashboard = async (req, res) => {
-//   try {
-//     let { userId } = req.params;
-//     userId = userId.trim();
-
-//     if (!mongoose.Types.ObjectId.isValid(userId)) {
-//       return res.status(400).json({ message: "Invalid userId" });
-//     }
-
-//     const userProfile = await UserProfile.findOne({ userId }).populate({
-//       path: 'userId',
-//       select: 'username'
-//     });
-
-//     if (!userProfile) {
-//       return res.status(404).json({ message: "User profile not found." });
-//     }
-
-//     const username = userProfile.userId.username;
-
-//     return res.status(200).json({
-//       user_id: userProfile.userId._id,
-//       username: username,
-//       joined_date: userProfile.joinedDate?.toISOString().split('T')[0],
-//       day_streak: userProfile.dashboardStats?.streak?.currentStreak || 0,
-//       total_xp: userProfile.points?.total || 0,
-//       lessons_completed: userProfile.dashboardStats?.completedLessons || 0,
-//       coins: userProfile.dashboardStats?.coins?.total || 0,
-//       language_progress: userProfile.languageProgress || [],
-//       leaderboard: userProfile.leaderboard || {},
-//     });
-
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message:error.message });
-//   }
-// };
-
 
 const mongoose = require("mongoose");
 const UserProfile = require("../models/UserProfile");
@@ -79,6 +37,9 @@ exports.getUserDashboard = async (req, res) => {
       languageName: lang.languageName,
       progressPercent: lang.progressPercent,
     }));
+
+    
+
      // 👇 Create array of all languages with certificate === true
     const certificate = userProfile.interestedLanguages
       .filter(lang => lang.certificate === true)
@@ -123,7 +84,7 @@ exports.getUserDashboard = async (req, res) => {
           gamerRankCount: [
             {
               $match: {
-                "interestedLanguages.coins": { $gt: selectedLang.coins },
+                "total.coins": { $gt: selectedLang.coins },
               },
             },
             { $count: "rank" },
@@ -191,6 +152,9 @@ exports.getUserProgress = async (req, res) => {
         less_ass_count: langProgress.assesmentcompleted,
         fin_ass_count: langProgress.finalassesementcompleted,
         score: langProgress.xp,
+        xpWeekly: langProgress.xpWeekly || 0,
+        xpMonthly: langProgress.xpMonthly || 0,
+        xpYearly: langProgress.xpYearly || 0,
         streak: langProgress.streak?.currentStreak || 0,
         progress_lang: langProgress.progressPercent,
         certificate: langProgress.certificate || false
@@ -203,4 +167,5 @@ exports.getUserProgress = async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
+
 

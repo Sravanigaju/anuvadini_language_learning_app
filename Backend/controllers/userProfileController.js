@@ -88,17 +88,7 @@ exports.updateUserPoints = async (req, res) => {
   }
 };
 
-// Delete user profile
-exports.deleteUserProfile = async (req, res) => {
-  try {
-    const deletedProfile = await UserProfile.findByIdAndDelete(req.params.id);
-    if (!deletedProfile)
-      return res.status(404).json({ message: "User profile not found" });
-    res.status(200).json({ message: "User profile deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+
 
 
 
@@ -238,31 +228,98 @@ exports.addNewLanguage = async (req, res) => {
 
 exports.updateUserProgress = async (req, res) => {
   const { userId } = req.params;
-  const { languageName, progressPercent, lessonsCompleted, assesmentcompleted, level, catagoriecount, finalAssessmentCompleted  } = req.body;
+  const {
+    languageName,
+    progressPercent,
+    lessonsCompleted,
+    assesmentcompleted,
+    level,
+    xp, // today's XP earned, from frontend
+    catagoriecount,
+    finalAssessmentCompleted,
+    newBadges,
+  } = req.body;
 
   try {
     const userProfile = await UserProfile.findOne({ userId });
     if (!userProfile) {
       return res.status(404).json({ error: "User profile not found" });
-    } 
+    }
+
     const language = userProfile.interestedLanguages.find(
       (lang) => lang.languageName.toLowerCase() === languageName.toLowerCase()
     );
+
     if (!language) {
       return res.status(404).json({ error: "Language not found in user profile" });
     }
+
+    // 🔄 Update progress fields
     if (progressPercent !== undefined) language.progressPercent = progressPercent;
     if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
     if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
     if (level !== undefined) language.level = level;
     if (catagoriecount !== undefined) language.catagoriecount = catagoriecount;
     if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
-    language.lastActiveAt = new Date(); 
+    language.lastActiveAt = new Date();
+
+    // ✅ Safely handle badge updates
+    if (!Array.isArray(language.badgesEarned)) {
+      language.badgesEarned = [];
+    }
+    if (Array.isArray(newBadges)) {
+      const earnedSet = new Set(language.badgesEarned);
+      newBadges.forEach((badge) => earnedSet.add(badge));
+      language.badgesEarned = [...earnedSet];
+    }
+
+    // ✅ XP Update logic
+    if (xp !== undefined && xp > 0) {
+      const today = new Date();
+
+      // Ensure xpHistory exists
+      if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
+
+      // 1. Add today's XP entry
+      language.xpHistory.push({ date: today, xpGained: xp });
+
+      // 2. Recalculate total XP
+      language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
+
+      // 3. Recalculate time-based XP
+      const weekStart = moment().startOf("isoWeek");
+      const monthStart = moment().startOf("month");
+      const yearStart = moment().startOf("year");
+
+      language.xpWeekly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(weekStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      language.xpMonthly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(monthStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      language.xpYearly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(yearStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+
+      // 4. Update total_xp across all languages
+      userProfile.total_xp = userProfile.interestedLanguages.reduce(
+        (sum, lang) => sum + (lang.xp || 0),
+        0
+      );
+    }
+
     await userProfile.save();
-    return res.status(200).json({ message: "Language progress updated successfully" });
-  }
-  catch (error) {
-    console.error("Error updating language progress:", error);
+
+    return res.status(200).json({
+      message: "Language progress, XP, and badges updated successfully",
+      updatedBadges: language.badgesEarned,
+      total_xp: userProfile.total_xp,
+    });
+
+  } catch (error) {
+    console.error("❌ Error updating progress:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-}
+};

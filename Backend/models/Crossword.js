@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const sessionSchema = new mongoose.Schema({
   language:      { type: String, required: true },
   categoryLevel: { type: Number, default: 1 },
-  timeTaken:     { type: Number, required: true },
-  score:         { type: Number, enum: [0, 1, 2, 3], required: true },
+  timeTaken:     { type: String, required: true },
+  score:         { type: Number, enum: [1, 2, 3], required: true },
   timestamp:     { type: Date, default: Date.now }
 }, { _id: false });
 

@@ -1,27 +1,37 @@
 const Crossword = require('../models/Crossword');
 const User = require('../models/User');
-
+  
 // ------------------ CREATE ENTRY ------------------
 exports.createCrosswordEntry = async (req, res) => {
   try {
     const { userId } = req.body;
+    console.log("done");
 
-    // Check if entry already exists
+    // Check if crossword entry already exists
     const existing = await Crossword.findOne({ userId });
     if (existing) {
-      return res.status(400).json({ message: "User already exists in Crossword." });
+      return res.status(502).json({ message: "Crossword entry already exists", crossword: existing });
     }
 
-    // Fetch username from User model
+    // Fetch user from User model
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Create Crossword entry
+    // Create new Crossword entry
     const crossword = new Crossword({
-      userId,
+      userId: user._id,
       username: user.username,
+      sessions: [],
+      globalStats: {
+        coins: 0,
+        totalGamesPlayed: 0,
+        wins: 0,
+        losses: 0,
+        highestLevelReached: 1,
+        achievementsUnlocked: 0
+      }
     });
 
     await crossword.save();
@@ -37,21 +47,30 @@ exports.addCrosswordSession = async (req, res) => {
     const { userId } = req.params;
     const { language, categoryLevel, timeTaken, score, result } = req.body;
 
-    const crossword = await Crossword.findOne({ userId });
-    if (!crossword) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!language || !categoryLevel || !timeTaken || !score || !result) {
+      return res.status(400).json({ message: "Missing required session fields." });
     }
 
-    // Ensure globalStats is initialized
-    if (!crossword.globalStats) {
-      crossword.globalStats = {
-        coins: 0,
-        totalGamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        highestLevelReached: 1,
-        achievementsUnlocked: 0
-      };
+    let crossword = await Crossword.findOne({ userId });
+
+    // Auto-create crossword entry if missing
+    if (!crossword) {
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      crossword = new Crossword({
+        userId: user._id,
+        username: user.username,
+        sessions: [],
+        globalStats: {
+          coins: 0,
+          totalGamesPlayed: 0,
+          wins: 0,
+          losses: 0,
+          highestLevelReached: 1,
+          achievementsUnlocked: 0
+        }
+      });
     }
 
     // Add session
@@ -60,12 +79,7 @@ exports.addCrosswordSession = async (req, res) => {
     // Update stats
     crossword.globalStats.totalGamesPlayed += 1;
     crossword.globalStats.coins += score * 10;
-
-    if (result === 'win') {
-      crossword.globalStats.wins += 1;
-    } else {
-      crossword.globalStats.losses += 1;
-    }
+    crossword.globalStats[result === 'win' ? 'wins' : 'losses'] += 1;
 
     if (categoryLevel > crossword.globalStats.highestLevelReached) {
       crossword.globalStats.highestLevelReached = categoryLevel;
@@ -89,7 +103,7 @@ exports.getCrosswordProgress = async (req, res) => {
 
     const crossword = await Crossword.findOne({ userId });
     if (!crossword) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found in Crossword' });
     }
 
     res.status(200).json(crossword);
@@ -103,14 +117,12 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
   try {
     const leaderboard = await Crossword.aggregate([
       { $unwind: "$sessions" },
-
       {
         $sort: {
           "sessions.categoryLevel": -1,
           "sessions.timeTaken": 1
         }
       },
-
       {
         $group: {
           _id: "$userId",
@@ -118,7 +130,20 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
           bestSession: { $first: "$sessions" }
         }
       },
-
+      {
+        $lookup: {
+          from: "userprofile", // 👈 your UserProfile collection name
+          localField: "_id",
+          foreignField: "userId",
+          as: "profile"
+        }
+      },
+      {
+        $unwind: {
+          path: "$profile",
+          preserveNullAndEmptyArrays: true // so users without profiles don't crash it
+        }
+      },
       {
         $setWindowFields: {
           sortBy: { "bestSession.categoryLevel": -1 },
@@ -127,14 +152,12 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
           }
         }
       },
-
       {
         $sort: {
           "bestSession.categoryLevel": -1,
           "bestSession.timeTaken": 1
         }
       },
-
       {
         $project: {
           userId: "$_id",
@@ -143,10 +166,10 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
           categoryLevel: "$bestSession.categoryLevel",
           timeTaken: "$bestSession.timeTaken",
           score: "$bestSession.score",
-          rank: 1
+          rank: 1,
+          profilePic: "$profile.profilePic" // 👈 Include image URL
         }
       },
-
       { $limit: 50 }
     ]);
 
@@ -155,4 +178,4 @@ exports.getCrosswordLeaderboard = async (_req, res) => {
     console.error("Leaderboard error:", error);
     res.status(500).json({ error: error.message });
   }
-};
+}
