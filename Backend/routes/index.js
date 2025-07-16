@@ -14,6 +14,8 @@ const crosswordRoutes = require('./crosswordRoutes');
 const creatorRoutes = require("./creatorAuthRoutes");
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./institutionAuthRoutes");
+const superAdminRoutes = require("./superAdminRoutes");
+
 
 
 // Use route modules
@@ -29,6 +31,7 @@ router.use('/crossword', crosswordRoutes);
 router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
+router.use("/super-admin", superAdminRoutes);
 
 
 

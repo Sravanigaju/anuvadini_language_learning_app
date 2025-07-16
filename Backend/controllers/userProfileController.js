@@ -1,7 +1,7 @@
 const UserProfile = require("../models/UserProfile");
 const User = require("../models/User");
 const mongoose = require("mongoose");
-
+const moment = require("moment");
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
   try {
@@ -274,44 +274,39 @@ exports.updateUserProgress = async (req, res) => {
       language.badgesEarned = [...earnedSet];
     }
 
-    //  XP Update logic
-    if (xp !== undefined && xp > 0) {
-      const today = new Date();
+ // XP Update block
+if (xp !== undefined && xp > 0) {
+  const today = new Date();
+  if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
 
-      // Ensure xpHistory exists
-      if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
+  language.xpHistory.push({ date: today, xpGained: xp });
 
-      // 1. Add today's XP entry
-      language.xpHistory.push({ date: today, xpGained: xp });
+  language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
 
-      // 2. Recalculate total XP
-      language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
+  const weekStart = moment().startOf("isoWeek");
+  const monthStart = moment().startOf("month");
+  const yearStart = moment().startOf("year");
 
-      // 3. Recalculate time-based XP
-      const weekStart = moment().startOf("isoWeek");
-      const monthStart = moment().startOf("month");
-      const yearStart = moment().startOf("year");
+  language.xpWeekly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(weekStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
 
-      language.xpWeekly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(weekStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+  language.xpMonthly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(monthStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
 
-      language.xpMonthly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(monthStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+  language.xpYearly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(yearStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
+}
 
-      language.xpYearly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(yearStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+// ✅ Always recalculate total XP
+userProfile.total_xp = userProfile.interestedLanguages.reduce(
+  (sum, lang) => sum + (lang.xp || 0),
+  0
+);
 
-      // 4. Update total_xp across all languages
-      userProfile.total_xp = userProfile.interestedLanguages.reduce(
-        (sum, lang) => sum + (lang.xp || 0),
-        0
-      );
-    }
-
-    await userProfile.save();
+await userProfile.save();
 
     return res.status(200).json({
       message: "Language progress, XP, and badges updated successfully",
