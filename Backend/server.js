@@ -3,12 +3,13 @@ const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 
 const rooms = {}; // In-memory room tracking
+
 // Game room data structure
 const gameRooms = new Map();
 
 function setupWebSocket(server) {
   console.log("log for connedction")
-  const wss = new WebSocket.Server({ server }); // Attach to existing HTTP server
+  const wss = new WebSocket.Server({ server }); 
   wss.on('connection', (ws) => {
     console.log("log for connedction")
     ws.id = uuidv4();
