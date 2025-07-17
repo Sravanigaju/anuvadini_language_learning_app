@@ -28,6 +28,21 @@ router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
+
+// Skribble game route
+router.get('/skribble', (req, res) => {
+  res.redirect('/skribble');
+});
+
+// Skribble status endpoint
+router.get('/skribble-status', (req, res) => {
+  res.json({ 
+    status: 'active', 
+    message: 'Skribble game server is running',
+    access_url: '/skribble'
+  });
+});
+
 router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
