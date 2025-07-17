@@ -6,11 +6,21 @@
     <title>Skribble Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
             text-align: center;
             padding: 10px;
             margin: 0;
             touch-action: manipulation;
+            background-color: #f8f9fa;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+        h1:hover, h2:hover {
+            transform: scale(1.03);
         }
         #messages {
             margin-top: 15px; 
@@ -20,6 +30,19 @@
             text-align: left;
             overflow-y: auto;
             max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        #messages p {
+            margin: 5px 0;
+            padding: 5px 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        #messages p:hover {
+            background-color: #f0f0f0;
         }
         #user-list, #score-board {
             margin-top: 15px;
@@ -27,12 +50,22 @@
             border: 1px solid #ccc;
             min-height: 40px;
             text-align: left;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         .score-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 8px 10px;
             border-bottom: 1px solid #eee;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            border-radius: 4px;
+        }
+        .score-item:hover {
+            background-color: #f5f5f5;
+            transform: translateX(3px);
         }
         .score-item:last-child {
             border-bottom: none;
@@ -43,20 +76,42 @@
         .join-form {
             margin: 15px auto;
             max-width: 300px;
+            transition: transform 0.3s ease;
+        }
+        .join-form:hover {
+            transform: translateY(-3px);
         }
         input, button {
-            padding: 10px;
+            padding: 12px;
             margin: 5px;
-            font-size: 16px; /* Larger for touch */
-            border-radius: 5px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
         }
         button {
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
-            min-height: 44px; /* Better touch targets */
+            min-height: 44px;
             min-width: 80px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background-color: #3e8e41;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .room-list {
             margin: 15px auto;
@@ -64,13 +119,21 @@
             text-align: left;
         }
         .room-item {
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
+            margin: 8px 0;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .room-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #4CAF50;
         }
         .room-item button {
             background-color: #4CAF50;
@@ -85,9 +148,16 @@
             max-width: 500px;
             height: 300px;
             border: 2px solid #333;
+            border-radius: 10px;
             background-color: #ffffff;
             display: block;
-            touch-action: none; /* Prevents browser handling of touch events */
+            touch-action: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        #canvas-container:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
         #drawing-canvas {
             position: absolute;
@@ -99,90 +169,245 @@
             background-color: #ffffff;
             display: block;
             touch-action: none;
+            border-radius: 8px;
         }
         #word-display {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
-            margin: 8px 0;
-            min-height: 32px;
+            margin: 15px 0;
+            min-height: 36px;
+            transition: all 0.3s ease;
+            background-color: #f0f7f0;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.02); }
         }
         #round-info {
-            font-size: 16px;
-            margin: 8px 0;
-            min-height: 24px;
+            font-size: 18px;
+            margin: 10px 0;
+            min-height: 28px;
+            background-color: #f5f5f5;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
         .drawer-controls {
-            margin: 8px 0;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .drawer-controls:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         .color-option {
             display: inline-block;
-            width: 30px;
-            height: 30px;
-            margin: 0 5px;
+            width: 36px;
+            height: 36px;
+            margin: 0 6px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .color-option:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .color-option.selected {
             border-color: #333;
+            transform: scale(1.15);
+        }
+        
+        /* Custom cursors for drawing */
+        .pencil-cursor {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2UPUpDQRRGDxZWVhY2grWFhVjYiJWlYKWljb9gI/gDllZWgoKFYmEnaG1hoY2dKBLBKiIoRMf3wkPCTObtKMTAB1PcO+fOzFsYGvpPATZwgWdUFY4xO2iAKTxAle9OnGKsW4A9dE0PcceBsUkO8eliH9N/CXGOr+8zjvnCKUa7hZnDK1YDYuK11Ko84jzzd5YA1zWrqWG/V4B4hXuZv4JGBPiEt0a3G0EqaVYJcIWPmteGCV6wlvkLuMdH5m9jKgLkNo+TxCPuMLa0cICPzF/HZATIbV64j8kuM69hsRFgPgLkdhULfchcxUpqT1b/FGDoR/kG+klYxgb8Qr4AAAAASUVORK5CYII='), auto;
+        }
+        .eraser-cursor {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAwklEQVR4nO2UQQ6CMBBFH+FKD+BeD+C+HsO9nsE9HsHF8XMBSUJ0UWIZoVO6IZGXdNGZ/99JOy0MlAZYADtgkhg/B04aolaAVsC2C5oCW2X4L/S31sRXAbeEwS03JXcZuM4Dxplp3YSFgXTAKpJ/B9aBXBPcBVPnAaN3rjPcBg4KXeeBiyLUlXKn5C6NnQLnJxK4+Au2OCjsb/yubNK8ybf6fBnaeS4xXYF5gvdFuWV10wLrQvG2LL4rXrnXGfgt5gFpBDop3VknXwAAAABJRU5ErkJggg=='), auto;
+        }
+        
+        /* Tool selection for drawing */
+        .drawing-tools {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tool-option {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            margin: 0 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: all 0.2s ease;
+            background-color: #f5f5f5;
+        }
+        .tool-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .tool-option.selected {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        .tool-option img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Line width selector */
+        .line-width {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .width-label {
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .width-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            margin: 0 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: all 0.2s ease;
+        }
+        .width-option:hover {
+            border-color: #4CAF50;
+        }
+        .width-option.selected {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        .width-dot {
+            background-color: #333;
+            border-radius: 50%;
         }
         .chat-input {
-            margin: 10px auto;
+            margin: 15px auto;
             max-width: 500px;
             display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .chat-input input {
             flex-grow: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .chat-input button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
         .correct-guess {
             color: #4CAF50;
             font-weight: bold;
+            animation: highlight 1s ease;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            padding: 8px 12px;
+        }
+        @keyframes highlight {
+            0% { background-color: #4CAF50; color: white; }
+            100% { background-color: #e8f5e9; color: #4CAF50; }
         }
         .timer {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            margin: 8px 0;
-            padding: 5px;
+            margin: 12px 0;
+            padding: 10px 15px;
             border: 2px solid #333;
-            border-radius: 5px;
+            border-radius: 8px;
             display: inline-block;
             min-width: 110px;
+            background-color: #f0f7f0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         .timer-warning {
             color: #ff0000;
             background-color: #ffeeee;
+            animation: pulse-warning 0.5s infinite alternate;
+        }
+        @keyframes pulse-warning {
+            from { transform: scale(1); box-shadow: 0 0 5px rgba(255,0,0,0.3); }
+            to { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,0,0,0.5); }
         }
         .settings-panel {
-            margin: 15px auto;
-            padding: 12px;
+            margin: 20px auto;
+            padding: 15px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 10px;
             background-color: #f9f9f9;
             max-width: 500px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .settings-panel:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
         .setting-group {
-            margin: 8px 0;
+            margin: 12px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .setting-group:hover {
+            transform: translateX(5px);
         }
         .setting-group label {
-            margin-right: 8px;
+            margin-right: 10px;
             font-weight: bold;
         }
         .setting-group select {
-            padding: 8px;
+            padding: 10px;
             min-width: 140px;
             font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        .setting-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
         }
         .category-badge {
             display: inline-block;
-            padding: 3px 8px;
-            margin-right: 5px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 4px 10px;
+            margin-right: 6px;
+            border-radius: 15px;
+            font-size: 14px;
             font-weight: bold;
             color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .category-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         .category-animals {
             background-color: #4CAF50;
@@ -222,13 +447,43 @@
                 height: 250px;
             }
             .color-option {
-                width: 25px;
-                height: 25px;
+                width: 28px;
+                height: 28px;
                 margin: 0 3px;
             }
             #messages {
                 max-height: 120px;
             }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        .slide-in-right {
+            animation: slideInRight 0.5s ease;
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease;
+        }
+        .bounce {
+            animation: bounce 0.5s ease;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
         }
         
         /* Additional mobile-specific styles */
@@ -295,6 +550,20 @@
             -ms-user-select: none;
             user-select: none;
         }
+        
+        /* Drawing effect animation */
+        .drawing-effect {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: drawingEffect 0.6s ease-out forwards;
+            z-index: 10;
+        }
+        
+        @keyframes drawingEffect {
+            0% { transform: scale(0.5); opacity: 0.7; }
+            100% { transform: scale(2); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -323,6 +592,7 @@
     <div id="game-section" class="hidden">
         <h2>Room: <span id="room-name"></span></h2>
         <button id="leave-room-btn">Leave Room</button>
+        <button id="toggle-music-btn" style="float:right; margin-right:10px;">🔊</button>
         
         <div id="game-settings" class="settings-panel">
             <h3>Game Settings</h3>
@@ -376,8 +646,23 @@
         </div>
     </div>
 
+    <audio id="bg-music" src="soundcheck.mp3" loop preload="auto"></audio>
+
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+    <script type="module">
+        // Import animation modules
+        import { 
+            initializeAnimations, 
+            AnimationManager, 
+            DrawingEffects, 
+            UIAnimations, 
+            GameStateAnimations 
+        } from './animations.js';
+
+        // Initialize animation systems
+        const animations = initializeAnimations();
+        const { animationManager, drawingEffects, uiAnimations, gameStateAnimations } = animations;
+
         // DOM elements
         const usernameSection = document.getElementById('username-section');
         const lobbySection = document.getElementById('lobby-section');
@@ -406,6 +691,8 @@
         const ctx = canvas.getContext('2d');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        const toggleMusicBtn = document.getElementById('toggle-music-btn');
+        const bgMusic = document.getElementById('bg-music');
         
         // Game state
         let currentUsername = '';
@@ -415,6 +702,7 @@
         let currentColor = '#000000';
         let prevX = 0;
         let prevY = 0;
+        let isMusicMuted = false; // Track music mute state
         
         // Initialize canvas
         function setupCanvas() {
@@ -530,6 +818,10 @@
             ctx.fillStyle = currentColor;
             ctx.fill();
             
+            // Add drawing effect animation
+            const canvasContainer = document.getElementById('canvas-container');
+            drawingEffects.createDrawingEffect(prevX, prevY, currentColor, canvasContainer);
+            
             console.log(`Started drawing at position: ${prevX}, ${prevY}`);
         }
         
@@ -545,6 +837,12 @@
             ctx.moveTo(prevX, prevY);
             ctx.lineTo(x, y);
             ctx.stroke();
+            
+            // Occasionally show drawing effect for smoother visual feedback
+            if (Math.random() > 0.9) {
+                const canvasContainer = document.getElementById('canvas-container');
+                drawingEffects.createDrawingEffect(x, y, currentColor, canvasContainer);
+            }
             
             // Send drawing data to server
             const drawingData = {
@@ -568,8 +866,8 @@
         }
         
         function clearCanvas() {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const canvasContainer = document.getElementById('canvas-container');
+            uiAnimations.animateCanvasClear(canvasContainer, ctx, canvas);
             
             // Send clear canvas event to server
             socket.emit('clearCanvas');
@@ -731,12 +1029,6 @@
                 // Log canvas state to help debugging
                 console.log(`Canvas initialized with dimensions: ${canvas.width}x${canvas.height}`);
                 console.log(`Is drawer: ${isDrawer}`);
-                
-                // Add class to body when on mobile
-                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                    document.body.classList.add('mobile-device');
-                    console.log('Mobile device detected');
-                }
             } else {
                 console.error('Canvas or context not available');
             }
@@ -791,13 +1083,19 @@
                 // Emit joinGame event with username
                 socket.emit('joinGame', username);
                 
-                // Update UI
+                // Update UI with animation
                 usernameSection.classList.add('hidden');
                 lobbySection.classList.remove('hidden');
+                lobbySection.classList.add('fade-in');
                 playerNameElement.textContent = username;
                 
                 // Add message
                 addMessage(`You joined as ${username}`);
+                
+                // Remove animation class after it completes
+                setTimeout(() => {
+                    lobbySection.classList.remove('fade-in');
+                }, 500);
             }
         });
         
@@ -828,6 +1126,12 @@
             timer.classList.remove('timer-warning');
             isDrawer = false;
             drawerControls.classList.add('hidden');
+            toggleMusicBtn.textContent = '🔊'; // Reset button text
+            if (bgMusic.paused) {
+                bgMusic.play();
+            } else {
+                bgMusic.pause();
+            }
         });
         
         // Function to join a room from the room list
@@ -842,66 +1146,43 @@
             });
         }
 
-        // Function to add message to the messages div
-        function addMessage(text) {
+        // Function to add message to the messages div with animation
+        function addMessage(text, className = '') {
             const message = document.createElement('p');
             message.textContent = text;
+            if (className) {
+                message.classList.add(className);
+            }
+            
             messages.appendChild(message);
-            
-            // Scroll to bottom
             messages.scrollTop = messages.scrollHeight;
+            
+            // Animate the message
+            uiAnimations.animateMessage(message, className === 'correct-guess' ? 'correct' : 'normal');
         }
         
-        // Function to update the user list
+        // Function to update the user list with animation
         function updateUserList(users) {
-            userList.innerHTML = '';
-            users.forEach(user => {
-                const userElement = document.createElement('div');
-                userElement.textContent = user.username;
-                userElement.id = `user-${user.id}`;
-                userList.appendChild(userElement);
-            });
-            
-            // Also update the score board if scores are available
-            updateScoreBoard(users);
+            uiAnimations.animateUserList(userList, users);
         }
         
-        // Function to update the score board
+        // Function to update the score board with animation
         function updateScoreBoard(users) {
-            scoreBoard.innerHTML = '';
-            
-            // Sort users by score (highest first)
-            const sortedUsers = [...users].sort((a, b) => (b.score || 0) - (a.score || 0));
-            
-            sortedUsers.forEach(user => {
-                const scoreItem = document.createElement('div');
-                scoreItem.className = 'score-item';
-                scoreItem.id = `score-${user.id}`;
-                
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = user.username;
-                
-                const scoreSpan = document.createElement('span');
-                scoreSpan.textContent = user.score || 0;
-                scoreSpan.className = 'user-score';
-                
-                scoreItem.appendChild(nameSpan);
-                scoreItem.appendChild(scoreSpan);
-                scoreBoard.appendChild(scoreItem);
-            });
+            uiAnimations.animateScoreBoard(scoreBoard, users);
         }
         
-        // Function to update the room list
+        // Function to update the room list with animation
         function updateRoomList(rooms) {
             roomList.innerHTML = '';
             if (rooms.length === 0) {
                 const emptyMessage = document.createElement('p');
                 emptyMessage.textContent = 'No rooms available. Create one!';
+                animationManager.animateElement(emptyMessage, 'fade-in');
                 roomList.appendChild(emptyMessage);
                 return;
             }
             
-            rooms.forEach(room => {
+            rooms.forEach((room, index) => {
                 const roomElement = document.createElement('div');
                 roomElement.className = 'room-item';
                 
@@ -915,6 +1196,8 @@
                 roomElement.appendChild(roomInfo);
                 roomElement.appendChild(joinButton);
                 roomList.appendChild(roomElement);
+                
+                animationManager.animateElement(roomElement, 'slide-in-left', index * 100);
             });
         }
         
@@ -922,43 +1205,34 @@
         function handleStartRound(data) {
             console.log('Handling start round event, data:', data);
             
-            // Create category and difficulty badges
-            const categoryBadge = `<span class="category-badge category-${data.category}">${data.category}</span>`;
-            const difficultyBadge = `<span class="category-badge difficulty-${data.difficulty}">${data.difficulty}</span>`;
-            
             if (data.isDrawer) {
                 // This user is the drawer
                 isDrawer = true;
                 console.log('I am now the drawer');
                 
-                drawerControls.classList.remove('hidden');
-                wordDisplay.innerHTML = `Your word to draw: ${data.word} ${categoryBadge} ${difficultyBadge}`;
-                roundInfo.textContent = 'You are drawing! Others are guessing.';
-                
-                // Reset the canvas for the drawer
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // If this is a new drawer (previous drawer left)
                 if (data.isNewDrawer) {
-                    addMessage('You are now the drawer! Previous drawer left.');
+                    addMessage('You are now the drawer! Previous drawer left.', 'bounce');
                 }
             } else {
                 // This user is a guesser
                 isDrawer = false;
                 console.log('I am a guesser');
-                
-                drawerControls.classList.add('hidden');
-                wordDisplay.innerHTML = `Word hint: ${data.hint} ${categoryBadge} ${difficultyBadge}`;
-                roundInfo.textContent = `${data.drawerUsername} is drawing now. Guess the word!`;
-                
-                // Reset the canvas for the guesser
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
             
+            // Use the game state animations
+            gameStateAnimations.animateRoundStart(
+                wordDisplay, 
+                roundInfo, 
+                drawerControls, 
+                data.isDrawer, 
+                data.word, 
+                data.category, 
+                data.difficulty, 
+                data.drawerUsername
+            );
+            
             // Add message about category and difficulty
-            addMessage(`New round started with category: ${data.category}, difficulty: ${data.difficulty}`);
+            addMessage(`New round started with category: ${data.category}, difficulty: ${data.difficulty}`, 'slide-in-right');
         }
 
         // Listen for welcome message
@@ -971,9 +1245,10 @@
         socket.on('roomJoined', (data) => {
             console.log('Room joined:', data);
             
-            // Update UI
+            // Update UI with animations
             lobbySection.classList.add('hidden');
             gameSection.classList.remove('hidden');
+            gameSection.classList.add('fade-in');
             roomNameElement.textContent = data.roomId;
             
             // Update user list
@@ -993,8 +1268,13 @@
             difficultySelect.value = data.difficulty;
             
             // Add message
-            addMessage(`You joined room ${data.roomId}`);
+            addMessage(`You joined room ${data.roomId}`, 'bounce');
             addMessage(`Current settings: Category: ${data.category}, Difficulty: ${data.difficulty}`);
+            
+            // Remove animation class after it completes
+            setTimeout(() => {
+                gameSection.classList.remove('fade-in');
+            }, 500);
         });
         
         // Listen for start round event
@@ -1118,19 +1398,16 @@
         
         // Listen for correct guess
         socket.on('correctGuess', (data) => {
-            const messageElement = document.createElement('p');
-            messageElement.classList.add('correct-guess');
-            messageElement.textContent = `${data.username} guessed the word correctly: ${data.word}!`;
-            messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight;
-            
-            // If this user was the one who guessed correctly
-            if (data.userId === socket.id) {
-                wordDisplay.textContent = `You guessed it: ${data.word}!`;
-            }
-            
-            // Update round info
-            roundInfo.textContent = `${data.username} guessed the word correctly!`;
+            gameStateAnimations.animateCorrectGuess(
+                messages, 
+                wordDisplay, 
+                roundInfo, 
+                data.username, 
+                data.word, 
+                data.userId, 
+                socket.id, 
+                data.scores
+            );
             
             // Update scores if available
             if (data.scores) {
@@ -1146,24 +1423,25 @@
                 drawerControls.classList.add('hidden');
             }
             
-            // Clear the canvas
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Show round end message
-            if (data.timeUp) {
-                addMessage(`Time's up! The word was: ${data.word}`);
-            } else {
-                addMessage(`Round ended. The word was: ${data.word}`);
-            }
-            
-            // Reset word display
-            wordDisplay.textContent = '';
-            roundInfo.textContent = 'Waiting for next round to start...';
+            // Use game state animations
+            const canvasContainer = document.getElementById('canvas-container');
+            gameStateAnimations.animateRoundEnd(
+                canvasContainer, 
+                ctx, 
+                canvas, 
+                wordDisplay, 
+                roundInfo, 
+                messages, 
+                data.word, 
+                data.timeUp, 
+                data.scores
+            );
             
             // Reset timer display
             timeLeft.textContent = '60';
             timer.classList.remove('timer-warning');
+            timeLeft.style.color = '#333';
+            timeLeft.style.fontSize = '22px';
             
             // Update scores if available
             if (data.scores) {
@@ -1173,24 +1451,64 @@
         
         // Listen for time updates
         socket.on('timeUpdate', (data) => {
+            // Update time with smooth transition
+            timeLeft.style.transition = 'color 0.3s ease';
             timeLeft.textContent = data.timeLeft;
             
-            // Add warning class when time is running low (less than 10 seconds)
+            // Add warning effects when time is running low
             if (data.timeLeft <= 10) {
                 timer.classList.add('timer-warning');
+                
+                // Add pulse effect when time is very low
+                if (data.timeLeft <= 5) {
+                    timeLeft.style.fontSize = '24px';
+                    timeLeft.style.color = '#ff0000';
+                    
+                    // Reset after brief moment
+                    setTimeout(() => {
+                        timeLeft.style.fontSize = '22px';
+                    }, 200);
+                }
             } else {
                 timer.classList.remove('timer-warning');
+                timeLeft.style.color = '#333';
             }
+            
+            // Update drawing canvas border color based on time left
+            if (canvas) {
+                // Calculate a gradient from green to red based on time left
+                const percentage = data.timeLeft / 60;
+                const red = Math.floor(255 * (1 - percentage));
+                const green = Math.floor(255 * percentage);
+                canvas.style.borderColor = `rgb(${red}, ${green}, 0)`;
+                canvas.style.transition = 'border-color 1s ease';
+            }
+            
+            // Use UI animations for timer
+            uiAnimations.animateTimer(timer, data.timeLeft);
         });
         
         // Listen for room settings updates
         socket.on('roomSettingsUpdated', (data) => {
-            // Update UI
+            // Update UI with animations
+            categorySelect.style.transition = 'background-color 0.3s ease';
+            difficultySelect.style.transition = 'background-color 0.3s ease';
+            
+            categorySelect.style.backgroundColor = '#e8f5e9';
+            difficultySelect.style.backgroundColor = '#e8f5e9';
+            
+            // Update values
             categorySelect.value = data.category;
             difficultySelect.value = data.difficulty;
             
-            // Add message
-            addMessage(`Room settings updated: Category: ${data.category}, Difficulty: ${data.difficulty}`);
+            // Reset background after a moment
+            setTimeout(() => {
+                categorySelect.style.backgroundColor = '';
+                difficultySelect.style.backgroundColor = '';
+            }, 1000);
+            
+            // Add message with animation
+            addMessage(`Room settings updated: Category: ${data.category}, Difficulty: ${data.difficulty}`, 'slide-in-right');
         });
 
         // Listen for user left event
@@ -1208,6 +1526,17 @@
         socket.on('disconnect', () => {
             addMessage('Disconnected from server');
             console.log('Disconnected from server');
+        });
+
+        // Music toggle button handler
+        toggleMusicBtn.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                toggleMusicBtn.textContent = '🔊';
+            } else {
+                bgMusic.pause();
+                toggleMusicBtn.textContent = '🔈';
+            }
         });
     </script>
 </body>

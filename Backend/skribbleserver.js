@@ -117,7 +117,7 @@ const ROUND_DURATION = 60;
 const wordsByCategory = {
   animals: {
     easy: ['cat', 'dog', 'fish', 'bird', 'duck', 'frog', 'bear', 'lion', 'pig', 'cow'],
-    medium: ['giraffe', 'elephant', 'penguin', 'monkey', 'zebra', 'rabbit', 'snake', 'tiger', 'whale', 'horse'],
+    medium: ['cat', 'dog', 'fish', 'bird', 'duck', 'frog','giraffe', 'elephant', 'penguin', 'monkey', 'zebra', 'rabbit', 'snake', 'tiger', 'whale', 'horse','octopus', 'rhinoceros', 'scorpion', 'jellyfish'],
     hard: ['octopus', 'rhinoceros', 'scorpion', 'jellyfish', 'chameleon', 'platypus', 'flamingo', 'hedgehog', 'armadillo', 'narwhal']
   },
   food: {
@@ -158,6 +158,9 @@ function getRandomWord(category = DEFAULT_CATEGORY, difficulty = DEFAULT_DIFFICU
 
 // Generate a hint for a word (e.g., "apple" -> "A _ _ _ _")
 function generateHint(word) {
+  if (!word || typeof word !== 'string' || word.length === 0) {
+    return '_ _ _ _'; // fallback hint
+  }
   return word.charAt(0).toUpperCase() + ' ' + '_ '.repeat(word.length - 1).trim();
 }
 
@@ -766,4 +769,4 @@ module.exports = { startServer };
 // Only start server if this file is run directly
 if (require.main === module) {
   startServer();
-} 
+}
