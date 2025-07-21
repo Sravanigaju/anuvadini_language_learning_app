@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Crossword = require("../models/Crossword");
 const mongoose = require("mongoose");
 const moment = require("moment");
+
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
   try {

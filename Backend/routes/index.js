@@ -11,6 +11,7 @@ const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
+console.log('index.js (routes) loaded');
 const creatorRoutes = require("./creatorAuthRoutes");
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./institutionAuthRoutes");
@@ -27,6 +28,7 @@ router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
+console.log('router.use /crossword registered');
 router.use('/crossword', crosswordRoutes);
 
 // Skribble game route

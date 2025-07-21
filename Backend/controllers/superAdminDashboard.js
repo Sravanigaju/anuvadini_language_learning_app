@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const Crossword = require("../models/Crossword");
 
 exports.getSuperAdminDashboard = async (req, res) => {
   try {
@@ -70,13 +71,39 @@ exports.getSuperAdminDashboard = async (req, res) => {
 
     const funnelChart = { enrolled, started, midway, certified };
 
-    // Game Stats – sample static
+    // Game Stats – dynamic
+    // Crossword
+    const crosswordPlaysAgg = await Crossword.aggregate([
+      { $unwind: "$sessions" },
+      { $count: "plays" }
+    ]);
+    const crosswordPlays = crosswordPlaysAgg[0]?.plays || 0;
+
+    // Listening
+    const listeningPlaysAgg = await Crossword.aggregate([
+      { $unwind: "$listeningSessions" },
+      { $count: "plays" }
+    ]);
+    const listeningPlays = listeningPlaysAgg[0]?.plays || 0;
+
+    // Drag & Drop, Word Match: (Assuming you have models or session arrays for these. If not, keep static or add logic when available)
+    // For now, keep static as in your original code
+    const dragDropPlays = 700;
+    const wordMatchPlays = 650;
+
+    // Daily Quiz
+    const dailyQuizPlaysAgg = await Crossword.aggregate([
+      { $unwind: "$dailyQuizSessions" },
+      { $count: "plays" }
+    ]);
+    const dailyQuizPlays = dailyQuizPlaysAgg[0]?.plays || 0;
+
     const gameStats = [
-      { game: "Crossword", plays: 1200 },
-      { game: "Listening", plays: 900 },
-      { game: "Drag & Drop", plays: 700 },
-      { game: "Word Match", plays: 650 },
-      { game: "Daily Quiz", plays: 1500 },
+      { game: "Crossword", plays: crosswordPlays },
+      { game: "Listening", plays: listeningPlays },
+      { game: "Drag & Drop", plays: dragDropPlays },
+      { game: "Word Match", plays: wordMatchPlays },
+      { game: "Daily Quiz", plays: dailyQuizPlays },
     ];
 
     // Language Leaderboard (top 3)
@@ -156,9 +183,13 @@ exports.getSuperAdminDashboard = async (req, res) => {
     // Total user count
     const totalUsers = await UserProfile.countDocuments();
 
+    // Total crossword gamers (users who have at least one crossword session)
+    const totalGamers = await Crossword.countDocuments({ "sessions.0": { $exists: true } });
+
     // Final response
     res.status(200).json({
       totalUsers,
+      totalGamers,
       avgXpPerUser: avgXpAndCoins[0]?.avgXp || 0,
       avgCoinsPerUser: avgXpAndCoins[0]?.avgCoins || 0,
       topSourceLanguage: topSourceLanguage[0]?._id || "N/A",

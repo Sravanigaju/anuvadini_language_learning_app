@@ -6,6 +6,8 @@ const { Server } = require('socket.io');
 const io = new Server(server);
 const PORT = process.env.SKRIBBLE_PORT || 3000;
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const SkribbleResult = require('./models/SkribbleResult');
 
 // Load environment variables
 dotenv.config();
@@ -39,7 +41,7 @@ async function saveUser(userId, userData) {
     await dataClient.sadd(`room:${userData.roomId}:users`, userId);
   }
   // Set TTL to prevent memory leaks if server crashes
-  await dataClient.expire(`user:${userId}`, 3600); // 1 hour
+  await dataClient.expire(`user:${userId}`, 3600); 
 }
 
 async function getUser(userId) {
@@ -406,6 +408,23 @@ io.on('connection', (socket) => {
         await updateUserScore(room.currentDrawer, 5);
         const drawer = await getUser(room.currentDrawer);
         console.log(`${drawer.username} earned 5 points as drawer`);
+      }
+      
+      // Log result to MongoDB
+      try {
+        await SkribbleResult.create({
+          roomId,
+          word: room.currentWord,
+          drawerId: room.currentDrawer,
+          drawerUsername: drawer ? drawer.username : '',
+          guesserId: socket.id,
+          guesserUsername: user.username,
+          correct: true,
+          pointsAwarded: 10, // or whatever logic you use
+          timestamp: new Date()
+        });
+      } catch (err) {
+        console.error('Failed to log Skribble result:', err);
       }
       
       // Get updated scores for all users in the room
