@@ -13,6 +13,7 @@ function setupWebSocket(server) {
   wss.on('connection', (ws) => {
     console.log("log for connedction")
     ws.id = uuidv4();
+    
     ws.roomId = null;
 
     ws.on('message', (message) => {

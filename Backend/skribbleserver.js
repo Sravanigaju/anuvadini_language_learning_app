@@ -25,13 +25,14 @@ const redisConfig = {
 };
 
 // Create Redis clients with connection option set to false to prevent auto-connection
-const pubClient = new Redis(redisConfig);
-const subClient = pubClient.duplicate();
-const dataClient = new Redis(redisConfig);
+// const pubClient = new Redis(redisConfig);
+// const subClient = pubClient.duplicate();
+// const dataClient = new Redis(redisConfig);
 
 // Note: The Redis adapter ensures that all Socket.IO events (like socket.broadcast.emit,
 // socket.to(roomId).emit, and io.to(roomId).emit) work seamlessly across multiple processes
 // without requiring any code changes. The adapter automatically distributes events through Redis.
+
 
 // Redis helper functions
 async function saveUser(userId, userData) {
@@ -737,25 +738,25 @@ io.on('connection', (socket) => {
 async function startServer(existingServer = null) {
   try {
     // Connect to Redis
-    await pubClient.connect().catch(err => {
-      console.warn('Redis connection failed, falling back to in-memory mode:', err.message);
-    });
-    
-    await subClient.connect().catch(err => {
-      console.warn('Redis sub client connection failed:', err.message);
-    });
-    
-    await dataClient.connect().catch(err => {
-      console.warn('Redis data client connection failed:', err.message);
-    });
-    
+    // await pubClient.connect().catch(err => {
+    //   console.warn('Redis connection failed, falling back to in-memory mode:', err.message);
+    // });
+    // 
+    // await subClient.connect().catch(err => {
+    //   console.warn('Redis sub client connection failed:', err.message);
+    // });
+    // 
+    // await dataClient.connect().catch(err => {
+    //   console.warn('Redis data client connection failed:', err.message);
+    // });
+    // 
     // Only set up Redis adapter if connection was successful
-    if (pubClient.status === 'ready' && subClient.status === 'ready') {
-      console.log('Connected to Redis, using Redis adapter');
-      io.adapter(createAdapter(pubClient, subClient));
-    } else {
+    // if (pubClient.status === 'ready' && subClient.status === 'ready') {
+    //   console.log('Connected to Redis, using Redis adapter');
+    //   io.adapter(createAdapter(pubClient, subClient));
+    // } else {
       console.log('Using in-memory adapter');
-    }
+    // }
     
     // If an existing server is provided, attach Socket.IO to it
     if (existingServer) {
