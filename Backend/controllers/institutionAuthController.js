@@ -8,11 +8,12 @@ const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 exports.registerInstitution = async (req, res) => {
   try {
     const {
-      institutionName, contactInfo, email, password, confirmPassword,
+      institutionName, phoneNumber, email, password, confirmPassword,
       address, location, website, description
     } = req.body;
+    console.log(req.body);
 
-    if (!institutionName || !contactInfo || !password || !confirmPassword) {
+    if (!institutionName || !phoneNumber || !password || !confirmPassword) {
       return res.status(400).json({ message: "Required fields missing" });
     }
 
@@ -20,7 +21,7 @@ exports.registerInstitution = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const exists = await Institution.findOne({ $or: [{ contactInfo }, { email }] });
+    const exists = await Institution.findOne({ $or: [{ phoneNumber }, { email }] });
     if (exists) {
       return res.status(409).json({ message: "Institution already exists" });
     }
@@ -29,7 +30,7 @@ exports.registerInstitution = async (req, res) => {
 
     const newInstitution = new Institution({
       institutionName,
-      contactInfo,
+      phoneNumber,
       email,
       password: hashedPassword,
       address,
@@ -53,9 +54,9 @@ exports.registerInstitution = async (req, res) => {
 
 // 2️ Send OTP (Phone)
 exports.sendInstitutionOtpPhone = async (req, res) => {
-  const { contactInfo } = req.body;
+  const { phoneNumber } = req.body;
   try {
-    const inst = await Institution.findOne({ contactInfo });
+    const inst = await Institution.findOne({ phoneNumber });
     if (!inst) return res.status(404).json({ message: "Institution not found" });
 
     const otp = generateOtp();
@@ -63,7 +64,7 @@ exports.sendInstitutionOtpPhone = async (req, res) => {
     inst.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     await inst.save();
 
-    await sendOtpToPhoneNumber(contactInfo, otp);
+    await sendOtpToPhoneNumber(phoneNumber, otp);
     res.status(200).json({ message: "OTP sent via SMS" });
 
   } catch (err) {
@@ -95,9 +96,9 @@ exports.sendInstitutionOtpEmail = async (req, res) => {
 
 // 4️ Verify OTP
 exports.verifyInstitutionOtp = async (req, res) => {
-  const { contactInfo, email, otp } = req.body;
+  const { phoneNumber, email, otp } = req.body;
   try {
-    const inst = await Institution.findOne(contactInfo ? { contactInfo } : { email });
+    const inst = await Institution.findOne(phoneNumber ? { phoneNumber } : { email });
     if (!inst || !inst.otp) {
       return res.status(400).json({ message: "OTP not found" });
     }
@@ -127,9 +128,9 @@ exports.verifyInstitutionOtp = async (req, res) => {
 
 // 5️ Login
 exports.loginInstitution = async (req, res) => {
-  const { contactInfo, email, password } = req.body;
+  const { phoneNumber, email, password } = req.body;
   try {
-    const inst = await Institution.findOne(contactInfo ? { contactInfo } : { email });
+    const inst = await Institution.findOne(phoneNumber ? { phoneNumber } : { email });
     if (!inst) return res.status(404).json({ message: "Institution not found" });
 
     if (!inst.isVerified) {
@@ -144,7 +145,7 @@ exports.loginInstitution = async (req, res) => {
       institutionId: inst._id,
       institutionName: inst.institutionName,
       email: inst.email,
-      contactInfo: inst.contactInfo
+      phoneNumber: inst.phoneNumber
     });
 
   } catch (err) {
