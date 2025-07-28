@@ -1,6 +1,8 @@
 const UserProfile = require("../models/UserProfile");
 const User = require("../models/User");
+const Crossword = require("../models/Crossword");
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
@@ -28,6 +30,7 @@ exports.getUserProfileById = async (req, res) => {
 exports.createUserProfile = async (req, res) => {
   try {
     const { userId, ...rest } = req.body;
+    const { firstName } = rest;
 
     await UserProfile.findOneAndUpdate(
       { userId },
@@ -35,6 +38,20 @@ exports.createUserProfile = async (req, res) => {
       { new: true, upsert: true }
     );
 
+        const crossword = new Crossword({
+          userId: userId,
+          username: firstName,
+          sessions: [],
+          globalStats: {
+            coins: 0,
+            totalGamesPlayed: 0,
+            wins: 0,
+            losses: 0,
+            highestLevelReached: 1,
+            achievementsUnlocked: 0
+          }
+        });
+        await crossword.save();
     res.status(200).json({
       message: "User profile created or updated successfully",
       success: true
@@ -95,7 +112,7 @@ exports.updateUserPoints = async (req, res) => {
 
 
 
-// ✅ Get basic user info by userId
+//  Get basic user info by userId
 exports.getBasicUserInfo = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -124,7 +141,7 @@ exports.getBasicUserInfo = async (req, res) => {
   }
 };
 
-// ✅ Get full user profile using userId (not MongoDB _id)
+//  Get full user profile using userId (not MongoDB _id)
 exports.getUserProfileByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -255,7 +272,7 @@ exports.updateUserProgress = async (req, res) => {
       return res.status(404).json({ error: "Language not found in user profile" });
     }
 
-    // 🔄 Update progress fields
+    // Update progress fields
     if (progressPercent !== undefined) language.progressPercent = progressPercent;
     if (lessonsCompleted !== undefined) language.completedLessons = lessonsCompleted;
     if (assesmentcompleted !== undefined) language.assesmentcompleted = assesmentcompleted;
@@ -264,7 +281,7 @@ exports.updateUserProgress = async (req, res) => {
     if (finalAssessmentCompleted !== undefined) language.finalassesementcompleted = finalAssessmentCompleted;
     language.lastActiveAt = new Date();
 
-    // ✅ Safely handle badge updates
+    // Safely handle badge updates
     if (!Array.isArray(language.badgesEarned)) {
       language.badgesEarned = [];
     }
@@ -274,44 +291,39 @@ exports.updateUserProgress = async (req, res) => {
       language.badgesEarned = [...earnedSet];
     }
 
-    // ✅ XP Update logic
-    if (xp !== undefined && xp > 0) {
-      const today = new Date();
+ // XP Update block
+if (xp !== undefined && xp > 0) {
+  const today = new Date();
+  if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
 
-      // Ensure xpHistory exists
-      if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
+  language.xpHistory.push({ date: today, xpGained: xp });
 
-      // 1. Add today's XP entry
-      language.xpHistory.push({ date: today, xpGained: xp });
+  language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
 
-      // 2. Recalculate total XP
-      language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
+  const weekStart = moment().startOf("isoWeek");
+  const monthStart = moment().startOf("month");
+  const yearStart = moment().startOf("year");
 
-      // 3. Recalculate time-based XP
-      const weekStart = moment().startOf("isoWeek");
-      const monthStart = moment().startOf("month");
-      const yearStart = moment().startOf("year");
+  language.xpWeekly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(weekStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
 
-      language.xpWeekly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(weekStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+  language.xpMonthly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(monthStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
 
-      language.xpMonthly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(monthStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+  language.xpYearly = language.xpHistory
+    .filter((e) => moment(e.date).isSameOrAfter(yearStart))
+    .reduce((sum, e) => sum + e.xpGained, 0);
+}
 
-      language.xpYearly = language.xpHistory
-        .filter((e) => moment(e.date).isSameOrAfter(yearStart))
-        .reduce((sum, e) => sum + e.xpGained, 0);
+// ✅ Always recalculate total XP
+userProfile.total_xp = userProfile.interestedLanguages.reduce(
+  (sum, lang) => sum + (lang.xp || 0),
+  0
+);
 
-      // 4. Update total_xp across all languages
-      userProfile.total_xp = userProfile.interestedLanguages.reduce(
-        (sum, lang) => sum + (lang.xp || 0),
-        0
-      );
-    }
-
-    await userProfile.save();
+await userProfile.save();
 
     return res.status(200).json({
       message: "Language progress, XP, and badges updated successfully",
