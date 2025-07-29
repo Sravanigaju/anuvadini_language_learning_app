@@ -37,10 +37,6 @@ mongoose
   .connect(
     process.env.MONGODB_URI ||
     "mongodb://127.0.0.1:27017/anuvadini_language",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
   )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
@@ -87,9 +83,9 @@ const PORT = process.env.PORT || 7273;
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
   setupWebSocket(server); // Initialize WebSocket server
-  const { startServer } = require('./skribbleserver');
-  startServer(server); // Pass the same server instance to Skribble
-  console.log(`🎮 Skribble game server initialized`);
+  // const { startServer } = require('./skribbleserver');
+  // startServer(server); // Pass the same server instance to Skribble
+  // console.log(`🎮 Skribble game server initialized`);
 });
 
 // Export for testing

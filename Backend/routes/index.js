@@ -15,6 +15,9 @@ const creatorRoutes = require("./creatorAuthRoutes");
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./institutionAuthRoutes");
 
+const SlideRoutes = require("./SlideRoutes");
+const LevelRoutes = require("./LevelRoutes");
+
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -26,6 +29,7 @@ router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
+
 
 // Skribble game route
 router.get('/skribble', (req, res) => {
@@ -47,6 +51,8 @@ router.use("/institution", institutionRoutes);
 
 
 
+router.use("/slides", SlideRoutes);
+router.use("/levels", LevelRoutes);
 
 
 
