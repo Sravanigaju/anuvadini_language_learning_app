@@ -5,7 +5,7 @@ const institutionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phoneNumber: { // 👉 treated as phone number
+  phoneNumber: {
     type: String,
     required: true,
     unique: true,

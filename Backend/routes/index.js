@@ -19,11 +19,12 @@ const SlideRoutes = require("./SlideRoutes");
 const LevelRoutes = require("./LevelRoutes");
 
 const courseFormRoutes = require("./course_form_route");
+
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
 const quizRoutes = require("./quizRoutes");
 const examRoutes = require("./examRoutes");
-const SlideRoutes = require("./SlideRoutes");
+
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -59,15 +60,10 @@ router.get('/skribble-status', (req, res) => {
 router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
-
-
+router.use("/super-admin", superAdminRoutes);
 router.use("/course_form", courseFormRoutes);
-
-
-router.use("/slides", SlideRoutes);
 router.use("/levels", LevelRoutes);
 
-router.use("/super-admin", superAdminRoutes);
 
 
 module.exports = router;

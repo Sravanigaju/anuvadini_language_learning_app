@@ -99,13 +99,9 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
   setupWebSocket(server); // Initialize WebSocket server
-});
-
-  
-  // Initialize Skribble server
-  const { startServer } = require('./skribbleserver');
-  startServer(server); // Pass the same server instance to Skribble
-  console.log(`🎮 Skribble game server initialized`);
+  // const { startServer } = require('./skribbleserver');
+  // startServer(server); // Pass the same server instance to Skribble
+  // console.log(`🎮 Skribble game server initialized`);
 });
 
 // Export for testing
