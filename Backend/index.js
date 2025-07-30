@@ -21,7 +21,6 @@ app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for game functionality
 }));
 app.use(morgan("dev"));
-app.use(express.static("html"));
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,21 +32,27 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+app.use(express.static("html"));
+app.use("/auth", express.static(path.join(__dirname, "admin_main", "build")));
+app.get("/auth/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin_main", "build", "index.html"));
+});
+
 mongoose
   .connect(
     process.env.MONGODB_URI ||
-    "mongodb://127.0.0.1:27017/anuvadini_language",
+      "mongodb://127.0.0.1:27017/anuvadini_language",
+    {
+      useNewUrlParser: true,
+    }
   )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+
 // Routes
 const routes = require("./routes");
 app.use("/api", routes)
-app.use("/*", (req, res) => {
-  console.log("asdasd");
-  res.status(200).send(`Route: ${req.originalUrl}, Method: ${req.method}`);
-});
 
 // Serve Skribble game HTML
 app.get('/skribble', (req, res) => {
@@ -75,6 +80,12 @@ app.get('/api/skribble-url', (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
+});
+
+// Fallback route (should be last)
+app.use("/*", (req, res) => {
+  console.log("asdasd");
+  res.status(200).send(`Route: ${req.originalUrl}, Method: ${req.method}`);
 });
 const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
 // Start server
