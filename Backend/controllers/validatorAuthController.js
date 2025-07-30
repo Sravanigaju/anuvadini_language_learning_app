@@ -4,6 +4,15 @@ const generateOtp = require("../utils/generateOtp");
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 
+exports.getAllUserProfiles = async (req, res) => {
+  try {
+    const profiles = await Validator.find();
+    res.status(200).json(profiles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 exports.registerValidator = async (req, res) => {
   try {
