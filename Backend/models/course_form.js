@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const LessonContentSchema = new mongoose.Schema({
+const CourseContentSchema = new mongoose.Schema({
   status: { type: String, required: true },
   language: { type: String, required: true },
   level: { type: String, required: true },
@@ -14,4 +14,4 @@ const LessonContentSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('LessonContent', LessonContentSchema, 'LessonContents');
+module.exports = mongoose.model('CourseContent', CourseContentSchema, 'CourseContents');
