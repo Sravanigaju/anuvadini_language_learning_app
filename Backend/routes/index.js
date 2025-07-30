@@ -14,6 +14,11 @@ const crosswordRoutes = require('./crosswordRoutes');
 const creatorRoutes = require("./creatorAuthRoutes");
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./institutionAuthRoutes");
+
+const SlideRoutes = require("./SlideRoutes");
+const LevelRoutes = require("./LevelRoutes");
+
+const courseFormRoutes = require("./course_form_route");
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
 const quizRoutes = require("./quizRoutes");
@@ -31,6 +36,7 @@ router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 console.log('router.use /crossword registered');
 router.use('/crossword', crosswordRoutes);
+
 router.use('/courses', courseRoutes); // Course endpoints
 router.use('/quizzes', quizRoutes); // Quiz endpoints
 router.use('/exams', examRoutes); // Exam endpoints
@@ -53,6 +59,14 @@ router.get('/skribble-status', (req, res) => {
 router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
+
+
+router.use("/course_form", courseFormRoutes);
+
+
+router.use("/slides", SlideRoutes);
+router.use("/levels", LevelRoutes);
+
 router.use("/super-admin", superAdminRoutes);
 
 
