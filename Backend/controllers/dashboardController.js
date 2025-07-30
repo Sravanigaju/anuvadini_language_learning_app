@@ -37,6 +37,9 @@ exports.getUserDashboard = async (req, res) => {
       languageName: lang.languageName,
       progressPercent: lang.progressPercent,
     }));
+
+    
+
      // 👇 Create array of all languages with certificate === true
     const certificate = userProfile.interestedLanguages
       .filter(lang => lang.certificate === true)
@@ -149,6 +152,9 @@ exports.getUserProgress = async (req, res) => {
         less_ass_count: langProgress.assesmentcompleted,
         fin_ass_count: langProgress.finalassesementcompleted,
         score: langProgress.xp,
+        xpWeekly: langProgress.xpWeekly || 0,
+        xpMonthly: langProgress.xpMonthly || 0,
+        xpYearly: langProgress.xpYearly || 0,
         streak: langProgress.streak?.currentStreak || 0,
         progress_lang: langProgress.progressPercent,
         certificate: langProgress.certificate || false
@@ -161,4 +167,5 @@ exports.getUserProgress = async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
+
 
