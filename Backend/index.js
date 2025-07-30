@@ -66,7 +66,7 @@ app.get('/privacypolicy', (req, res) => {
   console.log("11111111111111111111111111");
 });
 
-});
+// });
 
 // API endpoint to get Skribble game URL
 app.get('/api/skribble-url', (req, res) => {
@@ -101,10 +101,12 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   setupWebSocket(server); // Initialize WebSocket server
 });
 
-// Initialize Skribble server
-const { startServer } = require('./skribbleserver');
-startServer(server); // Pass the same server instance to Skribble
-console.log(`🎮 Skribble game server initialized`);
+  
+  // Initialize Skribble server
+  const { startServer } = require('./skribbleserver');
+  startServer(server); // Pass the same server instance to Skribble
+  console.log(`🎮 Skribble game server initialized`);
+});
 
 // Export for testing
 module.exports = { app, server };
