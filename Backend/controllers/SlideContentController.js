@@ -16,35 +16,12 @@ const validateLanguage = (language) => {
 // Get all chapters
 async function getAllChapters(req, res) {
   try {
-    const { language, page = 1, limit = 10 } = req.query;
-    const options = {
-      page: parseInt(page),
-      limit: parseInt(limit),
-      sort: { createdAt: -1 }
-    };
-
-    let projection = {};
-    if (language && validateLanguage(language)) {
-      projection[`slides.${language}`] = 1;
-      projection.chapterId = 1;
-    }
-
-    const chapters = await SlideContent.find({}, projection)
-      .skip((options.page - 1) * options.limit)
-      .limit(options.limit)
-      .sort(options.sort);
-
-    const total = await SlideContent.countDocuments();
-
+    // Fetch all documents from the slides collection
+    const chapters = await SlideContent.find({});
     res.json({
       success: true,
       data: chapters,
-      pagination: {
-        currentPage: options.page,
-        totalPages: Math.ceil(total / options.limit),
-        totalItems: total,
-        itemsPerPage: options.limit
-      }
+      count: chapters.length
     });
   } catch (error) {
     res.status(500).json({
@@ -68,7 +45,6 @@ async function getChapterById(req, res) {
     }
 
     const chapter = await SlideContent.findOne({ chapterId }, projection);
-    console.log('Fetched chapter:', chapter);
 
     if (!chapter) {
       return res.status(404).json({

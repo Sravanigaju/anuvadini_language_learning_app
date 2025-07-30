@@ -82,4 +82,5 @@ const chapterSchema = new mongoose.Schema({
 chapterSchema.index({ chapterId: 1 });
 chapterSchema.index({ 'slides.english.title': 'text' });
 
-module.exports = mongoose.model('SlideContent', chapterSchema, "slides");
+// module.exports = mongoose.model('SlideContent', chapterSchema,"slides");
+module.exports = mongoose.model('SlideContent', chapterSchema,"slides");

@@ -68,7 +68,7 @@ app.get('/privacypolicy', (req, res) => {
 // API endpoint to get Skribble game URL
 app.get('/api/skribble-url', (req, res) => {
   // Return the URL based on environment
-  const baseUrl = process.env.NODE_ENV === 'production' 
+  const baseUrl = process.env.NODE_ENV === 'production'
     ? process.env.BASE_URL || req.protocol + '://' + req.get('host')
     : 'http://localhost:' + PORT;
   res.json({
@@ -94,12 +94,10 @@ const PORT = process.env.PORT || 7273;
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
   setupWebSocket(server); // Initialize WebSocket server
+  // const { startServer } = require('./skribbleserver');
+  // startServer(server); // Pass the same server instance to Skribble
+  // console.log(`🎮 Skribble game server initialized`);
 });
-
-// Initialize Skribble server
-const { startServer } = require('./skribbleserver');
-startServer(server); // Pass the same server instance to Skribble
-console.log(`🎮 Skribble game server initialized`);
 
 // Export for testing
 module.exports = { app, server };
