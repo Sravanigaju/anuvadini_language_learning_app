@@ -45,3 +45,13 @@ exports.getCategoriesByLevelName = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Fetch all documents from the Levels collection
+exports.getAllLevels = async (req, res) => {
+  try {
+    const levels = await Level.find({});
+    res.json(levels);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

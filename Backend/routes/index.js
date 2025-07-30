@@ -18,6 +18,8 @@ const institutionRoutes = require("./institutionAuthRoutes");
 const SlideRoutes = require("./SlideRoutes");
 const LevelRoutes = require("./LevelRoutes");
 
+const courseFormRoutes = require("./course_form_route");
+
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -49,6 +51,8 @@ router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
 
+
+router.use("/course_form", courseFormRoutes);
 
 
 router.use("/slides", SlideRoutes);
