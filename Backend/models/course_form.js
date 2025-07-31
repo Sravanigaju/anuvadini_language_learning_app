@@ -12,7 +12,9 @@ const QuizDataSchema = new mongoose.Schema({
 
 // Define CourseDataSchema second (after QuizDataSchema)
 const CourseDataSchema = new mongoose.Schema({
-  Week: { type: Number, required: true },  
+  Week: { type: Number, required: true }, 
+  chapterName:{ type: String, required: true },
+  BriefDescriptipon: { type: String, required: true }, 
   content: { type: String, required: true }, // HTML content as raw string
   quiz: { type: [QuizDataSchema], default: [] } // Array of quiz questions
 }, {
