@@ -17,7 +17,7 @@ const institutionRoutes = require("./institutionAuthRoutes");
 
 const SlideRoutes = require("./SlideRoutes");
 const LevelRoutes = require("./LevelRoutes");
-
+const SuperAdminRegRoutes = require("./SuperAdminRegisterationRoute");
 const courseFormRoutes = require("./course_form_route");
 
 const superAdminRoutes = require("./superAdminRoutes");
@@ -63,6 +63,7 @@ router.use("/institution", institutionRoutes);
 router.use("/super-admin", superAdminRoutes);
 router.use("/course_form", courseFormRoutes);
 router.use("/levels", LevelRoutes);
+router.use("/super_admin_registration", SuperAdminRegRoutes);
 
 
 
