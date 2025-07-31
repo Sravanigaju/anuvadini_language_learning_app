@@ -15,14 +15,14 @@ const crosswordRoutes = require('./crosswordRoutes');
 
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./instituitionRoutes");
-
+const creatorRoutes = require("./CreatorRoutes"); 
 const SlideRoutes = require("./SlideRoutes");
 const LevelRoutes = require("./LevelRoutes");
 const SuperAdminRegRoutes = require("./SuperAdminRegisterationRoute");
 const courseFormRoutes = require("./course_form_route");
 
 
-const creatorRoutes = require("./CreatorRoutes"); 
+
 
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
