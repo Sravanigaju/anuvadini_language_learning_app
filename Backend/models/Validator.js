@@ -3,31 +3,27 @@ const mongoose = require("mongoose");
 const validatorSchema = new mongoose.Schema(
   {
  
-    username:      { type: String, required: true },
-    email:         { type: String, unique: true, sparse: true },
-    phoneNumber:   { type: String, unique: true, sparse: true },
+    FullName:      { type: String, required: true },
+    email:         { type: String,required: true ,unique: true, sparse: true },
+    phoneNumber:   { type: String,required: true ,unique: true, sparse: true },
     password:      { type: String, required: true },
 
-    otp:        String,
-    otpExpiry:  Date,
-    isVerified: { type: Boolean, default: false },
 
+    Languages:              { type: [String], required: true },
+    educationQualification: String,
+    yearsOfExperience:      Number,
+    projectLink:            String,
+    linkedInProfile:        String,
+    bio:                    String,
+    regionOfExpertise:      String,
 
-    yearsOfExperience:     Number,
-    educationQualification:String,
-    region:                String,
-    location:              String,
-    languages:            [String],
-    bio:                   String,
-    projectLinks:         [String],
+    CurrentAdress:          String,
+    AdhaarNumber:           Number,
+    AdhaarPhoto :           String,   //blob storage link 
 
-
-    idProofUrl:    String,
-    certificateUrl:String,
-
-    createdAt: { type: Date, default: Date.now }
+    
   },
-  { versionKey: false }
+  { timestamps: true, versionKey: false }
 );
 
 module.exports = mongoose.model("Validator", validatorSchema, "validators");

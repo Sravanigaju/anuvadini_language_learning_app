@@ -1,37 +1,18 @@
 const mongoose = require("mongoose");
 
 const institutionSchema = new mongoose.Schema({
-  institutionName: {
-    type: String,
-    required: true,
-  },
-  phoneNumber: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
-  // OTP & Verification
-  otp: String,
-  otpExpiry: Date,
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-
-  // Extra fields
-  address: String,
-  location: String,
-  website: String,
+  Name:{type: String, required: true},
+  Designation:{type: String, required: true},
+  institutionName: {type: String,required: true},
+  instituteType:{type: String, required: true},
+  Affilliations: {type: String, required: true},
+  websiteDomain:{type: String, required: true},
+  phoneNumber: {type: String,required: true,unique: true,required: true},
+  email: {type: String,unique: true,sparse: true,required: true,},
+  password: {type: String,required: true,},
+  
+  address:{type: String, required: true,},
+  
   description: String,
 
   createdAt: {
