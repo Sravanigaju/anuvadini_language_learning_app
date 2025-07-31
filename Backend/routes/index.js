@@ -11,6 +11,19 @@ const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
+const creatorRoutes = require("./creatorAuthRoutes");
+const validatorRoutes = require("./validatorRoutes");
+const institutionRoutes = require("./institutionAuthRoutes");
+
+const SlideRoutes = require("./SlideRoutes");
+const LevelRoutes = require("./LevelRoutes");
+const SuperAdminRegRoutes = require("./SuperAdminRegisterationRoute");
+const courseFormRoutes = require("./course_form_route");
+
+const superAdminRoutes = require("./superAdminRoutes");
+const courseRoutes = require("./courseRoutes");
+const quizRoutes = require("./quizRoutes");
+const examRoutes = require("./examRoutes");
 
 
 // Use route modules
@@ -22,10 +35,35 @@ router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
+console.log('router.use /crossword registered');
 router.use('/crossword', crosswordRoutes);
+router.use('/courses', courseRoutes); // Course endpoints
+router.use('/quizzes', quizRoutes); // Quiz endpoints
+router.use('/exams', examRoutes); // Exam endpoints
+router.use("/slides", SlideRoutes);
 
 
+// Skribble game route
+router.get('/skribble', (req, res) => {
+  res.redirect('/skribble');
+});
 
+// Skribble status endpoint
+router.get('/skribble-status', (req, res) => {
+  res.json({ 
+    status: 'active', 
+    message: 'Skribble game server is running',
+    access_url: '/skribble'
+  });
+});
+
+router.use('/creator', creatorRoutes);
+router.use("/validator", validatorRoutes);
+router.use("/institution", institutionRoutes);
+router.use("/super-admin", superAdminRoutes);
+router.use("/course_form", courseFormRoutes);
+router.use("/levels", LevelRoutes);
+router.use("/super_admin_registration", SuperAdminRegRoutes);
 
 
 
