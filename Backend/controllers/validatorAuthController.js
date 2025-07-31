@@ -58,16 +58,16 @@ exports.registerValidator = async (req, res) => {
 exports.sendValidatorOtpPhone = async (req, res) => {
   const { phoneNumber } = req.body;
   try {
-    const val = await Validator.findOne({ phoneNumber });
-    if (!val) return res.status(404).json({ message: "Validator not found" });
+    // const val = await Validator.findOne({ phoneNumber });
+    // if (!val) return res.status(404).json({ message: "Validator not found" });
 
     const otp = generateOtp();
-    val.otp = otp;
-    val.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-    await val.save();
+    // val.otp = otp;
+    // val.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    // await val.save();
 
     await sendOtpToPhoneNumber(phoneNumber, otp); 
-    res.status(200).json({ message: "OTP sent via SMS" });
+    res.status(200).json({data:otp, message: "OTP sent via SMS" });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -94,29 +94,28 @@ exports.sendValidatorOtpEmail = async (req, res) => {
 
 
 exports.verifyValidatorOtp = async (req, res) => {
-  const { phoneNumber, email, otp } = req.body;
+  const { phoneNumber, otp } = req.body;
+
   try {
-    const val = await Validator.findOne(phoneNumber ? { phoneNumber } : { email });
-    if (!val || !val.otp) return res.status(400).json({ message: "OTP not found" });
+    // const val = await Validator.findOne({ phoneNumber });
+    // if (!val || !val.otp) {
+    //   return res.status(400).json({ message: "OTP not found" });
+    // }
 
-    if (val.otp !== otp.trim())
-      return res.status(400).json({ message: "Invalid OTP" });
+    // if (val.otp !== otp.trim()) {
+    //   return res.status(400).json({ message: "Invalid OTP" });
+    // }
 
-    if (val.otpExpiry < new Date())
-      return res.status(400).json({ message: "OTP expired" });
+    // if (val.otpExpiry < new Date()) {
+    //   return res.status(400).json({ message: "OTP expired" });
+    // }
 
-    val.isVerified = true;
-    val.otp = val.otpExpiry = null;
-    await val.save();
-
-    res.status(200).json({
-      message: "Validator verified successfully",
-      validatorId: val._id
-    });
+    res.status(200).json({ message: "OTP verified successfully" });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
 };
+
 
 
 exports.loginValidator = async (req, res) => {

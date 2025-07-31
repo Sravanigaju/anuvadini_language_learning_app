@@ -95,8 +95,6 @@ const { setupWebSocket } = require("./server"); // Import the WebSocket initiali
 const PORT = process.env.PORT || 7273;
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-
-const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
   setupWebSocket(server); // Initialize WebSocket server
   // const { startServer } = require('./skribbleserver');
