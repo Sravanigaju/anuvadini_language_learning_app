@@ -11,14 +11,18 @@ const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
-const creatorRoutes = require("./creatorAuthRoutes");
+
+
 const validatorRoutes = require("./validatorRoutes");
-const institutionRoutes = require("./institutionAuthRoutes");
+const institutionRoutes = require("./instituitionRoutes");
 
 const SlideRoutes = require("./SlideRoutes");
 const LevelRoutes = require("./LevelRoutes");
 const SuperAdminRegRoutes = require("./SuperAdminRegisterationRoute");
 const courseFormRoutes = require("./course_form_route");
+
+
+const creatorRoutes = require("./CreatorRoutes"); 
 
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
@@ -61,6 +65,8 @@ router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
 router.use("/super-admin", superAdminRoutes);
+
+
 router.use("/course_form", courseFormRoutes);
 router.use("/levels", LevelRoutes);
 router.use("/super_admin_registration", SuperAdminRegRoutes);

@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const validatorSchema = new mongoose.Schema(
   {
- 
+    status:        { type: String, required: true }, // e.g.,  approved, pending, rejected
+    validated_content: { type: [String], required: true }, // e.g.,  all content that has been validated by the validator
     FullName:      { type: String, required: true },
     email:         { type: String,required: true ,unique: true, sparse: true },
     phoneNumber:   { type: String,required: true ,unique: true, sparse: true },
@@ -10,18 +11,19 @@ const validatorSchema = new mongoose.Schema(
 
 
     Languages:              { type: [String], required: true },
-    educationQualification: String,
-    yearsOfExperience:      Number,
+    educationQualification: { type: String, required: true },
+    QualificationCertificate: { type: String, required: true },
+    yearsOfExperience:      { type: Number, required: true },
     projectLink:            String,
     linkedInProfile:        String,
-    bio:                    String,
-    regionOfExpertise:      String,
 
-    CurrentAdress:          String,
-    AdhaarNumber:           Number,
-    AdhaarPhoto :           String,   //blob storage link 
+    bio:                   { type: String, required: true },
+    regionOfExpertise:    { type: String, required: true },
 
-    
+//mandatory fields for validator
+    CurrentAdress:      { type: String, required: true ,unique: true},
+    AdhaarNumber:       { type: Number, required: true },
+    AdhaarPhoto :        { type: String, required: true },   //blob storage link here
   },
   { timestamps: true, versionKey: false }
 );
