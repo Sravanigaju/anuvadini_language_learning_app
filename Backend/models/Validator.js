@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const validatorSchema = new mongoose.Schema(
   {
-    status: { 
+    Status: { 
     type: String, 
     required: true, 
     enum: ['pending', 'approved', 'rejected'], 

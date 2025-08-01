@@ -18,7 +18,7 @@ exports.registerInstitution = async (req, res) => {
     }
     
     // Validate required fields
-    const requiredFields = ['Name', 'Designation', 'institutionName', 'instituteType', 'Affilliations', 'websiteDomain', 'phoneNumber', 'email', 'password', 'address'];
+    const requiredFields = ['Status', 'FullName', 'Designation', 'institutionName', 'instituteType', 'Affilliations', 'websiteDomain', 'phoneNumber', 'email', 'password', 'address'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
     
     if (missingFields.length > 0) {

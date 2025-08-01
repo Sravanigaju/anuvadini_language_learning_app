@@ -18,7 +18,7 @@ exports.registerCreator = async (req, res) => {
     }
     
     // Validate required fields
-    const requiredFields = ['name', 'email', 'phoneNumber', 'password', 'educationQualification', 'yearsOfExperience', 'languages'];
+    const requiredFields = ['Status','FullName', 'email', 'phoneNumber', 'password', 'educationQualification', 'yearsOfExperience', 'languages'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
     
     if (missingFields.length > 0) {

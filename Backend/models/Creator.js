@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 
 const creatorSchema = new mongoose.Schema({
   courses_id: { type: [String], default: [] }, // all courses created by the creator
- status: { 
+ Status: { 
     type: String, 
     required: true, 
     enum: ['pending', 'approved', 'rejected'], 
     default: 'pending' 
   },
-  name: { type: String, required: true },
+  FullName: { type: String, required: true },
   email: { type: String, unique: true, sparse: true, required: true },
   phoneNumber: { type: String, unique: true, sparse: true, required: true },
   password: { type: String, required: true },

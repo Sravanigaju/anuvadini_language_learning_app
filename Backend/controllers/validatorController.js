@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const registerValidator = async (req, res) => {
   try {
     const {
+      Status,
       FullName,
       email,
       phoneNumber,
@@ -41,7 +42,7 @@ const registerValidator = async (req, res) => {
 
     // Create new validator with pending status
     const validator = new Validator({
-      status: "pending", // Default status for new registrations
+      Status,
       validated_content: [], // Empty array initially
       FullName,
       email,
