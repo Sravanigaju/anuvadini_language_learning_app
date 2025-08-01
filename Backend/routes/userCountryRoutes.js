@@ -7,7 +7,7 @@ const StatsController = require('../controllers/UserCountryController');
 
 // Route for users by country and language
 // Example: http://127.0.0.1:7273/api/stats/users-per-country-language
-router.get('/users-per-country-language', StatsController.UserCountryController);
+router.get('/', StatsController.UserCountryController);
 
 // Route for language stats (XP, coins, etc.)
 // router.get('/language-stats', StatsController.LanguageStatsController);
