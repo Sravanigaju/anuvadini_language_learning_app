@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 
 const creatorSchema = new mongoose.Schema({
   courses_id: { type: [String], default: [] }, // all courses created by the creator
-  status: { type: String, required: true, enum: ['unverified', 'verified'], default: 'unverified' },
+ status: { 
+    type: String, 
+    required: true, 
+    enum: ['pending', 'approved', 'rejected'], 
+    default: 'pending' 
+  },
   name: { type: String, required: true },
   email: { type: String, unique: true, sparse: true, required: true },
   phoneNumber: { type: String, unique: true, sparse: true, required: true },
@@ -12,6 +17,7 @@ const creatorSchema = new mongoose.Schema({
   yearsOfExperience: { type: Number, required: true },
   expertise: String,
   portfolio: String,
+
   linkedinUrl: String,
   languages: { type: [String], required: true },
   projectLinks: [String],

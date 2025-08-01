@@ -9,10 +9,10 @@ router.post('/register', creatorController.registerCreator);  //http://127.0.0.1
 router.post('/login', creatorController.loginCreator);  //  http://127.0.0.1:7273/api/creator/login
 
 // PATCH: Verify Creator (change status from unverified to verified)
-router.patch('/verify/:id', creatorController.verifyCreator);
+router.patch('/approve/:id', creatorController.verifyCreator);
 
 // GET: Get all creators (for admin purposes)
-router.get('/', creatorController.getAllCreators);
+router.get('/all', creatorController.getAllCreators);
 
 // GET: Get creators by status (for admin purposes)
 router.get('/status/:status', creatorController.getCreatorsByStatus);

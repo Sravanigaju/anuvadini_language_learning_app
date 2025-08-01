@@ -9,7 +9,7 @@ const institutionSchema = new mongoose.Schema({
     default: 'pending' 
   },
 
-  Name: { type: String, required: true },
+  FullName: { type: String, required: true },
   Designation: { type: String, required: true },
   institutionName: { type: String, required: true },
   instituteType: { type: String, required: true },

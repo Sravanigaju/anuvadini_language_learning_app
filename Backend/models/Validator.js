@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 
 const validatorSchema = new mongoose.Schema(
   {
-    status:        { type: String, required: true }, // e.g.,  approved, pending, rejected
+    status: { 
+    type: String, 
+    required: true, 
+    enum: ['pending', 'approved', 'rejected'], 
+    default: 'pending' 
+  },
     validated_content: { type: [String], required: true }, // e.g.,  all content that has been validated by the validator
     FullName:      { type: String, required: true },
     email:         { type: String,required: true ,unique: true, sparse: true },
