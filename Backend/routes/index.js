@@ -24,6 +24,9 @@ const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
 const quizRoutes = require("./quizRoutes");
 const examRoutes = require("./examRoutes");
+const UserCoutryRoutes = require("./userCountryRoutes")
+const UserperMonthRoutes = require("./UserperMonthRoutes")
+const UserEnrollRoutes = require("./EnrollRouter")
 
 
 // Use route modules
@@ -64,6 +67,9 @@ router.use("/super-admin", superAdminRoutes);
 router.use("/course_form", courseFormRoutes);
 router.use("/levels", LevelRoutes);
 router.use("/super_admin_registration", SuperAdminRegRoutes);
+router.use("/country_data", UserCoutryRoutes);
+router.use("/per_month", UserperMonthRoutes);
+router.use("/enroll_stats", UserEnrollRoutes)
 
 
 
