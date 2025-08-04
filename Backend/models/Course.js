@@ -1,5 +1,4 @@
 
-
 const mongoose = require('mongoose');
 
 // Chapter schema (embedded)
@@ -26,6 +25,6 @@ const CourseSchema = new mongoose.Schema({
       url: { type: String, required: true }
     }
   ] // array of file objects
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model('Course', CourseSchema);

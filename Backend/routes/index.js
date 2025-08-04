@@ -28,11 +28,10 @@ router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
-console.log('router.use /crossword registered');
 router.use('/crossword', crosswordRoutes);
-router.use('/courses', courseRoutes); // Course endpoints
-router.use('/quizzes', quizRoutes); // Quiz endpoints
-router.use('/exams', examRoutes); // Exam endpoints
+router.use('/courses', courseRoutes); 
+router.use('/quizzes', quizRoutes); 
+router.use('/exams', examRoutes); 
 
 // Skribble game route
 router.get('/skribble', (req, res) => {

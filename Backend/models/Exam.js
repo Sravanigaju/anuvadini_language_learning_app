@@ -6,6 +6,6 @@ const ExamSchema = new mongoose.Schema({
   language: { type: String, required: true },
   timeLimit: { type: Number, required: true },
   questions: [QuestionSchema]
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model('Exam', ExamSchema); 
