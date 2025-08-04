@@ -17,6 +17,8 @@ const creatorRoutes = require("./CreatorRoutes");
 const SlideRoutes = require("./SlideRoutes");
 const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
+const examWebRoutes = require('./examWebRoutes');
+const examResultRoutes = require('./examResultRoutes');
 const superAdminRoutes = require("./superAdminRoutes");
 
 // Use route modules
@@ -52,6 +54,8 @@ router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
 router.use("/super-admin", superAdminRoutes);
 router.use("/course_form", courseFormRoutes);
+router.use("/exam-web", examWebRoutes);
+router.use("/exam-results", examResultRoutes);
 router.use("/super_admin_registration", SuperAdminFuncRoutes);
 
 module.exports = router;
