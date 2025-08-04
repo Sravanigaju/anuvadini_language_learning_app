@@ -18,6 +18,7 @@ const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
 const quizRoutes = require("./quizRoutes");
 const examRoutes = require("./examRoutes");
+const SlideRoutes = require("./SlideRoutes");
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -29,9 +30,10 @@ router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
-router.use('/courses', courseRoutes); 
-router.use('/quizzes', quizRoutes); 
-router.use('/exams', examRoutes); 
+router.use('/courses', courseRoutes); // Course endpoints
+router.use('/quizzes', quizRoutes); // Quiz endpoints
+router.use('/exams', examRoutes); // Exam endpoints
+router.use("/slides", SlideRoutes);
 
 // Skribble game route
 router.get('/skribble', (req, res) => {

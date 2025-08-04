@@ -21,7 +21,6 @@ app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for game functionality
 }));
 app.use(morgan("dev"));
-app.use(express.static("html"));
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,6 +31,12 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
+
+app.use(express.static("html"));
+app.use("/auth", express.static(path.join(__dirname, "admin_main", "build")));
+app.get("/auth/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin_main", "build", "index.html"));
+});
 
 mongoose
   .connect(

@@ -13,6 +13,7 @@ exports.registerValidator = async (req, res) => {
       region, location, languages, bio, projectLinks,
       idProofUrl, certificateUrl
     } = req.body;
+    console.log(req.body);
 
     if (!username || !phoneNumber || !password || !confirmPassword)
       return res.status(400).json({ message: "Required fields missing" });

@@ -13,7 +13,7 @@ exports.getUserDashboard = async (req, res) => {
     console.log("Looking for language:", language);
 
     const selectedLang = userProfile.interestedLanguages.find(
-      (lang) => lang.languageName.toLowerCase() === language.toLowerCase()
+      (lang) => lang?.languageName?.toLowerCase() === language?.toLowerCase()
     );
     if (!selectedLang) return res.status(400).json({ error: "Language not found" });
 
