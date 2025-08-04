@@ -18,11 +18,7 @@ const SlideRoutes = require("./SlideRoutes");
 const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
 const quizRoutes = require("./Quiz_WEB_Routes");
-
-const superAdminRoutes = require("./superAdminRoutes");
-
-
-const examRoutes = require("./examRoutes");
+const LevelRoutes = require("./LevelRoutes");
 
 const superAdminRoutes = require("./superAdminRoutes");
 
@@ -37,9 +33,6 @@ router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
-
-
-router.use('/exams', examRoutes); // Exam endpoints
 
 router.use("/slides", SlideRoutes);
 
