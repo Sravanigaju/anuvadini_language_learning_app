@@ -1,7 +1,5 @@
-// testGamer.js
-const mongoose = require('mongoose');
-// ❌ Wrong
-// const Gamer = require('./Backend/models/Gamer');
+
+
 
 // ✅ Correct
 const Gamer = require('./models/Gamer');

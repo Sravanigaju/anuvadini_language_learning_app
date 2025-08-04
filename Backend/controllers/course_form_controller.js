@@ -65,6 +65,8 @@ exports.createCourse = async (req, res) => {
   }
 };
 
+
+
 // Get all courses - DEBUG VERSION
 exports.getAllCourses = async (req, res) => {
   try {
@@ -134,8 +136,8 @@ exports.updateCourse = async (req, res) => {
       id, 
       req.body, 
       { 
-        new: true, // Return the updated document
-        runValidators: true // Run schema validations
+        new: true, 
+        runValidators: true 
       }
     );
     

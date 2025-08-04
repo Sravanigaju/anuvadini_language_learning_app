@@ -11,13 +11,10 @@ const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
-
-
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./instituitionRoutes");
 const creatorRoutes = require("./CreatorRoutes"); 
 const SlideRoutes = require("./SlideRoutes");
-const LevelRoutes = require("./LevelRoutes");
 const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
 const quizRoutes = require("./Quiz_WEB_Routes");
@@ -27,6 +24,7 @@ const superAdminRoutes = require("./superAdminRoutes");
 
 const examRoutes = require("./examRoutes");
 
+const superAdminRoutes = require("./superAdminRoutes");
 
 
 // Use route modules
@@ -38,13 +36,12 @@ router.use("/upload", uploadRoutes);
 router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
-console.log('router.use /crossword registered');
 router.use('/crossword', crosswordRoutes);
 
 
 router.use('/exams', examRoutes); // Exam endpoints
 
-
+router.use("/slides", SlideRoutes);
 
 // Skribble game route
 router.get('/skribble', (req, res) => {
@@ -58,6 +55,7 @@ router.get('/skribble-status', (req, res) => {
     message: 'Skribble game server is running',
     access_url: '/skribble'
   });
+
 });
 
 
@@ -74,8 +72,6 @@ router.use("/levels", LevelRoutes);
 router.use("/super_admin_registration", SuperAdminFuncRoutes);
 router.use('/quizes', quizRoutes);
 router.use("/course_form", courseFormRoutes);
-
-
 
 
 module.exports = router;

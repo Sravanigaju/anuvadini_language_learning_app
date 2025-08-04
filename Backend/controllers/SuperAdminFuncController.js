@@ -1,6 +1,6 @@
 const SuperAdmin = require('../models/SuperAdminRegister');
 
-const Creator = require("../models/Creator"); // Adjust path as needed
+const Creator = require("../models/Creator"); 
 const Institution = require("../models/Institution"); // Adjust path as needed
 const Validator = require("../models/Validator"); // Adjust path as needed
 

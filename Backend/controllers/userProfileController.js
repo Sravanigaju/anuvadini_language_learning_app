@@ -4,6 +4,8 @@ const Crossword = require("../models/Crossword");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
+
+
 // Get all user profiles
 exports.getAllUserProfiles = async (req, res) => {
   try {
@@ -108,10 +110,6 @@ exports.updateUserPoints = async (req, res) => {
 
 
 
-
-
-
-
 //  Get basic user info by userId
 exports.getBasicUserInfo = async (req, res) => {
   try {
@@ -141,7 +139,7 @@ exports.getBasicUserInfo = async (req, res) => {
   }
 };
 
-//  Get full user profile using userId (not MongoDB _id)
+//  Get full user profile using userId 
 exports.getUserProfileByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
