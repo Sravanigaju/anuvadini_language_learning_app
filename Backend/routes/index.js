@@ -20,7 +20,6 @@ const courseFormRoutes = require("./course_form_route");
 const examWebRoutes = require('./examWebRoutes');
 const examResultRoutes = require('./examResultRoutes');
 const superAdminRoutes = require("./superAdminRoutes");
-const examRoutes = require("./examRoutes");
 // Use route modules
 router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
