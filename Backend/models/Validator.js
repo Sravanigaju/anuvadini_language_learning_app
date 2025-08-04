@@ -2,32 +2,30 @@ const mongoose = require("mongoose");
 
 const validatorSchema = new mongoose.Schema(
   {
- 
-    username:      { type: String, required: true },
-    email:         { type: String, unique: true, sparse: true },
-    phoneNumber:   { type: String, unique: true, sparse: true },
+    status:        { type: String, required: true }, // e.g.,  approved, pending, rejected
+    validated_content: { type: [String], required: true }, // e.g.,  all content that has been validated by the validator
+    FullName:      { type: String, required: true },
+    email:         { type: String,required: true ,unique: true, sparse: true },
+    phoneNumber:   { type: String,required: true ,unique: true, sparse: true },
     password:      { type: String, required: true },
 
-    otp:        String,
-    otpExpiry:  Date,
-    isVerified: { type: Boolean, default: false },
 
+    Languages:              { type: [String], required: true },
+    educationQualification: { type: String, required: true },
+    QualificationCertificate: { type: String, required: true },
+    yearsOfExperience:      { type: Number, required: true },
+    projectLink:            String,
+    linkedInProfile:        String,
 
-    yearsOfExperience:     Number,
-    educationQualification:String,
-    region:                String,
-    location:              String,
-    languages:            [String],
-    bio:                   String,
-    projectLinks:         [String],
+    bio:                   { type: String, required: true },
+    regionOfExpertise:    { type: String, required: true },
 
-
-    idProofUrl:    String,
-    certificateUrl:String,
-
-    createdAt: { type: Date, default: Date.now }
+//mandatory fields for validator
+    CurrentAdress:      { type: String, required: true ,unique: true},
+    AdhaarNumber:       { type: Number, required: true },
+    AdhaarPhoto :        { type: String, required: true },   //blob storage link here
   },
-  { versionKey: false }
+  { timestamps: true, versionKey: false }
 );
 
 module.exports = mongoose.model("Validator", validatorSchema, "validators");
