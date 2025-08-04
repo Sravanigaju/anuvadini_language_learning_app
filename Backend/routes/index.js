@@ -11,14 +11,24 @@ const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
 const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
-const creatorRoutes = require("./creatorAuthRoutes");
+
+
 const validatorRoutes = require("./validatorRoutes");
-const institutionRoutes = require("./institutionAuthRoutes");
+const institutionRoutes = require("./instituitionRoutes");
+const creatorRoutes = require("./CreatorRoutes"); 
+const SlideRoutes = require("./SlideRoutes");
+const LevelRoutes = require("./LevelRoutes");
+const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
+const courseFormRoutes = require("./course_form_route");
+
+
+
+
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
 const quizRoutes = require("./quizRoutes");
 const examRoutes = require("./examRoutes");
-const SlideRoutes = require("./SlideRoutes");
+
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -34,6 +44,7 @@ router.use('/courses', courseRoutes); // Course endpoints
 router.use('/quizzes', quizRoutes); // Quiz endpoints
 router.use('/exams', examRoutes); // Exam endpoints
 router.use("/slides", SlideRoutes);
+
 
 // Skribble game route
 router.get('/skribble', (req, res) => {
@@ -53,6 +64,12 @@ router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
 router.use("/super-admin", superAdminRoutes);
+
+
+router.use("/course_form", courseFormRoutes);
+router.use("/levels", LevelRoutes);
+router.use("/super_admin_registration", SuperAdminFuncRoutes);
+
 
 
 module.exports = router;
