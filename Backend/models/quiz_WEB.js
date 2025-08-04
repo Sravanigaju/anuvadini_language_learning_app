@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Define Question Schema
 const QuestionSchema = new mongoose.Schema({
   questionType: { type: String, required: true, enum: ['MCQ', 'FIB', 'TF','GOW'] },
-  questionText: { type: String, required: true },
+  questionText: { type: String, required: true, maxLength: 1000 },
   media_id: { type: String, default: '' },
   options: { type: [String], required: true },
   options_media_id: { type: [String], default: [] },
