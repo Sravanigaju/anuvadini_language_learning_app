@@ -24,7 +24,7 @@ const superAdminRoutes = require("./superAdminRoutes");
 
 const examRoutes = require("./examRoutes");
 
-const superAdminRoutes = require("./superAdminRoutes");
+
 
 
 // Use route modules
