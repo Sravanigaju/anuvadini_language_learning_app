@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SuperAdmin = require('../controllers/SuperAdminRegistrationController');
+const SuperAdmin = require('../controllers/SuperAdminFuncController');
 
 
 router.get('/phone', SuperAdmin.sendOtp); 
