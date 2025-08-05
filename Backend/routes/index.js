@@ -69,7 +69,7 @@ router.use("/levels", LevelRoutes);
 router.use("/super_admin_registration", SuperAdminRegRoutes);
 router.use("/country_data", UserCoutryRoutes);
 router.use("/per_month", UserperMonthRoutes);
-router.use("/enroll_stats", UserEnrollRoutes)
+router.use("/enroll_stats", UserEnrollRoutes);
 
 
 
