@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 
 const institutionSchema = new mongoose.Schema({
   courses_id: { type: [String], default: [] }, // All courses created by the institution
-  status: { 
+  Status: { 
     type: String, 
     required: true, 
     enum: ['pending', 'approved', 'rejected'], 
     default: 'pending' 
   },
 
-  Name: { type: String, required: true },
+  FullName: { type: String, required: true },
   Designation: { type: String, required: true },
   institutionName: { type: String, required: true },
   instituteType: { type: String, required: true },

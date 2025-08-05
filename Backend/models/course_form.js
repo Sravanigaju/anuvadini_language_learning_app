@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const QuizDataSchema = new mongoose.Schema({
   course_data_schema_id: { type: String, required: true },
   question: { type: String, required: true },
-  options: { type: [String], required: true }, // Array of options
+  options: { type: [String], required: true }, 
   answer: { type: String, required: true } // Correct answer
 }, { 
   timestamps: true 
@@ -15,13 +15,13 @@ const CourseDataSchema = new mongoose.Schema({
   Week: { type: Number, required: true }, 
   chapterName:{ type: String, required: true },
   BriefDescriptipon: { type: String, required: true }, 
-  content: { type: String, required: true }, // HTML content as raw string
-  quiz: { type: [QuizDataSchema], default: [] } // Array of quiz questions
+  content: { type: String, required: true }, 
+  quiz: { type: [QuizDataSchema], default: [] } 
 }, {
   timestamps: true
 });
 
-// Define CourseContentSchema last (after CourseDataSchema)
+
 const CourseContentSchema = new mongoose.Schema({
   institute_id: { type: String, required: true },
   status: { type: String, required: true },

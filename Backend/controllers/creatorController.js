@@ -18,7 +18,7 @@ exports.registerCreator = async (req, res) => {
     }
     
     // Validate required fields
-    const requiredFields = ['name', 'email', 'phoneNumber', 'password', 'educationQualification', 'yearsOfExperience', 'languages'];
+    const requiredFields = ['Status','FullName', 'email', 'phoneNumber', 'password', 'educationQualification', 'yearsOfExperience', 'languages'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
     
     if (missingFields.length > 0) {
@@ -38,7 +38,7 @@ exports.registerCreator = async (req, res) => {
     const creatorData = {
       ...req.body,
       password: hashedPassword,
-      status: 'unverified', // Automatically set status to unverified
+      status: 'pending', // Automatically set status to pending
       courses_id: [] // Initialize empty courses array
     };
     
@@ -122,11 +122,11 @@ exports.loginCreator = async (req, res) => {
     console.log('Creator status:', creator.status);
     
     // Check if creator is verified
-    if (creator.status !== 'verified') {
-      console.log('Creator not verified');
+    if (creator.status !== 'approved') {
+      console.log('Creator not approved');
       return res.status(403).json({
         success: false,
-        error: 'Account is not verified. Please contact administrator for verification.'
+        error: 'Account is not approved. Please contact administrator for approval.'
       });
     }
     
@@ -182,7 +182,7 @@ exports.verifyCreator = async (req, res) => {
   try {
     console.log('=== DEBUG: VERIFY CREATOR ===');
     const { id } = req.params;
-    console.log('Verifying creator ID:', id);
+    console.log('approving creator ID:', id);
     
     // Find creator by ID
     const creator = await Creator.findById(id);
@@ -199,19 +199,19 @@ exports.verifyCreator = async (req, res) => {
     console.log('Current status:', creator.status);
     
     // Check if already verified
-    if (creator.status === 'verified') {
+    if (creator.status === 'approved') {
       return res.status(400).json({
         success: false,
-        message: 'Creator is already verified'
+        message: 'Creator is already approved'
       });
     }
     
     // Update status to verified
-    console.log('Updating status to verified...');
-    creator.status = 'verified';
+    console.log('Updating status to approved...');
+    creator.status = 'approved';
     const updatedCreator = await creator.save();
     
-    console.log('Creator verified successfully');
+    console.log('Creator approved successfully');
     
     // Remove password from response
     const responseData = updatedCreator.toObject();
@@ -219,12 +219,12 @@ exports.verifyCreator = async (req, res) => {
     
     res.json({
       success: true,
-      message: 'Creator verified successfully',
+      message: 'Creator approved successfully',
       data: responseData
     });
     
   } catch (error) {
-    console.log('ERROR in verifyCreator:', error.message);
+    console.log('ERROR in approvingCreator:', error.message);
     res.status(500).json({
       success: false,
       error: error.message
