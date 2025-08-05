@@ -1,5 +1,9 @@
 const SuperAdmin = require('../models/SuperAdmin');
 
+const generateOtp = require("../utils/generateOtp");
+const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
+const { sendOtpToEmail } = require("../utils/sendOtpEmail");
+
 // Create a new SuperAdmin
 exports.createSuperAdmin = async (req, res) => {
   try {
@@ -128,5 +132,33 @@ exports.getSuperAdminById = async (req, res) => {
       success: false, 
       error: error.message 
     });
+  }
+};
+
+exports.sendOtpEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const otp = generateOtp();
+    await sendOtpToEmail(email, otp);
+    res.status(200).json({ data: otp, message: "OTP sent via Email" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.sendOtp = async (req, res) => {
+  const { phoneNumber } = req.body;
+  
+
+  try {
+     //const otp = generateOtp();
+    const otp = "123456";
+
+    await sendOtpToPhoneNumber(phoneNumber, otp);
+
+    res.status(200).json({ data: otp ,message: "OTP sent via SMS" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

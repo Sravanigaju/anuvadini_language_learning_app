@@ -22,7 +22,7 @@ const SuperAdminRegRoutes = require("./SuperAdminRegisterationRoute");
 const courseFormRoutes = require("./course_form_route");
 
 
-
+const otpRoutes = require("./otpRoutes");
 
 const superAdminRoutes = require("./superAdminRoutes");
 const courseRoutes = require("./courseRoutes");
@@ -65,6 +65,8 @@ router.use('/creator', creatorRoutes);
 router.use("/validator", validatorRoutes);
 router.use("/institution", institutionRoutes);
 router.use("/super-admin", superAdminRoutes);
+
+router.use("/otp",otpRoutes);
 
 
 router.use("/course_form", courseFormRoutes);
