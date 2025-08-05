@@ -9,7 +9,7 @@ exports.getXpLeaderboard = async (req, res) => {
     let xpField;
     switch (type.toLowerCase()) {
       case "weekly":
-        xpField = "$interestedLanguages.xpWeekly";
+        xpField= "$interestedLanguages.xpWeekly";
         break;
       case "monthly":
         xpField = "$interestedLanguages.xpMonthly";
@@ -20,6 +20,7 @@ exports.getXpLeaderboard = async (req, res) => {
       case "total":
       default:
         xpField = "$interestedLanguages.xp";
+        
     }
 
     // Leaderboard aggregation
@@ -28,7 +29,7 @@ exports.getXpLeaderboard = async (req, res) => {
       { $match: { "interestedLanguages.languageName": language } },
       {
         $project: {
-          _id: 0, // do not include _id in response
+          _id: 0, 
           userId: 1,
           name: { $concat: ["$firstName", " ", "$lastName"] },
           profilePic: 1,
@@ -45,6 +46,7 @@ exports.getXpLeaderboard = async (req, res) => {
       { $sort: { xp: -1 } },
       { $limit: 10 }
     ]);
+   
 
     return res.status(200).json({ leaderboard });
   } catch (error) {
