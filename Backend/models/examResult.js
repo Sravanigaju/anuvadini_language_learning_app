@@ -22,7 +22,7 @@ const ExamResultSchema = new mongoose.Schema({
   answers: [UserAnswerSchema],                      
   startTime: { type: Date, required: true },        
   endTime: { type: Date, required: true },          
-  submittedAt: { type: Date, default: Date.now }    
+  submittedAt: { type: Date, default: Date.now }
 });
 
 // Export the model with collection name 'ExamResults'

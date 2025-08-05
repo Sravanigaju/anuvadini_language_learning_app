@@ -4,6 +4,11 @@ const Creator = require("../models/Creator");
 const Institution = require("../models/Institution"); // Adjust path as needed
 const Validator = require("../models/Validator"); // Adjust path as needed
 
+
+const generateOtp = require("../utils/generateOtp");
+const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
+const { sendOtpToEmail } = require("../utils/sendOtpEmail");
+
 // GET: Get all fields from all models
 exports.getAllFieldsFromAllModels = async (req, res) => {
   try {
@@ -215,6 +220,33 @@ exports.getAllModelsStatistics = async (req, res) => {
   }
 };
 
+exports.sendOtpEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const otp = generateOtp();
+    await sendOtpToEmail(email, otp);
+    res.status(200).json({ data: otp, message: "OTP sent via Email" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.sendOtp = async (req, res) => {
+  const { phoneNumber } = req.body;
+  
+
+  try {
+     //const otp = generateOtp();
+    const otp = "123456";
+
+    await sendOtpToPhoneNumber(phoneNumber, otp);
+
+    res.status(200).json({ data: otp ,message: "OTP sent via SMS" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 

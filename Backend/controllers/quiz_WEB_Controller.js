@@ -1,4 +1,4 @@
-const Quiz = require('../models/quiz_WEB'); // adjusted path to match actual file name
+const Quiz = require('../models/quiz_WEB'); // adjust the path if needed
 
 // Create a new quiz
 exports.createQuiz = async (req, res) => {

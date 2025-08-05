@@ -60,10 +60,13 @@ app.get('/skribble', (req, res) => {
 });
 
 
+
 app.get('/privacypolicy', (req, res) => {
   res.sendFile(__dirname + 'html/privacypolicy');
   console.log("11111111111111111111111111");
 });
+
+// });
 
 // API endpoint to get Skribble game URL
 app.get('/api/skribble-url', (req, res) => {
