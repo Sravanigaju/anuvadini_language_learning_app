@@ -25,6 +25,7 @@ const superAdminRoutes = require("./superAdminRoutes");
 const UserCoutryRoutes = require("./userCountryRoutes")
 const UserperMonthRoutes = require("./UserperMonthRoutes")
 const UserEnrollRoutes = require("./EnrollRouter")
+const otpRoutes = require("./otpRoutes");
 
 
 // Use route modules
@@ -73,6 +74,7 @@ router.use("/course_form", courseFormRoutes);
 router.use("/country_data", UserCoutryRoutes);
 router.use("/per_month", UserperMonthRoutes);
 router.use("/enroll_stats", UserEnrollRoutes)
+router.use("/otp",otpRoutes);
 
 
 module.exports = router;
