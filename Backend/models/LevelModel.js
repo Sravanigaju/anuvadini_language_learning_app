@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const MultilangStringSchema = new mongoose.Schema({}, { strict: false, _id: false });
-
 const ChapterSchema = new mongoose.Schema({
   ChapterTitle: { type: MultilangStringSchema, required: true }
 }, { _id: false });

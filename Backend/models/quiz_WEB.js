@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Define Question Schema
+
 const QuestionSchema = new mongoose.Schema({
   questionType: { type: String, required: true, enum: ['MCQ', 'FIB', 'TF','GOW'] },
   questionText: { type: String, required: true },
@@ -10,7 +10,6 @@ const QuestionSchema = new mongoose.Schema({
   correctAnswer_index: { type: [String],  }
 }, { _id: false });
 
-// Define Quiz Schema
 const QuizSchema = new mongoose.Schema({
   createdBy: { type: String, required: true },
   role: { type: String, required: true },
