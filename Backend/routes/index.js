@@ -19,6 +19,7 @@ const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
 const quizRoutes = require("./Quiz_WEB_Routes");
 const LevelRoutes = require("./LevelRoutes");
+const versionRoutes = require("./versionRoutes");
 
 const superAdminRoutes = require("./superAdminRoutes");
 
@@ -71,8 +72,9 @@ router.use("/course_form", courseFormRoutes);
 
 router.use("/country_data", UserCoutryRoutes);
 router.use("/per_month", UserperMonthRoutes);
-router.use("/enroll_stats", UserEnrollRoutes)
+router.use("/enroll_stats", UserEnrollRoutes);
 router.use("/otp",otpRoutes);
+router.use("/content/versions", versionRoutes);
 
 
 module.exports = router;
