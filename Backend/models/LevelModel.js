@@ -18,6 +18,10 @@ const CategorySchema = new mongoose.Schema({
 const LevelSchema = new mongoose.Schema({
   levelName: { type: MultilangStringSchema, required: true },
   categories: { type: [CategorySchema], required: true }
-});
+},
+{timestamps: true,
+  versionKey: false, // Disable versioning
+}
+);
 
 module.exports = mongoose.model('Levels', LevelSchema, 'Levels');
