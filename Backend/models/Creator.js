@@ -11,14 +11,53 @@ const creatorSchema = new mongoose.Schema({
     sparse: true,
   },
   phoneNumber: {
-    type: String,
+    type: Number,
     unique: true,
     sparse: true,
+    required: true,
   },
   password: {
     type: String,
     required: true,
   },
+  educationQualification: {
+    type: String,
+    required: true,
+  },
+  yearsOfExperience: {
+    type: Number,
+    required: true,
+  },
+  expertise: {
+    type: String,
+  },
+  portfolio: {
+    type: String,
+  },
+  linkedInProfile: {
+  type: String,       // URL stored as text
+  required: false,    // make it optional
+ // match: /^https?:\/\/(www\.)?linkedin\.com\/.*$/, // (optional) Regex validation
+},
+
+  expertise: {
+    type: String,
+    required: true,
+  },
+  languages: {
+    type: [String],
+    required: true,
+  },
+  projectLinks: {
+    type: String,
+  },
+  bio: {
+    type: String,
+    required:true,
+  },
+
+
+
 
   // 👇 OTP & Verification
   otp: String,
