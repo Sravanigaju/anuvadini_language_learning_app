@@ -1,0 +1,15 @@
+{
+  "AgeGroupName": {
+    "GenreName": [
+      {
+        "id": "agegroup-genre-01",        
+        "title": "Story Title",           
+        "story": [
+          { "text": "Line 1 of the story." },
+          { "text": "Line 2 of the story." }
+        ],
+        "moral": "Moral of the story."     
+      }
+    ]
+  }
+}

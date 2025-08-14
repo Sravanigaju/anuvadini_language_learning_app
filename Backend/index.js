@@ -60,10 +60,13 @@ app.get('/skribble', (req, res) => {
 });
 
 
+
 app.get('/privacypolicy', (req, res) => {
   res.sendFile(__dirname + 'html/privacypolicy');
   console.log("11111111111111111111111111");
 });
+
+// });
 
 // API endpoint to get Skribble game URL
 app.get('/api/skribble-url', (req, res) => {
@@ -89,7 +92,7 @@ app.use("/*", (req, res) => {
 });
 const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
 // Start server
-const PORT = process.env.PORT || 7273;
+const PORT = 3001; // Use a different port to avoid conflicts
 
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
