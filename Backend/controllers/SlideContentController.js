@@ -151,37 +151,88 @@ async function createChapter(req, res) {
   }
 }
 
-// Update entire chapter
+// Update entire chapter or specific slide fields
 async function updateChapter(req, res) {
   try {
     const { chapterId } = req.params;
-    const { slides } = req.body;
+    const { slides, language, slideId, title, def, example, icon } = req.body;
 
-    if (!slides) {
-      return res.status(400).json({
-        success: false,
-        message: 'slides data is required'
+    // If slides data is provided, update entire chapter (existing functionality)
+    if (slides) {
+      const chapter = await SlideContent.findOneAndUpdate(
+        { chapterId },
+        { slides },
+        { new: true, runValidators: true }
+      );
+
+      if (!chapter) {
+        return res.status(404).json({
+          success: false,
+          message: 'Chapter not found'
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: 'Chapter updated successfully',
+        data: chapter
       });
     }
 
-    const chapter = await SlideContent.findOneAndUpdate(
-      { chapterId },
-      { slides },
-      { new: true, runValidators: true }
-    );
+    // If individual slide fields are provided, update specific slide
+    if (language && slideId) {
+      if (!validateLanguage(language)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid language. Supported languages: ' + SUPPORTED_LANGUAGES.join(', ')
+        });
+      }
 
-    if (!chapter) {
-      return res.status(404).json({
-        success: false,
-        message: 'Chapter not found'
+      const chapter = await SlideContent.findOne({ chapterId });
+      if (!chapter) {
+        return res.status(404).json({
+          success: false,
+          message: 'Chapter not found'
+        });
+      }
+
+      // Find the slide to update
+      const slides = chapter.slides[language] || [];
+      const slideIndex = slides.findIndex(slide => slide.media_id === slideId);
+      
+      if (slideIndex === -1) {
+        return res.status(404).json({
+          success: false,
+          message: 'Slide not found'
+        });
+      }
+
+      // Update slide fields if provided
+      if (title !== undefined) chapter.slides[language][slideIndex].title = title;
+      if (def !== undefined) chapter.slides[language][slideIndex].def = def;
+      if (example !== undefined) chapter.slides[language][slideIndex].example = example;
+      if (icon !== undefined) chapter.slides[language][slideIndex].image_description = icon;
+
+      await chapter.save();
+
+      return res.json({
+        success: true,
+        message: 'Slide updated successfully',
+        data: {
+          chapterId,
+          language,
+          slideId,
+          updatedSlide: chapter.slides[language][slideIndex]
+        }
       });
     }
 
-    res.json({
-      success: true,
-      message: 'Chapter updated successfully',
-      data: chapter
+    // If neither slides nor individual fields are provided
+    return res.status(400).json({
+      success: false,
+      message: 'Either slides data or individual slide fields (language, slideId, and at least one field to update) are required'
     });
+
   } catch (error) {
     res.status(400).json({
       success: false,
