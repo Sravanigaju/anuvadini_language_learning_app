@@ -14,8 +14,8 @@ const ExamQuestionSchema = new mongoose.Schema({
 
 // Define Exam Schema - main structure for storing exam templates
 const ExamSchema = new mongoose.Schema({
-  Status: { type: String, required: true, enum: ['Draft', 'Approved', 'Rejected'] },
-  createdBy: { type: String, required: true }, //objectId of the user     
+  Status: { type: String, required: true, enum: ['Draft','Pending', 'Approved', 'Rejected'] },
+  createdBy: { type: String, required: true }, //objectId of the user    
   role: { type: String, required: true },            
   examName: { type: String, required: true },        
   language: { type: String, required: true },        
