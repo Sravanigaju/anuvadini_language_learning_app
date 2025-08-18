@@ -26,7 +26,7 @@ router.get('/:chapterId/:language', SlideContentController.getChapterByLanguage)
 router.post('/', SlideContentController.createChapter);
 router.post('/:chapterId/language/:language/slide', SlideContentController.addSlideToLanguage);
 
-router.put('/:chapterId', SlideContentController.updateChapter);
+router.put('/update/:chapterId', SlideContentController.updateChapter);
 router.put('/:chapterId/language/:language', SlideContentController.updateChapterLanguage);
 
 router.delete('/:chapterId', SlideContentController.deleteChapter);
