@@ -18,7 +18,7 @@ router.get('/all', LevelController.getAllLevels); //http://127.0.0.1:7273/api/le
 router.patch('/updated/:levelId', LevelController.updateLevel); // Update level & slides   
 router.post('/create/', LevelController.createLevel); // Create level & slides
 
-
+//do not use this route.
 router.patch('/updatedDD/:levelId', LevelController.updateCategoryByLevelName); // Update level
 
 module.exports = router;
