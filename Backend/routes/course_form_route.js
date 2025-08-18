@@ -15,6 +15,6 @@ router.get('/institute/:institute_id', courseController.getCoursesByInstituteId)
 router.delete('/:id', courseController.deleteCourse);
 
 // PATCH: Update the content of the full course
-router.patch('/:id', courseController.updateCourse);
+router.patch('/:id', courseController.updateCourse);  
 
 module.exports = router;

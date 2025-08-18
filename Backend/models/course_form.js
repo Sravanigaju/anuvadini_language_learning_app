@@ -12,7 +12,7 @@ const QuizDataSchema = new mongoose.Schema({
 
 // Define CourseDataSchema second (after QuizDataSchema)
 const CourseDataSchema = new mongoose.Schema({
-  Week: { type: Number, required: true }, 
+  unit: { type: Number, required: true }, 
   chapterName:{ type: String, required: true },
   BriefDescriptipon: { type: String, required: true }, 
   content: { type: String, required: true }, 
@@ -23,8 +23,8 @@ const CourseDataSchema = new mongoose.Schema({
 
 
 const CourseContentSchema = new mongoose.Schema({
-  institute_id: { type: String, required: true },
-  status: { type: String, required: true },
+  Status: { type: String, required: true, enum: ['Draft', 'Approved', 'Rejected'] },
+  createdBy: { type: String, required: true }, //objectId of the user
   language: { type: String, required: true },
   level: { type: String, required: true },
   title: { type: String, required: true ,unique:true},
