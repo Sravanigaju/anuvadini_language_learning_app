@@ -2,11 +2,30 @@ const Quiz = require('../models/quiz_WEB'); // adjust the path if needed
 
 // Create a new quiz
 exports.createQuiz = async (req, res) => {
+  // LOG 1: Check if the function is being called at all.
+  console.log("--- CREATE QUIZ ENDPOINT HIT ---");
+
   try {
+    // LOG 2: VERY IMPORTANT - Check if the request body has data.
+    console.log("Received request body:", JSON.stringify(req.body, null, 2));
+
+    // If req.body is empty here, the problem is your express.json() middleware.
+
     const quiz = new Quiz(req.body);
+    
+    // LOG 3: Check if the Mongoose model was created successfully in memory.
+    console.log("Mongoose model created, attempting to save...");
+
     const savedQuiz = await quiz.save();
+
+    // LOG 4: This will ONLY appear if the save was successful.
+    console.log("SUCCESS: Quiz saved to database with ID:", savedQuiz._id);
+
     res.status(201).json({ success: true, message: 'Quiz created successfully', data: savedQuiz });
+
   } catch (error) {
+    // LOG 5: If any error happens during save, it will be caught and printed here.
+    console.error("---!!! CREATE QUIZ FAILED !!!---", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

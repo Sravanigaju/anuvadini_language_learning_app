@@ -26,7 +26,9 @@ async function uploadToAzure(file) {
     blobHTTPHeaders: { blobContentType: file.mimetype },
   });
 
-  return blockBlobClient.url;
+ console.log("🔗 Blob URL generated:", blockBlobClient.url);
+return blockBlobClient.url;
+
 }
 
 module.exports = uploadToAzure;

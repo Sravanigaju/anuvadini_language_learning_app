@@ -6,10 +6,9 @@ const QuestionSchema = new mongoose.Schema({
   questionText: { type: String, required: true },
   questionImage: { type: String, default: '' },
   marks: { type: Number, required: true },
-  media_id: { type: String, default: '' },
   options: { type: [String],  },
   options_media_id: { type: [String], default: [] },
-  correctAnswer_index: { type: [String],  }
+  correctAnswer_index: { type: [Number],  }
 }, { _id: false });
 
 const QuizSchema = new mongoose.Schema({
