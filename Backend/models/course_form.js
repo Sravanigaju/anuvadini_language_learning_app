@@ -23,8 +23,13 @@ const CourseDataSchema = new mongoose.Schema({
 
 
 const CourseContentSchema = new mongoose.Schema({
-  Status: { type: String, required: true, enum: ['Draft', 'Approved', 'Rejected'] },
+  Status: { type: String, required: true, enum: ['Draft','Submitted'] },
+  Validation: { type: String, required: true, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' },
+  Reject_reason: { type: String, default: '' },
+  Validator_id: { type: String, default: '' }, // ID of the user who validated the course
   createdBy: { type: String, required: true }, //objectId of the user
+  role: { type: String, required: true },          // content creator/institutioin 
+
   language: { type: String, required: true },
   level: { type: String, required: true },
   title: { type: String, required: true ,unique:true},

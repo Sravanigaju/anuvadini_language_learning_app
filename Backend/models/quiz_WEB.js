@@ -12,9 +12,12 @@ const QuestionSchema = new mongoose.Schema({
 }, { _id: false });
 
 const QuizSchema = new mongoose.Schema({
-  Status: { type: String, required: true, enum: ['Draft', 'Approved', 'Rejected'] },
+  Status: { type: String, required: true, enum: ['Draft','Submitted'] },
+  Validation: { type: String, required: true, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' },
+  Reject_reason: { type: String, default: '' },
+  Validator_id: { type: String, default: '' }, // ID of the user who validated the quiz
   createdBy: { type: String, required: true }, //objectId of the user
-  role: { type: String, required: true },
+  role: { type: String, required: true },          // content creator/institutioin  
   quizName: { type: String, required: true },
   language: { type: String, required: true },
   numberOfQuestions: { type: Number, required: true }, 
