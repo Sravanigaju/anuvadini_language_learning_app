@@ -27,7 +27,7 @@ const UserCoutryRoutes = require("./userCountryRoutes")
 const UserperMonthRoutes = require("./UserperMonthRoutes")
 const UserEnrollRoutes = require("./EnrollRouter")
 const otpRoutes = require("./otpRoutes");
-
+const examRoutes = require("./examWebRoutes");
 
 // Use route modules
 router.use("/users", userRoutes);
@@ -75,6 +75,7 @@ router.use("/per_month", UserperMonthRoutes);
 router.use("/enroll_stats", UserEnrollRoutes);
 router.use("/otp", otpRoutes);
 router.use("/content/versions", versionRoutes);
+router.use("/exams", examRoutes);
 
 
 module.exports = router;
