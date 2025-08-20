@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 const QuestionSchema = new mongoose.Schema({
-  questionType: { type: String, required: true, enum: ['MCQ', 'FIB', 'TF','GOW'] },
+  questionType: { type: String, required: true, enum: ['MCQ', 'Fill in the Blanks', 'True/False','GOW', 'One Word'] },
   questionText: { type: String, required: true },
   questionImage: { type: String, default: '' },
   marks: { type: Number, required: true },
