@@ -9,11 +9,11 @@ const dashboardRoutes = require("./dashboardRoutes");
 const uploadRoutes = require("./uploadRoutes");
 const feedbackRoutes = require("./feedback");
 const leaderboardRoutes = require("./leaderboardRoutes");
-const deleteRoutes = require("./deleteRoutes");
+const deleteRoutes = require("./deleteRoutes"); 
 const crosswordRoutes = require('./crosswordRoutes');
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./instituitionRoutes");
-const creatorRoutes = require("./CreatorRoutes");
+const creatorRoutes = require("./CreatorRoutes"); 
 const SlideRoutes = require("./SlideRoutes");
 const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
@@ -49,8 +49,8 @@ router.get('/skribble', (req, res) => {
 
 // Skribble status endpoint
 router.get('/skribble-status', (req, res) => {
-  res.json({
-    status: 'active',
+  res.json({ 
+    status: 'active', 
     message: 'Skribble game server is running',
     access_url: '/skribble'
   });
@@ -73,7 +73,7 @@ router.use("/course_form", courseFormRoutes);
 router.use("/country_data", UserCoutryRoutes);
 router.use("/per_month", UserperMonthRoutes);
 router.use("/enroll_stats", UserEnrollRoutes);
-router.use("/otp", otpRoutes);
+router.use("/otp",otpRoutes);
 router.use("/content/versions", versionRoutes);
 
 
