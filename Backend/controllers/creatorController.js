@@ -148,6 +148,7 @@ exports.loginCreator = async (req, res) => {
       { 
         creatorId: creator._id, 
         email: creator.email,
+        role: creator.role,
         status: creator.status 
       },
       process.env.JWT_SECRET || 'your-secret-key', // Use environment variable

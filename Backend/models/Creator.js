@@ -8,6 +8,12 @@ const creatorSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'], 
     default: 'pending' 
   },
+  role: { 
+  type: String, 
+  required: true, 
+  enum: ['SuperAdmin','Validator', 'ContentCreator', 'Institute'], 
+  default: 'ContentCreator' 
+  },
   FullName: { type: String, required: true },
   email: { type: String, unique: true, sparse: true, required: true },
   phoneNumber: { type: String, unique: true, sparse: true, required: true },

@@ -8,7 +8,12 @@ const institutionSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'], 
     default: 'pending' 
   },
-
+  role: { 
+  type: String, 
+  required: true, 
+  enum: ['SuperAdmin','Validator', 'ContentCreator', 'Institute'], 
+  default: 'Institute' 
+  },
   FullName: { type: String, required: true },
   Designation: { type: String, required: true },
   institutionName: { type: String, required: true },

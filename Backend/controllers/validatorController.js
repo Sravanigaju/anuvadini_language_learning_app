@@ -126,7 +126,8 @@ const loginValidator = async (req, res) => {
       {
         id: validator._id,
         email: validator.email,
-        role: 'validator'
+        status: validator.status,
+        role: validator.role, 
       },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }

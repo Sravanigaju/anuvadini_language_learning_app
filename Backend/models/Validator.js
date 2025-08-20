@@ -8,6 +8,12 @@ const validatorSchema = new mongoose.Schema(
     enum: ['pending', 'approved', 'rejected'], 
     default: 'pending' 
   },
+  role: { 
+  type: String, 
+  required: true, 
+  enum: ['SuperAdmin','Validator', 'ContentCreator', 'Institute'], 
+  default: 'Validator' 
+  },
     validated_content: { type: [String], required: true }, // e.g.,  all content that has been validated by the validator
     FullName:      { type: String, required: true },
     email:         { type: String,required: true ,unique: true, sparse: true },

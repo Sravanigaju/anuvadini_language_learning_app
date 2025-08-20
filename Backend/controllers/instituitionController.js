@@ -150,6 +150,7 @@ exports.loginInstitution = async (req, res) => {
         institutionId: institution._id, 
         email: institution.email,
         status: institution.status,
+        role: institution.role, 
         institutionName: institution.institutionName
       },
       process.env.JWT_SECRET || 'your-secret-key', // Use environment variable
