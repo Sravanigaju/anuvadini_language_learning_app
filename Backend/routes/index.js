@@ -20,6 +20,7 @@ const courseFormRoutes = require("./course_form_route");
 const quizRoutes = require("./Quiz_WEB_Routes");
 const LevelRoutes = require("./LevelRoutes");
 const versionRoutes = require("./versionRoutes");
+const goalRoutes = require("./goalRoutes");
 
 const superAdminRoutes = require("./superAdminRoutes");
 
@@ -75,6 +76,7 @@ router.use("/per_month", UserperMonthRoutes);
 router.use("/enroll_stats", UserEnrollRoutes);
 router.use("/otp",otpRoutes);
 router.use("/content/versions", versionRoutes);
+router.use("/goals", goalRoutes);
 
 
 module.exports = router;

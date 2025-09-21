@@ -30,6 +30,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  timezone: {
+    type: String,
+    default: 'Asia/Kolkata', // Default to IST
+    validate: {
+      validator: function(v) {
+        return /^[A-Za-z]+\/[A-Za-z_]+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid timezone!`
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now,

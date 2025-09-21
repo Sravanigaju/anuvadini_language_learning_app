@@ -13,6 +13,7 @@ const userProfileSchema = new mongoose.Schema({
   sourceLanguage: { type: String, required: true },
   total_xp: { type: Number, default: 0 },
   total_coin: { type: Number, default: 0 },
+  totalActiveGoals: { type: Number, default: 0 },
   interestedLanguages: [
     {
       languageName: { type: String, required: true }, 

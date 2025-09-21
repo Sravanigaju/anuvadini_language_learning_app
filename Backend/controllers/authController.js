@@ -9,7 +9,7 @@ const UserProfile = require("../models/UserProfile");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, phoneNumber, password } = req.body;
+    const { username, email, phoneNumber, password, timezone } = req.body;
 
     // Validate required fields
     if (!username || !phoneNumber || (!password && !email)) {
@@ -45,6 +45,7 @@ exports.register = async (req, res) => {
       phoneNumber,
       email,
       password: hashedPassword,
+      timezone: timezone || 'Asia/Kolkata', // Use provided timezone or default to IST
       otp,
       otpExpiry,
       isVerified: false
@@ -74,7 +75,7 @@ exports.register = async (req, res) => {
 
 exports.registeremail = async (req, res) => {
   try {
-    const { username, email, phoneNumber, password } = req.body;
+    const { username, email, phoneNumber, password, timezone } = req.body;
 
     // Validate required fields
     if (!username || !phoneNumber || (!password && !email)) {
@@ -110,6 +111,7 @@ exports.registeremail = async (req, res) => {
       phoneNumber,
       email,
       password: hashedPassword,
+      timezone: timezone || 'Asia/Kolkata', // Use provided timezone or default to IST
       otp,
       otpExpiry,
       isVerified: false
@@ -250,9 +252,17 @@ exports.login = async (req, res) => {
 
     const username = `${userProfile.firstName} ${userProfile.lastName}`;
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, phoneNumber: user.phoneNumber },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token: token,
       userId: user._id,
       username: username,
       sourceLanguage: userProfile.sourceLanguage,
