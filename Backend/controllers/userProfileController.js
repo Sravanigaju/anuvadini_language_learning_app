@@ -40,20 +40,20 @@ exports.createUserProfile = async (req, res) => {
       { new: true, upsert: true }
     );
 
-        const crossword = new Crossword({
-          userId: userId,
-          username: firstName,
-          sessions: [],
-          globalStats: {
-            coins: 0,
-            totalGamesPlayed: 0,
-            wins: 0,
-            losses: 0,
-            highestLevelReached: 1,
-            achievementsUnlocked: 0
-          }
-        });
-        await crossword.save();
+    const crossword = new Crossword({
+      userId: userId,
+      username: firstName,
+      sessions: [],
+      globalStats: {
+        coins: 0,
+        totalGamesPlayed: 0,
+        wins: 0,
+        losses: 0,
+        highestLevelReached: 1,
+        achievementsUnlocked: 0
+      }
+    });
+    await crossword.save();
     res.status(200).json({
       message: "User profile created or updated successfully",
       success: true
@@ -152,6 +152,7 @@ exports.getUserProfileByUserId = async (req, res) => {
 
     res.status(200).json(profile);
   } catch (error) {
+    console.error("Error in getUserProfileByUserId:", error); // Log the detailed error
     res.status(500).json({ message: error.message, success: false });
   }
 };
@@ -236,7 +237,7 @@ exports.addNewLanguage = async (req, res) => {
       { $push: { interestedLanguages: languageToPush } }
     );
 
-    return res.status(200).json({success: "True", message: "New language added successfully" });
+    return res.status(200).json({ success: "True", message: "New language added successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -289,39 +290,39 @@ exports.updateUserProgress = async (req, res) => {
       language.badgesEarned = [...earnedSet];
     }
 
- // XP Update block
-if (xp !== undefined && xp > 0) {
-  const today = new Date();
-  if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
+    // XP Update block
+    if (xp !== undefined && xp > 0) {
+      const today = new Date();
+      if (!Array.isArray(language.xpHistory)) language.xpHistory = [];
 
-  language.xpHistory.push({ date: today, xpGained: xp });
+      language.xpHistory.push({ date: today, xpGained: xp });
 
-  language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
+      language.xp = language.xpHistory.reduce((sum, e) => sum + e.xpGained, 0);
 
-  const weekStart = moment().startOf("isoWeek");
-  const monthStart = moment().startOf("month");
-  const yearStart = moment().startOf("year");
+      const weekStart = moment().startOf("isoWeek");
+      const monthStart = moment().startOf("month");
+      const yearStart = moment().startOf("year");
 
-  language.xpWeekly = language.xpHistory
-    .filter((e) => moment(e.date).isSameOrAfter(weekStart))
-    .reduce((sum, e) => sum + e.xpGained, 0);
+      language.xpWeekly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(weekStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
 
-  language.xpMonthly = language.xpHistory
-    .filter((e) => moment(e.date).isSameOrAfter(monthStart))
-    .reduce((sum, e) => sum + e.xpGained, 0);
+      language.xpMonthly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(monthStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
 
-  language.xpYearly = language.xpHistory
-    .filter((e) => moment(e.date).isSameOrAfter(yearStart))
-    .reduce((sum, e) => sum + e.xpGained, 0);
-}
+      language.xpYearly = language.xpHistory
+        .filter((e) => moment(e.date).isSameOrAfter(yearStart))
+        .reduce((sum, e) => sum + e.xpGained, 0);
+    }
 
-// ✅ Always recalculate total XP
-userProfile.total_xp = userProfile.interestedLanguages.reduce(
-  (sum, lang) => sum + (lang.xp || 0),
-  0
-);
+    // ✅ Always recalculate total XP
+    userProfile.total_xp = userProfile.interestedLanguages.reduce(
+      (sum, lang) => sum + (lang.xp || 0),
+      0
+    );
 
-await userProfile.save();
+    await userProfile.save();
 
     return res.status(200).json({
       message: "Language progress, XP, and badges updated successfully",

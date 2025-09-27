@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  _id: { type: String, required: true }, // Custom ID for the user
   username: {
     type: String,
     required: true,
@@ -34,7 +35,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'Asia/Kolkata', // Default to IST
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return /^[A-Za-z]+\/[A-Za-z_]+$/.test(v);
       },
       message: props => `${props.value} is not a valid timezone!`
