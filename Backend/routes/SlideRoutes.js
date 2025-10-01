@@ -31,6 +31,8 @@ router.put('/:chapterId/language/:language', SlideContentController.updateChapte
 
 router.delete('/:chapterId', SlideContentController.deleteChapter);
 router.delete('/:chapterId/language/:language/slide/:slideIndex', SlideContentController.deleteSlideFromLanguage);
+router.delete('/:chapterId/language/:language/slide/id/:slideId', SlideContentController.deleteSlideById);
+router.delete('/slide/:slideId', SlideContentController.deleteSlideByRecordId);
 
 
 // --- CATCH-ALL 404 HANDLER ---

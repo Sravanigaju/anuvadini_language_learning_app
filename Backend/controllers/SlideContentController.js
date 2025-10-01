@@ -2,9 +2,9 @@ const SlideContent = require('../models/SlideContent'); // <-- Use correct model
 
 // Supported languages
 const SUPPORTED_LANGUAGES = [
-  'english', 'hindi', 'sanskrit', 'bengali', 'marathi', 'tamil', 
-  'telugu', 'assamese', 'bodo', 'santali', 'urdu', 'kannada', 
-  'malayalam', 'punjabi', 'maithili', 'dogri', 'manipuri', 
+  'english', 'hindi', 'sanskrit', 'bengali', 'marathi', 'tamil',
+  'telugu', 'assamese', 'bodo', 'santali', 'urdu', 'kannada',
+  'malayalam', 'punjabi', 'maithili', 'dogri', 'manipuri',
   'konkani', 'odia', 'gujrati', 'kashmiri', 'sindhi', 'nepali'
 ];
 
@@ -199,7 +199,7 @@ async function updateChapter(req, res) {
       // Find the slide to update
       const slides = chapter.slides[language] || [];
       const slideIndex = slides.findIndex(slide => slide.media_id === slideId);
-      
+
       if (slideIndex === -1) {
         return res.status(404).json({
           success: false,
@@ -379,7 +379,7 @@ async function deleteChapter(req, res) {
 // Delete specific slide
 async function deleteSlideFromLanguage(req, res) {
   try {
-    const { chapterId, language, slideIndex } = req.params;
+    const { _id, chapterId, language, slideIndex } = req.params;
     const index = parseInt(slideIndex);
 
     if (!validateLanguage(language)) {
@@ -393,6 +393,14 @@ async function deleteSlideFromLanguage(req, res) {
       return res.status(400).json({
         success: false,
         message: 'Invalid slide index'
+      });
+    }
+
+    const Unique_id = await SlideContent.findOne({ chapterId });
+    if (!chapter) {
+      return res.status(404).json({
+        success: false,
+        message: 'Chapter not found'
       });
     }
 
@@ -433,6 +441,132 @@ async function deleteSlideFromLanguage(req, res) {
   }
 }
 
+// Delete specific slide by _id
+async function deleteSlideById(req, res) {
+  console.log("req in deleteSlideById==", req);
+  try {
+    const { chapterId, language, slideId } = req.params;
+
+    if (!validateLanguage(language)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid language'
+      });
+    }
+
+    const chapter = await SlideContent.findOne({ chapterId });
+    if (!chapter) {
+      return res.status(404).json({
+        success: false,
+        message: 'Chapter not found'
+      });
+    }
+
+    if (!chapter.slides[language]) {
+      return res.status(404).json({
+        success: false,
+        message: 'Language content not found'
+      });
+    }
+
+    // Find the slide index by media_id
+    const slideIndex = chapter.slides[language].findIndex(slide => slide.media_id === slideId);
+    
+    if (slideIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Slide not found with the given ID'
+      });
+    }
+
+    // Remove the slide
+    chapter.slides[language].splice(slideIndex, 1);
+    await chapter.save();
+
+    res.json({
+      success: true,
+      message: 'Slide deleted successfully',
+      data: {
+        chapterId,
+        language,
+        deletedSlideId: slideId,
+        remainingSlides: chapter.slides[language].length
+      }
+    });
+  } catch (error) {
+    console.error('Error in deleteSlideById:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting slide',
+      error: error.message
+    });
+  }
+}
+
+// Delete slide by record _id only
+async function deleteSlideByRecordId(req, res) {
+  console.log("req in deleteSlideByRecordId==", req);
+  try {
+    const { slideId } = req.params;
+
+    if (!slideId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Slide ID is required'
+      });
+    }
+
+    // Find the chapter that contains this slide by searching through all languages
+    const chapters = await SlideContent.find({});
+    let targetChapter = null;
+    let targetLanguage = null;
+    let slideIndex = -1;
+
+    // Search for the slide in all chapters and all languages
+    for (const chapter of chapters) {
+      for (const [language, slides] of Object.entries(chapter.slides || {})) {
+        const foundIndex = slides.findIndex(slide => slide.media_id === slideId);
+        if (foundIndex !== -1) {
+          targetChapter = chapter;
+          targetLanguage = language;
+          slideIndex = foundIndex;
+          break;
+        }
+      }
+      if (targetChapter) break;
+    }
+
+    if (!targetChapter) {
+      return res.status(404).json({
+        success: false,
+        message: 'Slide not found with the given ID'
+      });
+    }
+
+    // Remove the slide
+    targetChapter.slides[targetLanguage].splice(slideIndex, 1);
+    await targetChapter.save();
+
+    res.json({
+      success: true,
+      message: 'Slide deleted successfully',
+      data: {
+        deletedSlideId: slideId,
+        chapterId: targetChapter.chapterId,
+        language: targetLanguage,
+        remainingSlides: targetChapter.slides[targetLanguage].length
+      }
+    });
+  } catch (error) {
+    console.error('Error in deleteSlideByRecordId:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting slide',
+      error: error.message
+    });
+  }
+}
+
 // Search chapters by content
 async function searchChapterContent(req, res) {
   try {
@@ -446,7 +580,7 @@ async function searchChapterContent(req, res) {
     }
 
     let searchConditions = [];
-    
+
     if (language && validateLanguage(language)) {
       // Search in specific language
       searchConditions.push({
@@ -501,5 +635,7 @@ module.exports = {
   addSlideToLanguage,
   deleteChapter,
   deleteSlideFromLanguage,
+  deleteSlideById,
+  deleteSlideByRecordId,
   searchChapterContent
 };
