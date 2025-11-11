@@ -41,7 +41,7 @@ app.get("/auth/*", (req, res) => {
 mongoose
   .connect(
     process.env.MONGODB_URI ||
-      "mongodb://127.0.0.1:27017/anuvadini_language",
+    "mongodb://127.0.0.1:27017/anuvadini_language",
     {
       useNewUrlParser: true,
     }
@@ -92,7 +92,7 @@ app.use("/*", (req, res) => {
 });
 const { setupWebSocket } = require("./server"); // Import the WebSocket initializer
 // Start server
-const PORT = 3001; // Use a different port to avoid conflicts
+const PORT = 8080; // Use a different port to avoid conflicts
 
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
