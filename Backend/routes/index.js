@@ -13,7 +13,7 @@ const deleteRoutes = require("./deleteRoutes");
 const crosswordRoutes = require('./crosswordRoutes');
 const validatorRoutes = require("./validatorRoutes");
 const institutionRoutes = require("./instituitionRoutes");
-const creatorRoutes = require("./CreatorRoutes"); 
+const creatorRoutes = require("./creatorAuthRoutes.js"); 
 const SlideRoutes = require("./SlideRoutes");
 const SuperAdminFuncRoutes = require("./SuperAdminFunctionsRoutes");
 const courseFormRoutes = require("./course_form_route");
@@ -23,10 +23,15 @@ const versionRoutes = require("./versionRoutes");
 
 const superAdminRoutes = require("./superAdminRoutes");
 
-const UserCoutryRoutes = require("./userCountryRoutes")
+const UserCoutryRoutes = require("./userCountryRoutes")                                         
 const UserperMonthRoutes = require("./UserperMonthRoutes")
 const UserEnrollRoutes = require("./EnrollRouter")
 const otpRoutes = require("./otpRoutes");
+const samvadiniRoutes = require("./samvadini"); 
+
+const communityRoutes = require("./communityRoutes");  // 
+
+
 
 
 // Use route modules
@@ -39,23 +44,9 @@ router.use("/feedback", feedbackRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 router.use("/deleteusers", deleteRoutes);
 router.use('/crossword', crosswordRoutes);
-
 router.use("/slides", SlideRoutes);
 
-// Skribble game route
-router.get('/skribble', (req, res) => {
-  res.redirect('/skribble');
-});
 
-// Skribble status endpoint
-router.get('/skribble-status', (req, res) => {
-  res.json({ 
-    status: 'active', 
-    message: 'Skribble game server is running',
-    access_url: '/skribble'
-  });
-
-});
 
 
 router.use('/creator', creatorRoutes);
@@ -75,6 +66,12 @@ router.use("/per_month", UserperMonthRoutes);
 router.use("/enroll_stats", UserEnrollRoutes);
 router.use("/otp",otpRoutes);
 router.use("/content/versions", versionRoutes);
+router.use("/content/levels", LevelRoutes);  // Add content/levels route
+
+// ✅ Mount Samvadini first-access route
+
+router.use("/samvadini", samvadiniRoutes);
+router.use("/community", communityRoutes);
 
 
 module.exports = router;

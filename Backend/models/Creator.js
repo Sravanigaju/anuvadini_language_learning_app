@@ -1,30 +1,47 @@
 const mongoose = require("mongoose");
 
 const creatorSchema = new mongoose.Schema({
-  courses_id: { type: [String], default: [] }, // all courses created by the creator
- Status: { 
-    type: String, 
-    required: true, 
-    enum: ['pending', 'approved', 'rejected'], 
-    default: 'pending' 
+  username: {
+    type: String,
+    required: true,
   },
-  FullName: { type: String, required: true },
-  email: { type: String, unique: true, sparse: true, required: true },
-  phoneNumber: { type: String, unique: true, sparse: true, required: true },
-  password: { type: String, required: true },
-  
-  educationQualification: { type: String, required: true },
-  yearsOfExperience: { type: Number, required: true },
+  email: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  phoneNumber: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+
+  // 👇 OTP & Verification
+  otp: String,
+  otpExpiry: Date,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+
+  // 👇 Creator Profile Fields
+  educationQualification: String,
+  yearsOfExperience: Number,
   expertise: String,
   portfolio: String,
-
   linkedinUrl: String,
-  languages: { type: [String], required: true },
+  languages: [String],
   projectLinks: [String],
   bio: String,
-}, { 
-  timestamps: true, 
-  versionKey: false 
-});
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+}, { versionKey: false });
 
 module.exports = mongoose.model("Creator", creatorSchema, "creators");
