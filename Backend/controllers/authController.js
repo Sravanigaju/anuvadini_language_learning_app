@@ -5,6 +5,7 @@ const generateOtp = require("../utils/generateOtp");
 const { sendOtpToPhoneNumber } = require("../utils/sendOtpSms");
 const { sendOtpToEmail } = require("../utils/sendOtpEmail");
 const UserProfile = require("../models/UserProfile");
+const crypto = require("crypto");
 
 
 exports.register = async (req, res) => {
@@ -343,5 +344,64 @@ exports.changeverifyOtp = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.registerSamvadiniUser = async (req, res) => {
+  try {
+    const { samvadiniId, firstName, lastName, gender, age, country, state, sourceLanguage, interestedLanguages } = req.body;
+
+    if (!samvadiniId) {
+      return res.status(400).json({ message: "samvadiniId is required" });
+    }
+
+    // Check if User already exists
+    let user = await User.findOne({ samvadiniId });
+
+    if (!user) {
+      // Generate random password
+      const randomPassword = crypto.randomBytes(12).toString("hex");
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+      // Create User
+      user = new User({
+        username: firstName, // use firstname as username
+        email: `${samvadiniId}@samvadini.com`, // fallback email
+        password: hashedPassword,
+        samvadiniId,
+        userType: "Samvadini",
+        isVerified: true,
+      });
+      await user.save();
+    }
+
+    // Check if UserProfile exists
+    let profile = await UserProfile.findOne({ userId: user._id });
+
+    if (!profile) {
+      profile = new UserProfile({
+        userId: user._id,
+        firstName,
+        lastName,
+        gender,
+        age,
+        country,
+        state,
+        sourceLanguage: sourceLanguage || "English",
+        interestedLanguages: interestedLanguages || [],
+      });
+      await profile.save();
+    }
+
+    return res.status(201).json({
+      message: "Samvadini user registered successfully",
+      user,
+      profile,
+    });
+
+  } catch (error) {
+    console.error("Samvadini Registration Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

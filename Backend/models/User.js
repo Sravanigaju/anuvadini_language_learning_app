@@ -1,39 +1,19 @@
-const mongoose = require("mongoose");
+  const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  phoneNumber: {
-    type: String,
-    unique: true,
-    sparse: true, // 👈 allows phoneNumber to be optional
-  },
-  email: {
-    type: String,
-    unique: true,
-    sparse: true, // 👈 allows email to be optional
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  otp: {
-    type: String,
-  },
-  otpExpiry: {
-    type: Date,
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-}, { versionKey: false });
+  const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    phoneNumber: { type: String, unique: true, sparse: true },
+    email: { type: String, unique: true, sparse: true },
+    password: { type: String, required: true }, // random for Samvadini
+    otp: { type: String },
+    otpExpiry: { type: Date },
+    isVerified: { type: Boolean, default: false },
 
-module.exports = mongoose.model("User", userSchema, "users");
+    // 👇 new fields
+    samvadiniId: { type: String, unique: true, sparse: true },
+    userType: { type: String, enum: ["LRN", "Samvadini"], default: "LRN" },
+
+    createdAt: { type: Date, default: Date.now },
+  }, { versionKey: false });
+
+  module.exports = mongoose.model("User", userSchema, "users");

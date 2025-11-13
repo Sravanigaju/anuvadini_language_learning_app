@@ -19,7 +19,7 @@ function VerifyPhone() {
     navigate('/dashboard'); // Navigate after success
   };
 
-  return (
+  return ( 
     <div>
       <Header />
       <div style={styles.wrapper}>

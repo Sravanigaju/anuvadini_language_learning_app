@@ -11,6 +11,8 @@ router.post("/verify-otp", authController.verifyOtp);
 router.post("/change-password", authController.changePassword);
 router.post("/change-password-otp", authController.changeverifyOtp);
 router.post("/send-otp-via-email", authController.sendOtpEmail);
+// Samvadini Auth route
+router.post("/register-samvadini", authController.registerSamvadiniUser);
 
 
 // router.get("/login/:userId", authController.getLoginByUserId);

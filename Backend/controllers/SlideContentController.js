@@ -66,7 +66,7 @@ async function getChapterById(req, res) {
   }
 }
 
-// Get chapter in specific language
+// Get chapter in specific languagex
 async function getChapterByLanguage(req, res) {
   try {
     const { chapterId, language } = req.params;
