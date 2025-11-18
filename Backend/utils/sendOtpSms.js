@@ -18,7 +18,7 @@ const sendmobileOtp = async (otp, mobile) => {
       url:
         "http://smsgw.sms.gov.in/failsafe/HttpLink?username=aictein.sms&pin=E7%25nD5%26nS7&message=" +
         otp +
-        " is the OTP to login to your One Nation One Data (ONOD) account and is valid for 10 minutes. OTP is confidential. DO NOT share this OTP with anyone. ONOD Team. -AICTE&mnumber=" +
+        " is the OTP to login to your Anuvadini account and is valid for 10 minutes. OTP is confidential. DO NOT share this OTP with anyone. Anuvadini Team&mnumber=" +
         mnumber +
         "&signature=AICTED&dlt_entity_id=1101520230000040605&dlt_template_id=1107170504443505502",
       headers: {
